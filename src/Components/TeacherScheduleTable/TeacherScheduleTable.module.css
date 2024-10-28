@@ -1,0 +1,7 @@
+.generalCardContainer {
+    @apply flex flex-col justify-start items-start w-full h-full overflow-auto
+    PC-1920*1080:w-auto
+    PC-1600*900:w-auto
+    PC-1280*720:w-auto
+    IpadAir:w-auto
+  }

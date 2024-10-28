@@ -1,0 +1,17 @@
+.tableTitle{
+    background-color: #FFFF;
+    @apply flex items-center gap-3 sticky top-0 z-auto
+    justify-center
+    ;
+}
+
+.generalCardContainer{
+    background-color: #FFFF;
+    @apply h-auto overflow-auto 
+    mt-7 mb-4 mx-7
+    pt-4 pb-7 pr-7 pl-4 rounded-xl
+    w-auto
+    IpadAir:w-fit IpadAir:mx-auto
+    Mobile-390*844:w-screen  Mobile-280:w-screen Mobile-390*844:mx-0 Mobile-280:mx-0;
+}
+

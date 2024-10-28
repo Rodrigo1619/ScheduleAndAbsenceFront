@@ -1,0 +1,3 @@
+.generalCardContainer {
+    @apply flex flex-col justify-center mx-auto overflow-auto;
+  }

@@ -1,0 +1,56 @@
+.generalContainer {
+    background-color: #f2f2f2;
+    @apply flex flex-col w-full h-screen
+    Mobile-390*844:w-screen Mobile-390*844:h-screen Mobile-390*844:overflow-y-auto
+    Mobile-280:w-screen Mobile-280:h-screen
+    ;
+}
+
+.headerContainer{
+    @apply sticky top-0 z-10 w-screen bg-white bottom-2 stroke-black shadow-md;
+}
+
+
+.bodyContainer {
+
+    background-color: #f2f2f2;
+
+    @apply flex flex-col w-screen mx-auto my-5 h-screen;
+}
+
+.allContentContainer {
+    @apply flex flex-row justify-normal mx-10 w-auto;
+/**/
+}
+
+.pageContentContainerCol {
+    @apply flex flex-col items-center justify-center w-full mx-5
+    Mobile-390*844:flex-col
+    Mobile-390*844:w-auto Mobile-390*844:mx-auto Mobile-390*844:justify-center Mobile-390*844:items-center Mobile-390*844:max-h-max Mobile-390*844:overflow-y-auto
+    Mobile-280:w-auto Mobile-280:mx-auto Mobile-280:justify-center Mobile-280:items-center
+    ;
+
+}
+
+.pageContentContainerRow {
+    @apply flex flex-row w-full items-center justify-center mx-auto
+    PC-1280*720:flex-col PC-1280*720:w-auto PC-1280*720:mx-auto PC-1280*720:justify-center PC-1280*720:items-center PC-1280*720:max-h-max PC-1280*720:overflow-y-auto
+    PC-1600*900:flex-col PC-1600*900:w-auto PC-1600*900:mx-auto PC-1600*900:justify-center PC-1600*900:items-center PC-1600*900:max-h-max PC-1600*900:overflow-y-auto
+    PC-640*480:flex-col PC-640*480:w-auto PC-640*480:mx-auto PC-640*480:justify-center PC-640*480:items-center PC-640*480:max-h-max PC-640*480:overflow-y-auto
+    IpadAir:flex-col IpadAir:w-full IpadAir:mx-2 IpadAir:justify-center IpadAir:items-center IpadAir:max-h-max IpadAir:overflow-y-auto
+    Mobile-390*844:flex-col-reverse Mobile-390*844:w-full Mobile-390*844:mx-2 Mobile-390*844:justify-center Mobile-390*844:items-center Mobile-390*844:max-h-max Mobile-390*844:overflow-y-auto
+    Mobile-280:flex-col-reverse Mobile-280:w-full Mobile-280:mx-2 Mobile-280:justify-center Mobile-280:items-center
+    ;
+
+}
+
+.TitleContainer {
+    @apply flex w-full items-center justify-center mx-2 my-2;
+}
+
+.SubtitleContainer {
+    @apply flex w-full items-center justify-center mx-2
+    Mobile-390*844:mx-0 Mobile-390*844:my-2
+    Mobile-280:mx-0 Mobile-280:my-2;
+}
+

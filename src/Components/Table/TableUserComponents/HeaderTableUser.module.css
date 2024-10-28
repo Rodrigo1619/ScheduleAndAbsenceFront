@@ -1,0 +1,45 @@
+.userHeaderContainer {
+  @apply flex items-center justify-between gap-1
+  Mobile-390*844:flex-col Mobile-390*844:gap-1 Mobile-390*844:items-start
+  Mobile-280:flex-col Mobile-280:gap-1 Mobile-280:items-start;
+}
+
+.userHeaderInput {
+  @apply w-full
+  Mobile-390*844:w-1/2
+  Mobile-280:w-1/2;
+}
+
+.userHeaderButton {
+  @apply flex items-center w-full;
+}
+
+/* Estilos para dispositivos móviles con resolución de 390x844 */
+@media (max-width: 390px) and (max-height: 844px) {
+  .userHeaderContainer {
+    @apply flex-col;
+  }
+
+  .userHeaderInput {
+    @apply w-full mb-1;
+  }
+
+  .userHeaderButton {
+    @apply w-full;
+  }
+}
+
+/* Estilos para dispositivos móviles con ancho de 280 píxeles */
+@media (max-width: 280px) {
+  .userHeaderContainer {
+    @apply flex-col;
+  }
+
+  .userHeaderInput {
+    @apply w-full mb-1;
+  }
+
+  .userHeaderButton {
+    @apply w-full;
+  }
+}

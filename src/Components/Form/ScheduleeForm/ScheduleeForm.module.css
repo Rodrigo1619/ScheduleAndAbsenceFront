@@ -1,0 +1,31 @@
+.form {
+    background-color: rgba(28, 11, 140, 0.2);
+
+    @apply flex flex-col justify-center px-32 py-10 rounded-md;
+
+}
+
+.input-container {
+    @apply flex flex-col justify-center mb-12;
+
+}
+
+.label {
+    @apply text-black text-left;
+
+}
+
+.input {
+    @apply bg-white text-black shadow-md h-10 p-2 rounded-md border border-gray-300;
+
+}
+
+.button-container {
+    @apply flex justify-center;
+
+}
+
+.submit-button {
+    @apply bg-indigo-900 text-white rounded-lg py-2 px-12;
+
+}

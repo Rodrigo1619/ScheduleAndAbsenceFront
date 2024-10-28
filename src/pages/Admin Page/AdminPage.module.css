@@ -1,0 +1,39 @@
+.generalContainer {
+    background-color: #f2f2f2;
+
+    @apply flex flex-col w-screen h-screen
+    Mobile-390*844:w-screen Mobile-390*844:h-screen Mobile-390*844:overflow-y-auto
+    Mobile-280:w-screen Mobile-280:h-screen
+    ;
+}
+
+.headerContainer{
+    @apply sticky top-0 z-10 w-screen bg-white bottom-2 stroke-black shadow-md;
+}
+
+
+.bodyContainer {
+
+    background-color: #f2f2f2;
+
+    @apply flex flex-col w-auto mx-auto my-10 h-screen max-h-screen;
+}
+
+.allContentContainer {
+    @apply flex flex-row justify-normal mx-auto w-auto;
+
+}
+
+.pageContentContainer {
+    @apply flex flex-col items-center justify-center w-auto mx-auto
+    Mobile-390*844:w-auto Mobile-390*844:mx-auto Mobile-390*844:justify-center Mobile-390*844:items-center Mobile-390*844:max-h-max Mobile-390*844:overflow-y-auto
+    Mobile-280:w-auto Mobile-280:mx-auto Mobile-280:justify-center Mobile-280:items-center
+    ;
+
+}
+
+
+.SubtitleContainer {
+    @apply flex flex-row items-center justify-center w-auto mx-auto;
+}
+

@@ -1,0 +1,33 @@
+.paginationFooterContainer {
+    @apply flex justify-between items-center border-t-2 border-gray-300 p-4;
+}
+
+.paginationFooterContainer select {
+    @apply border border-gray-300 rounded p-2;
+}
+
+.paginationFooterContainer .paginationInfo {
+    @apply text-sm text-gray-600;
+}
+
+.paginationFooterContainer .paginationButtons {
+    @apply flex gap-2;
+}
+
+@media (max-width: 390px) {
+    .paginationFooterContainer {
+        @apply flex-col items-stretch;
+    }
+}
+
+@media (max-width: 844px) {
+    .paginationFooterContainer {
+        @apply flex-col items-stretch;
+    }
+}
+
+@media (max-width: 280px) {
+    .paginationFooterContainer {
+        @apply flex-col items-stretch;
+    }
+}

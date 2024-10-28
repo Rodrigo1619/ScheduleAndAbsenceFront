@@ -1,0 +1,73 @@
+.generalContainer {
+    background-color: #f2f2f2;
+/*Debe ir w-full*/
+    @apply flex flex-col w-screen h-screen
+    Mobile-390*844:w-screen Mobile-390*844:h-screen Mobile-390*844:overflow-y-auto
+    Mobile-280:w-screen Mobile-280:h-screen
+    ;
+}
+
+.headerContainer{
+    @apply sticky top-0 z-10 w-screen bg-white bottom-2 stroke-black shadow-md;
+}
+
+
+.bodyContainer {
+
+    background-color: #f2f2f2;
+
+    @apply flex flex-col w-screen mx-auto my-5 h-screen;
+}
+
+.allContentContainer {
+    @apply flex flex-row justify-normal mx-10 w-auto;
+/**/
+}
+
+.pageContentContainerCol {
+    @apply flex flex-col items-center justify-center w-full mx-5
+    Mobile-390*844:w-auto Mobile-390*844:mx-auto Mobile-390*844:justify-center Mobile-390*844:items-center Mobile-390*844:max-h-max Mobile-390*844:overflow-y-auto
+    Mobile-280:w-auto Mobile-280:mx-auto Mobile-280:justify-center Mobile-280:items-center
+    ;
+
+}
+
+.TitleContainer {
+    @apply flex w-full items-center justify-center mx-2 my-2;
+}
+
+.searchFormContainer {
+    @apply flex flex-col justify-center mx-auto 
+    bg-gray-100 bg-opacity-80 rounded-2xl shadow-2xl;
+
+}
+
+.label {
+    @apply text-black text-center justify-center mx-auto;
+
+}
+
+.pageContentContainerRow {
+    @apply flex flex-row w-full items-center justify-center mx-auto pt-14
+    
+    PC-640*480:flex-col PC-640*480:w-full PC-640*480:items-center PC-640*480:justify-center
+    Mobile-390*844:flex-col Mobile-390*844:overflow-y-visible Mobile-390*844:w-full Mobile-390*844:mx-2 Mobile-390*844:justify-center Mobile-390*844:items-center Mobile-390*844:max-h-max
+    Mobile-280:flex-col Mobile-280:w-full Mobile-280:mx-2 Mobile-280:justify-center Mobile-280:items-center
+    ;
+
+}
+
+.input-container{
+    @apply flex flex-col justify-center 
+    mx-auto mb-7 w-64 px-4 mt-4
+    text-white;
+
+}
+
+.cardContainer {
+    @apply my-4 py-4 
+    flex flex-row items-start
+    PC-640*480:w-full PC-640*480:items-center PC-640*480:justify-center
+    Mobile-390*844:w-full Mobile-390*844:mx-2 Mobile-390*844:justify-center Mobile-390*844:items-center Mobile-390*844:max-h-max Mobile-390*844:overflow-y-auto
+    Mobile-280:w-full Mobile-280:mx-2 Mobile-280:justify-center Mobile-280:items-center;
+}

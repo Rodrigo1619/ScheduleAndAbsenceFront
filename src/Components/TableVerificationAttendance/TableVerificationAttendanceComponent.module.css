@@ -1,0 +1,123 @@
+/* ---------- Estilos generales ---------- */
+
+/* Contenedor del header de usuario */
+    .userHeaderContainer {
+        @apply flex items-center justify-between gap-1
+        Mobile-390*844:flex-col Mobile-390*844:gap-1 Mobile-390*844:items-start
+        Mobile-280:flex-col Mobile-280:gap-1 Mobile-280:items-start;
+    }
+    
+    /* Input de búsqueda en el header */
+    .userHeaderInput {
+        @apply w-full
+        Mobile-390*844:w-1/2
+        Mobile-280:w-1/2;
+    }
+    
+    /* Botón en el header */
+    .userHeaderButton {
+        @apply flex items-center w-full;
+    }
+    
+    /* Estilos para el contenedor del pie de paginación */
+    .paginationFooterContainer {
+        @apply flex justify-between items-center border-t-2 border-gray-300 p-4;
+    }
+    
+    /* Select dentro del pie de paginación */
+    .paginationFooterContainer select {
+        @apply border border-gray-300 rounded p-2;
+    }
+    
+    /* Información de paginación */
+    .paginationFooterContainer .paginationInfo {
+        @apply text-sm text-gray-600;
+    }
+    
+    /* Botones dentro del pie de paginación */
+    .paginationFooterContainer .paginationButtons {
+        @apply flex gap-2;
+    }
+    
+    /* Contenedor de la tabla */
+    .table-container {
+        @apply overflow-x-auto;
+    }
+    
+    /* Estilos para la tabla */
+    .table {
+        @apply w-full border-collapse;
+    }
+    
+    .table th,
+    .table td {
+        @apply p-3;
+        /* border: 1px solid #e2e8f0; */ /* Comentado por tu requerimiento */
+    }
+    
+    /* Fila seleccionada */
+    .selected-row {
+        @apply bg-gray-200;
+    }
+
+    .save-btn{
+        @apply text-blueMasferrer font-semibold font-masferrer bg-gray-200 rounded-md px-2 py-1;
+    }
+    
+    /* ---------- Media Queries para dispositivos móviles ---------- */
+    
+    /* Para dispositivos con ancho de hasta 390px y alto de hasta 844px */
+    @media (max-width: 390px) and (max-height: 844px) {
+        .userHeaderContainer {
+        @apply flex-col;
+        }
+    
+        .userHeaderInput {
+        @apply w-full mb-1;
+        }
+    
+        .userHeaderButton {
+        @apply w-full;
+        }
+    
+        .paginationFooterContainer {
+        @apply flex-col items-stretch;
+        }
+    
+        .table th,
+        .table td {
+        @apply p-2 text-xs;
+        }
+    }
+    
+    /* Para dispositivos con un ancho máximo de 280px */
+    @media (max-width: 280px) {
+        .userHeaderContainer {
+        @apply flex-col;
+        }
+    
+        .userHeaderInput {
+        @apply w-full mb-1;
+        }
+    
+        .userHeaderButton {
+        @apply w-full;
+        }
+    
+        .paginationFooterContainer {
+        @apply flex-col items-stretch;
+        }
+    
+        .table th,
+        .table td {
+        @apply p-1 text-xs;
+        }
+    }
+    
+    /* Estilos adicionales para pantallas de hasta 640px */
+    @media screen and (max-width: 640px) {
+        .table th,
+        .table td {
+        @apply p-2 text-sm;
+        }
+    }  

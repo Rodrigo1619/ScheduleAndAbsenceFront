@@ -1,0 +1,96 @@
+body {
+    background: #F2F2F2;
+}
+
+.generalContainer 
+{
+    @apply columns-2 grid grid-cols-1 sm:grid-cols-2 sm:self-center
+}
+
+.infoContainer 
+{       
+    display:grid;
+    justify-content: center;
+    align-content: center;
+    height: 90vh;
+    width: 90vw;
+
+
+    @apply me-auto ms-auto text-center 
+
+}
+
+.logoAndTextContainer
+{
+    display:flex;
+
+    @apply columns-2 grid grid-cols-1 sm:grid-cols-2
+}
+
+.logoContainer
+{
+    display: grid;
+    justify-content: center;
+    align-content: center;
+}
+
+.logoImg 
+{
+    @apply   mx-auto 
+}
+
+.logoText
+{
+    color: #030140;
+    font-family: 'RobotoMonoBold';
+    padding: 2;
+
+
+    @apply sm:text-3xl text-2xl text-center mt-5
+}
+
+.infoContainer3
+{
+    margin-left: 1rem;
+    margin-top: 2rem;
+    align-self: center;
+    
+}
+
+.infotext
+{
+    font-size: 1.5rem;
+    width: auto;
+    color: #030140;
+    font-family: 'PoppinsBold';
+
+    @apply mt-6 mx-auto sm:text-4xl 
+}
+
+.infotext2
+{
+    font-size: 1rem;
+    width: auto;
+    color: #030140;
+    font-family: 'PoppinsLight';
+    padding-bottom: 1em;
+
+    @apply sm:text-base sm:text-center text-center
+}
+
+.loginContainer {
+    @apply m-auto justify-center h-min w-min
+}
+
+.buttonlogin
+{
+    font-family: 'PoppinsLight';
+    color: #F0FDF4;
+    font-weight: lighter;
+    background-color: #170973;
+    border-radius: 10px;
+    border: none;    
+    height:auto;
+
+    @apply mt-2 p-2 mb-5 w-max sm:w-80 hover:bg-indigo-800 font-bold rounded
+}

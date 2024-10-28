@@ -1,0 +1,30 @@
+.form-container {
+        @apply flex flex-row w-full items-center justify-center mx-auto 
+        PC-1600*900:flex-col
+        PC-1366*768:flex-col
+        PC-1280*720:flex-col
+        PC-800*600:flex-col
+        PC-640*480:flex-col
+        Mobile-390*844:flex-col
+        Mobile-280:flex-col
+        Mobile-390*844:mx-0 Mobile-390*844:my-2
+        Mobile-280:mx-0 Mobile-280:my-2;
+    }
+
+
+.input-container {
+    @apply flex flex-col justify-center mx-auto mb-12 w-40 Mobile-390*844:w-60;
+
+}
+
+.inputsContainer{
+    @apply flex flex-col justify-center mx-auto mb-12 w-80 text-white  
+    p-4 border-4 shadow-sm overflow-auto
+     Mobile-390*844:w-60 ;
+
+}
+.label {
+    @apply text-black text-center justify-center mx-auto;
+
+}
+

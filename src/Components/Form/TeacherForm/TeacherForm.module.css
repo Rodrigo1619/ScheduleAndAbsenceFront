@@ -1,0 +1,42 @@
+.form {
+    background-color: rgba(28, 11, 140, 0.2);
+
+    @apply flex flex-col justify-center px-32 py-10 rounded-md items-center
+    Mobile-390*844:px-16 Mobile-390*844:py-5 Mobile-390*844:items-center;
+
+}
+
+.input-container {
+    @apply flex flex-col justify-center mb-12 w-80 Mobile-390*844:w-60;
+
+}
+
+.label {
+    @apply text-black text-left;
+
+}
+
+.input {
+    @apply bg-white text-black shadow-md h-10 p-2 rounded-md border border-gray-300;
+
+}
+
+.button-container {
+    @apply flex justify-center;
+
+}
+
+.submit-button {
+    @apply bg-indigo-900 text-white rounded-lg py-2 px-12;
+
+}
+.password-wrapper{
+    @apply flex items-center relative;
+}
+
+.eye-icon{
+
+    font-size: 1.5rem;
+
+    @apply cursor-pointer absolute right-0 top-8 mr-2;
+}

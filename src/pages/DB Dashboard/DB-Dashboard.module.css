@@ -1,0 +1,66 @@
+.generalContainer {
+    background-color: #f2f2f2;
+
+    @apply flex flex-col w-screen h-screen
+    Mobile-390*844:w-screen Mobile-390*844:h-screen Mobile-390*844:overflow-y-auto
+    Mobile-280:w-screen Mobile-280:h-screen
+    ;
+}
+
+.headerContainer{
+    @apply sticky top-0 z-10 w-screen bg-white bottom-2 stroke-black shadow-md;
+}
+
+
+.bodyContainer {
+
+    background-color: #f2f2f2;
+
+    @apply flex flex-col w-auto mx-auto my-10 h-screen max-h-screen;
+}
+
+.allContentContainer {
+    @apply flex flex-row justify-around mx-2 w-screen pb-10
+    PC-Ultrawide-34inch:justify-center PC-Ultrawide-34inch:mx-0 PC-Ultrawide-34inch:items-start
+    PC-1920*1080:justify-center PC-1920*1080:mx-0 PC-1920*1080:items-start
+    ;
+
+}
+
+.pageContentContainer {
+    @apply flex flex-col items-center justify-center w-4/5 overflow-auto 
+    Mobile-390*844:w-auto Mobile-390*844:mx-auto Mobile-390*844:justify-center Mobile-390*844:items-center Mobile-390*844:max-h-max Mobile-390*844:overflow-y-auto
+    Mobile-280:w-auto Mobile-280:mx-auto Mobile-280:justify-center Mobile-280:items-center
+    ;
+
+}
+
+.tableCardContainer {
+    @apply flex flex-col w-full justify-start pb-5
+    IpadAir:flex-col
+    Mobile-390*844:flex-col Mobile-280:flex-col
+}
+
+.tablesContainer{
+
+    @apply flex flex-col w-full
+    IpadAir:w-auto IpadAir:mx-auto IpadAir:grid-cols-1
+    Mobile-390*844:w-auto Mobile-390*844:mx-auto Mobile-390*844:grid-cols-1
+    Mobile-280:w-auto Mobile-280:mx-auto Mobile-280:grid-cols-1
+    ;
+}
+
+.rowCardsContainer {
+    @apply flex flex-row
+    IpadAir:flex-col
+    Mobile-390*844:flex-col
+    Mobile-280:flex-col
+}
+
+.loaderContainer{
+    @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+}
+
+.quickAddButton {
+    @apply self-center rounded px-3 pb-1.5 pt-2 uppercase bg-blueMasferrer
+}

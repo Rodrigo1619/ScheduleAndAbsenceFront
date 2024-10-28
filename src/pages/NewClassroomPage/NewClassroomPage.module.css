@@ -1,0 +1,68 @@
+.generalContainer {
+    background-color: #f2f2f2;
+
+    @apply flex flex-col w-screen h-screen
+    Mobile-390*844:w-screen Mobile-390*844:h-screen Mobile-390*844:overflow-y-auto
+    Mobile-280:w-screen Mobile-280:h-screen
+    ;
+}
+
+.headerContainer{
+    @apply sticky top-0 z-10 w-screen bg-white bottom-2 stroke-black shadow-md;
+}
+
+.bodyContainer {
+
+    background-color: #f2f2f2;
+
+    @apply flex flex-col w-auto mx-auto my-10 h-screen max-h-screen;
+}
+
+.allContentContainer {
+    @apply flex flex-row justify-normal mx-auto w-auto;
+
+}
+
+.pageContentContainer {
+    @apply flex items-center justify-center w-auto mx-auto self-center
+    Mobile-390*844:w-auto Mobile-390*844:mx-auto Mobile-390*844:justify-center Mobile-390*844:items-center Mobile-390*844:max-h-max Mobile-390*844:overflow-y-auto
+    Mobile-280:w-auto Mobile-280:mx-auto Mobile-280:justify-center Mobile-280:items-center
+    ;
+
+}
+
+.imgQuoteContainer{
+    width: 40vw;
+    @apply flex flex-col items-center justify-center mx-16
+    Mobile-390*844:hidden
+    Mobile-280:hidden
+}
+
+.imgQuote{
+    @apply h-fit w-fit my-7
+}
+
+.titleAndFormContainer{
+    @apply flex flex-col items-center justify-center 
+}
+
+.formContainer{
+    @apply flex flex-col justify-center px-2 pt-10 pb-5 rounded-md;
+    background-color: rgba(28, 11, 140, 0.2);
+}
+
+.input-container {
+    @apply m-auto flex flex-col justify-center mb-7 px-6;
+}
+
+.label {
+    @apply text-black text-left font-masferrer font-light;
+}
+
+.button-container {
+    @apply flex justify-center mt-7;
+}
+
+.submit-button {
+    @apply bg-indigo-900 text-white rounded-lg py-2 px-12;
+}

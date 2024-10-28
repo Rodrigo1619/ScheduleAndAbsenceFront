@@ -1,0 +1,51 @@
+/* UserTable.module.css */
+
+.table-container {
+  @apply overflow-x-auto;
+}
+.table {
+  @apply w-full;
+  @apply border-collapse;
+}
+
+.table th,
+.table td {
+  @apply p-3;
+  /*
+  border: 1px solid #e2e8f0;
+  */
+}
+
+.selected-row {
+  @apply bg-gray-200;
+}
+
+@media screen and (max-width: 640px) {
+  .table th,
+  .table td {
+    @apply p-2;
+    @apply text-sm;
+  }
+}
+
+@media screen and (max-width: 390px) {
+  .table th,
+  .table td {
+    /* Estilos específicos para dispositivos móviles con una resolución de 390x844 */
+    /* Agrega aquí tus estilos personalizados */
+    /* For example: */
+    @apply p-2;
+    @apply text-xs;
+  }
+}
+
+@media screen and (max-width: 280px) {
+  .table th,
+  .table td {
+    /* Estilos específicos para dispositivos móviles con una resolución de 280x */
+    /* Agrega aquí tus estilos personalizados */
+    /* For example: */
+    @apply p-1;
+    @apply text-xs;
+  }
+}
