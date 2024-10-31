@@ -6,10 +6,12 @@ import classes from "./TeacherSchedulePage.module.css";
 import Header from "../../Components/Header/Header";
 import SelectClassroomScheduleForm from "../../Components/Form/SelectClassroomScheduleForm/SelectClassroomScheduleForm";
 import SelectTeacherScheduleForm from "../../Components/Form/SelectTeacherScheduleForm/SelectTeacherScheduleForm";
+import { useUserContext } from "../../Context/userContext";
 
 const TeacherSchedulePage = () => {
 
     const [isFormVisible, setIsFormVisible] = useState(false);
+    const { user } = useUserContext();
 
     useEffect(() => {
         document.title = "Sistema de Control de Asistencia - Escuela Masferrer";
@@ -22,7 +24,7 @@ const TeacherSchedulePage = () => {
     return (
         <div className={[classes["generalContainer"]]}>
             <header className={[classes["headerContainer"]]}>
-                <Header name="Luis Morales" role="Administrador" />
+                <Header name={user?.name} role={user?.role.name} />
             </header>
 
             <div className={[classes["bodyContainer"]]}>

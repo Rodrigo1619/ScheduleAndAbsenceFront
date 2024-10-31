@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Navbar,
   Typography,
@@ -14,24 +14,27 @@ import {
 import {
   ChevronDownIcon,
   PowerIcon,
-  RocketLaunchIcon,
   Bars2Icon,
   HomeIcon,
   TableCellsIcon,
   UsersIcon,
   ClipboardDocumentListIcon,
+  UserPlusIcon,
+  CalendarIcon,
 } from "@heroicons/react/24/solid";
 
 import logo from "../../assets/logo.png";
 import adminIcon from "../../assets/icons/admin-icon.svg";
 import teacherIcon from "../../assets/icons/classroom-icon.svg";
-import { FaChalkboardTeacher, FaSearch } from "react-icons/fa";
-import { PiStudentFill } from "react-icons/pi";
+import { FaCalendarPlus, FaChalkboardTeacher, FaSearch } from "react-icons/fa";
+import { PiChalkboardTeacher, PiChalkboardTeacherFill, PiStackPlusFill, PiStudentFill } from "react-icons/pi";
 import { SiGoogleclassroom } from "react-icons/si";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { userService } from "../../Services/userService";
 import { useUserContext } from "../../Context/userContext";
+import { FcHome } from "react-icons/fc";
+import { IoTimeSharp } from "react-icons/io5";
 
 // profile menu component
 const profileMenuItems = [
@@ -51,14 +54,13 @@ function ProfileMenu() {
   const { token, logout } = useUserContext();
 
   React.useEffect(() => {
-
     async function getUser() {
       const user = await userService.verifyToken(token);
 
       if (user) {
         const headerName = () => {
           const splitName = user.name.split(" ");
-  
+
           switch (splitName.length) {
             case 3:
               return `${splitName[0]} ${splitName[1]} ${splitName[2]}`;
@@ -75,10 +77,11 @@ function ProfileMenu() {
     }
 
     getUser();
-  }, []);
+  }, [token]);
+
 
   const closeMenu = () => {
-    setIsMenuOpen(false)
+    setIsMenuOpen(false);
     logout();
     console.log("Borrando token...");
     navigate('/');
@@ -132,8 +135,8 @@ function ProfileMenu() {
               key={label}
               onClick={closeMenu}
               className={`flex items-center gap-2 rounded ${isLastItem
-                  ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
-                  : ""
+                ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
+                : ""
                 }`}
             >
               {React.createElement(icon, {
@@ -156,36 +159,72 @@ function ProfileMenu() {
   );
 }
 
-
 // nav list component
 const navListItemsAdmin = [
   {
     label: "Inicio",
-    icon: HomeIcon
+    icon: HomeIcon,
+    path: "/"
   },
   {
     label: "Tablas de bases de datos",
     icon: TableCellsIcon,
+    path: "/DBDashboard"
   },
   {
     label: "Revisar asistencia",
     icon: UsersIcon,
+    path: "/AttendanceGeneralView"
   },
   {
     label: "Reportar inasistencia",
     icon: ClipboardDocumentListIcon,
+    path: "/AttendanceRegisterView"
   },
   {
-    label: "Profesores",
+    label: "Buscar maestro",
+    icon: FaSearch,
+    path: "/SearchTeacher"
+  },
+  {
+    label: "Registrar a un nuevo profesor",
+    icon: PiChalkboardTeacher,
+    path: "/TeacherPage"
+  },
+  {
+    label: "Asignar materia a profesor",
     icon: FaChalkboardTeacher,
+    path: "/UserXSubjectPage"
   },
   {
-    label: "Estudiantes",
-    icon: PiStudentFill,
+    label: "Asignar horario a salón de clase",
+    icon: FaCalendarPlus,
+    path: "/AddSchedule"
   },
   {
-    label: "Salón de clases",
+    label: "Registrar un nuevo salón de clase",
     icon: SiGoogleclassroom,
+    path: "/ClassroomPage"
+  },
+  {
+    label: "Configuración de horas para el salón de clases",
+    icon: IoTimeSharp,
+    path: "/HourConfiguration"
+  },
+  {
+    label: "Agregar alumnos a un aula",
+    icon: UserPlusIcon,
+    path: "/PopulateClassroom"
+  },
+  {
+    label: "Ver horario de un salón de clases",
+    icon: CalendarIcon,
+    path: "/ClassroomSchedule"
+  },
+  {
+    label: "Matricular estudiantes",
+    icon: PiStudentFill,
+    path: "/EnrollStudents"
   },
 ];
 
@@ -193,72 +232,182 @@ const navListItemsTeacher = [
   {
     label: "Inicio",
     icon: HomeIcon,
+    path: "/"
   },
   {
-    label: "Horario de clases",
+    label: "Buscar maestro",
     icon: SiGoogleclassroom,
+    path: "/SearchTeacher"
   },
   {
-    label: "Reportar inasistencias",
-    icon: ClipboardDocumentListIcon,
-  },
-  {
-    label: "Revisar listado de asistencias",
+    label: "Revisar asistencia",
     icon: UsersIcon,
+    path: "/AttendanceGeneralView"
   },
   {
-    label: "Búsqueda de maestro",
-    icon: FaSearch,
+    label: "Reportar inasistencia",
+    icon: ClipboardDocumentListIcon,
+    path: "/AttendanceRegisterView"
   },
 ];
 
-function NavList({ role }) {
+const navListItemsModerator = [
+  {
+    label: "Inicio",
+    icon: HomeIcon,
+    path: "/"
+  },
+  {
+    label: "Buscar maestro",
+    icon: SiGoogleclassroom,
+    path: "/SearchTeacher"
+  },
+  {
+    label: "Registrar un nuevo profesor",
+    icon: UserPlusIcon,
+    path: "/TeacherPage"
+  },
+  {
+    label: "Asignar materia a profesor",
+    icon: FaChalkboardTeacher,
+    path: "/UserXSubjectPage"
+  },
+  {
+    label: "Asignar orientador a salón de clase",
+    icon: PiChalkboardTeacherFill,
+    path: "/ClassroomPage"
+  },
+  {
+    label: "Registrar un nuevo alumno",
+    icon: UserPlusIcon,
+    path: "/StudentPage"
+  },
+  {
+    label: "Asignar alumnos a un aula",
+    icon: PiStudentFill,
+    path: "/PopulateClassroom"
+  },
+  {
+    label: "Configuración de horas para el salón de clases",
+    icon: IoTimeSharp,
+    path: "/HourConfiguration"
+  },
+  {
+    label: "Matricular estudiantes",
+    icon: PiStudentFill,
+    path: "/EnrollStudents"
+  }
+];
+
+const navListItemsCoordinator = [
+  {
+    label: "Inicio",
+    icon: HomeIcon,
+    path: "/"
+  },
+  {
+    label: "Revisar asistencia general",
+    icon: UsersIcon,
+    path: "/AttendanceGeneralView"
+  },
+  {
+    label: "Revisar asistencia global",
+    icon: UsersIcon,
+    path: "/AttendanceGlobalView"
+  },
+  {
+    label: "Buscar maestro",
+    icon: FaSearch,
+    path: "/SearchTeacher"
+  },
+  {
+    label: "Ver horario de un salón de clases",
+    icon: CalendarIcon,
+    path: "/ClassroomSchedule"
+  },
+];
+
+
+const navListItemsDefault = [
+  {
+    label: "Inicio",
+    icon: HomeIcon,
+    path: "/HomePage"
+  },
+  {
+    label: "Reportar inasistencia",
+    icon: ClipboardDocumentListIcon,
+    path: "/AttendanceRegisterView"
+  },
+];
+
+function NavList({ role, closeNav }) {
+  const navigate = useNavigate();
+
+  const handleNavigation = (path) => {
+    navigate(path);
+    closeNav();
+  };
+
+  let navListItems;
+  if (role !== "") {
+  if (role === "Profesor") {
+    navListItems = navListItemsTeacher;
+  } else if (role === "Administrador") {
+    navListItems = navListItemsAdmin;
+  } 
+  else if (role === "Moderator" || role === "Moderador") {
+    navListItems = navListItemsModerator;
+  }
+  else if (role === "Coordinador" || role === "Coordinator") {
+    navListItems = navListItemsCoordinator;
+  }
+  else {
+    navListItems = navListItemsDefault;
+  }
+}
+
   return (
-    role === "Administrador" ?
-      <ul className="mt-2 mb-4 hidden flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center PC-1920*1080:hidden 
-    PC-1600*900:hidden PC-1366*768:hidden PC-1280*720:hidden IpadAir:flex Mobile-390*844:flex Mobile-280:flex">
-        {navListItemsAdmin.map(({ label, icon }, key) => (
-          <Typography
-            key={label}
-            as="a"
-            href="#"
-            variant="small"
-            color="gray"
-            className="font-medium text-blue-gray-500"
-          >
-            <MenuItem className="flex items-center gap-2 lg:rounded-full">
-              {React.createElement(icon, { className: "h-[18px] w-[18px]" })}{" "}
-              <span className="text-gray-900"> {label}</span>
-            </MenuItem>
-          </Typography>
-        ))}
-      </ul>
-      :
-      <ul className="mt-2 mb-4 hidden flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center PC-1920*1080:hidden
-    PC-1600*900:hidden PC-1366*768:hidden PC-1280*720:hidden IpadAir:flex Mobile-390*844:flex Mobile-280:flex">
-        {navListItemsTeacher.map(({ label, icon }, key) => (
-          <Typography
-            key={label}
-            as="a"
-            href="#"
-            variant="small"
-            color="gray"
-            className="font-medium text-blue-gray-500"
-          >
-            <MenuItem className="flex items-center gap-2 lg:rounded-full">
-              {React.createElement(icon, { className: "h-[18px] w-[18px]" })}{" "}
-              <span className="text-gray-900"> {label}</span>
-            </MenuItem>
-          </Typography>
-        ))}
-      </ul>
+    <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-col lg:items-start">
+      {navListItems.map(({ label, icon, path }, key) => (
+        <Typography
+          key={label}
+          as="a"
+          onClick={() => handleNavigation(path)}
+          variant="small"
+          color="gray"
+          className="font-medium text-blue-gray-500 cursor-pointer"
+        >
+          <MenuItem className="flex items-center gap-2 lg:rounded-full">
+            {React.createElement(icon, { className: "h-[18px] w-[18px]" })}{" "}
+            <span className="text-gray-900"> {label}</span>
+          </MenuItem>
+        </Typography>
+      ))}
+    </ul>
   );
 }
 
 export default function Header({ name, role }) {
   const [isNavOpen, setIsNavOpen] = React.useState(false);
+  const navRef = useRef();
 
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
+
+  const closeNav = () => setIsNavOpen(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (navRef.current && !navRef.current.contains(event.target)) {
+        closeNav();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [navRef]);
 
   React.useEffect(() => {
     window.addEventListener(
@@ -268,40 +417,38 @@ export default function Header({ name, role }) {
   }, []);
 
   return (
-    <Navbar className="mx-auto max-w-screen-xl p-2 lg:rounded-full lg:pl-6 bg-transparent shadow-none">
-      <div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
-
-        <div className="flex items-center gap-2">
-          <img src={logo} alt="logo" className="h-24 w-18" />
-          <Typography
-            as="a"
-            href="/"
-            className="mr-4 ml-2 cursor-pointer py-1.5 text-darkblueMasferrer 
-          font-masferrerTitle font-normal max-w-40
-          Mobile-390*844:hidden
-          Mobile-280:hidden
-          text-left"
+    <>
+      <Navbar className="mx-auto max-w-screen-xl p-2 lg:rounded-full lg:pl-6 bg-transparent shadow-none">
+        <div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
+          <IconButton
+            size="sm"
+            color="blue-gray"
+            variant="text"
+            onClick={toggleIsNavOpen}
+            className="mr-2"
           >
-            Centro Escolar Católico "Alberto Masferrer"
-          </Typography>
+            <Bars2Icon className="h-6 w-6" />
+          </IconButton>
+          <div className="flex items-center gap-2">
+            <img src={logo} alt="logo" className="h-24 w-18" />
+            <Typography
+              as="a"
+              href="/"
+              className="mr-4 ml-2 cursor-pointer py-1.5 text-darkblueMasferrer 
+            font-masferrerTitle font-normal max-w-40
+            Mobile-390*844:hidden
+            Mobile-280:hidden
+            text-left"
+            >
+              Centro Escolar Católico "Alberto Masferrer"
+            </Typography>
+          </div>
+          <ProfileMenu name={name} role={role} />
         </div>
-        <div className="hidden lg:block">
-          <NavList role={role} />
-        </div>
-        <IconButton
-          size="sm"
-          color="blue-gray"
-          variant="text"
-          onClick={toggleIsNavOpen}
-          className="ml-auto mr-2 lg:hidden"
-        >
-          <Bars2Icon className="h-6 w-6" />
-        </IconButton>
-        <ProfileMenu name={name} role={role} />
+      </Navbar>
+      <div ref={navRef} className={`fixed top-16 left-2 ${isNavOpen ? 'block' : 'hidden'} bg-white shadow-lg rounded-lg p-4`}>
+        <NavList role={role} closeNav={closeNav} />
       </div>
-      <Collapse open={isNavOpen} className="overflow-scroll">
-        <NavList role={role} />
-      </Collapse>
-    </Navbar>
+    </>
   );
 }

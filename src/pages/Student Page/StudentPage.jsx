@@ -109,12 +109,11 @@ const StudentPage = () => {
         (
             <div className={[classes["generalContainer"]]}>
                 <header className={classes["headerContainer"]}>
-                    <Header name="Luis Morales" role="Administrador" />
+                    <Header name={user?.name} role={user?.role.name} />
                 </header>
 
                 <div className={classes["bodyContainer"]}>
                     <div className={classes["allContentContainer"]}>
-                        <SideBarNav />
                         <div className={classes["pageContentContainerCol"]}>
                             <div className={classes["TitleContainer"]}>
                                 <Button

@@ -153,7 +153,7 @@ const ClassroomForm = ({ classroom, editStatus = false, onSuccess }) => {
     }
 
     return (
-        <form className={classes["formContainer"]} onSubmit={handleSubmit}>
+        <form className={classes["form"]} onSubmit={handleSubmit}>
             <Toaster />
             {editStatus && (
                 <div className={classes["classroomInfoContainer"]}>

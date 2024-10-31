@@ -15,7 +15,7 @@ const SubjectPage = () => {
     const [loading, setLoading] = useState(true);
 
     const [subjects, setSubjects] = useState([]);
-    const { token } = useUserContext();
+    const { token, user } = useUserContext();
 
     const [openRegister, setOpenRegister] = useState(false);
 
@@ -77,12 +77,11 @@ const SubjectPage = () => {
         (
             <div className={[classes["generalContainer"]]}>
                 <header className={[classes["headerContainer"]]}>
-                    <Header name="Luis Morales" role="Administrador" />
+                    <Header name={user?.name} role={user?.role.name} />
                 </header>
 
                 <div className={[classes["bodyContainer"]]}>
                     <div className={[classes["allContentContainer"]]}>
-                        <SideBarNav />
                         <div className={[classes["pageContentContainerCol"]]}>
                             <div className={[classes["TitleContainer"]]}>
                                 <Button color="white" className='m-4' onClick={handleOpenRegisterDialog}>

@@ -22,7 +22,7 @@ const ClassroomPage = () => {
     const [loading, setLoading] = useState(true);
 
     const [classrooms, setClassrooms] = useState([]);
-    const { token } = useUserContext();
+    const { token, user } = useUserContext();
     const [open, setOpen] = useState(false);
 
     const fetchClassrooms = async () => {
@@ -79,7 +79,7 @@ const ClassroomPage = () => {
     ) : (
             <div className={[classes["generalContainer"]]}>
                 <header className={[classes["headerContainer"]]}>
-                    <Header name="Luis Morales" role="Administrador" />
+                    <Header name={user?.name} role={user?.role.name} />
                 </header>
 
                 <div className={[classes["bodyContainer"]]}>
@@ -103,7 +103,7 @@ const ClassroomPage = () => {
                                 <ClassroomList classrooms={classrooms} fetchClassrooms={fetchClassrooms}/>
                                 </div>
                             </div>
-                            <Dialog open={open} handler={handleOpenDialog}>
+                            <Dialog open={open} handler={handleOpenDialog} className="overflow-auto h-6/7">
                                 <DialogHeader> Registrar Salón de Clase:  </DialogHeader>
                                 <DialogBody> <ClassroomForm /> </DialogBody>
                                 <DialogFooter>

@@ -2,7 +2,7 @@
     background-color: rgba(28, 11, 140, 0.2);
 
     @apply flex flex-col justify-center px-14 py-20 ml-8 my-8
-    rounded-md items-center 
+    rounded-md items-center border-2 border-white shadow-md
     Mobile-390*844:px-16 Mobile-390*844:py-5 Mobile-390*844:items-center;
 
 }

@@ -10,6 +10,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SelectSearch from 'react-select'
 import ClassroomForm from "../../Components/Form/ClassroomForm/ClassroomForm";
+import { useUserContext } from "../../Context/userContext";
+
 
 
 const options = [
@@ -38,14 +40,15 @@ const shifts = ["Matutino", "Vespertino"];
 
 const NewClassroomPage = () => {
 
+    const { user } = useUserContext();
+
     return (
         <div className={classes["generalContainer"]}>
             <header className={[classes["headerContainer"]]}>
-                    <Header name="Luis Morales" role="Administrador" />
+                <Header name={user?.name} role={user?.role.name} />
                 </header>
             <div className={classes["bodyContainer"]}>
                 <div className={classes["allContentContainer"]}>
-                    <SideBarNav/>
                     <div className={classes["pageContentContainer"]}>
                         <div className={classes["imgQuoteContainer"]}>
                             <img src={imgq} className={classes["imgQuote"]}/>

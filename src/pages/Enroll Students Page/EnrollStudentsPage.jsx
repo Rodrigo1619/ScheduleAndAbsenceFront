@@ -30,7 +30,7 @@ const EnrollStudentsPage = () => {
     const [classroom, setClassroom] = useState(null);
     const [shifts, setShifts] = useState([]);
     const [open, setOpen] = useState(false);
-    const { token } = useUserContext();
+    const { token, user } = useUserContext();
 
     // Callback function to set the classroom name
     const setClassroomName = (classroom) => {
@@ -57,20 +57,6 @@ const EnrollStudentsPage = () => {
                 enrolled: student.classroom.grade.name + " - " + student.classroom.shift.name
                 + " " + student.classroom.year             
             })));
-
-            if (data.length > 0) {
-                notification.success({
-                    message: "Estudiantes matriculados cargados",
-                    description: "Los estudiantes matriculados en el aula han sido cargados exitosamente."
-                });
-            }
-
-            else {
-                notification.warning({
-                    message: "No hay estudiantes matriculados",
-                    description: "No hay estudiantes matriculados en el aula seleccionada."
-                });
-            }
 
         } catch (error) {
             console.log(`Hubo un error al obtener los estudiantes matriculados: ${error}`);
@@ -108,6 +94,7 @@ const EnrollStudentsPage = () => {
         // Necesito que solo el componente de StudentListEnrollment se actualice
         handleCloseDialog();
         setSelectedStudents([]);
+        setStudents([]);
         fetchEnrolledStudents();
     }
 
@@ -120,15 +107,14 @@ const EnrollStudentsPage = () => {
         
         <div className={[classes["generalContainer"]]}>
             <header className={[classes["headerContainer"]]}>
-                <Header name="Luis Morales" role="Moderador" />
+                <Header name={user?.name} role={user?.role.name} />
             </header>
 
             <div className={[classes["bodyContainer"]]}>
                 <div className={[classes["allContentContainer"]]}>
-                    <SideBarNav />
                     <div className={[classes["pageContentContainerCol"]]}>
                     <div className="flex flex-row justify-between items-center">
-                            <Typography className="font-masferrer text-2xl font-light my-4
+                            <Typography className="font-masferrer text-2xl font-bold my-4
                             Mobile-390*844:text-sm
                             Mobile-280:text-sm
                             ">MATRICULAR ESTUDIANTES</Typography>

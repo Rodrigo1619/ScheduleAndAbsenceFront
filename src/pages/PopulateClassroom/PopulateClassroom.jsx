@@ -29,7 +29,7 @@ const PopulateClassroom = () => {
     const [classroom, setClassroom] = useState(null);
     const [shifts, setShifts] = useState([]);
     const [open, setOpen] = useState(false);
-    const { token } = useUserContext();
+    const { token, user } = useUserContext();
     const [loading, setLoading] = useState(true);
 
 
@@ -88,15 +88,14 @@ const PopulateClassroom = () => {
             :
         <div className={[classes["generalContainer"]]}>
             <header className={[classes["headerContainer"]]}>
-                <Header name="Luis Morales" role="Moderador" />
+                <Header name={user?.name} role={user?.role.name} />
             </header>
 
             <div className={[classes["bodyContainer"]]}>
                 <div className={[classes["allContentContainer"]]}>
-                    <SideBarNav />
                     <div className={[classes["pageContentContainerCol"]]}>
                     <div className={[classes["TitleContainer"]]}>
-                            <Typography className="font-masferrer text-2xl font-light my-4
+                            <Typography className="font-masferrer text-2xl font-bold my-4
                             Mobile-390*844:text-sm
                             Mobile-280:text-sm
                             ">AGREGAR ALUMNOS A UN SALÓN DE CLASES</Typography>
@@ -104,7 +103,7 @@ const PopulateClassroom = () => {
                         <PopulateClassForm fromDialog={false} studentsList={selectedStudents} onSuccess={handleCreateSuccess} buttonText="Registrar" />
                         <div className={[classes["pageContentContainerRow"]]}>    
                             <div className={[classes["SubtitleContainer"]]}>
-                            <StudentListEnrollment students={students} classroom={true} updateSelectedStudents={updateSelectedStudents}/>
+                            <StudentListEnrollment students={students} classroom={true} updateSelectedStudents={updateSelectedStudents} populate={true}/>
                             </div>
                            
                         </div>

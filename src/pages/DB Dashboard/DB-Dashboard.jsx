@@ -72,7 +72,7 @@ const SCH = [
 
 const DBDashboard = () => {
 
-    const { token } = useUserContext();
+    const { token, user } = useUserContext();
 
     const [loading, setLoading] = useState(true);
 
@@ -190,12 +190,11 @@ const DBDashboard = () => {
 
             <div className={[classes["generalContainer"]]}>
                 <header className={[classes["headerContainer"]]}>
-                    <Header name="Luis Morales" role="Administrador" />
+                    <Header name={user?.name} role={user?.role.name} />
                 </header>
 
                 <div className={[classes["bodyContainer"]]}>
                     <div className={[classes["allContentContainer"]]}>
-                        <SideBarNav />
                         <div className={[classes["pageContentContainer"]]}>
                             <Typography className="font-masferrer text-2xl font-light my-4 text-darkblueMasferrer
                                 Mobile-390*844:text-sm

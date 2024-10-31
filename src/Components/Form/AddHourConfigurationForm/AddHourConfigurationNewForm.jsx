@@ -2,6 +2,7 @@ import { Card, Option, Chip } from '@material-tailwind/react';
 import React, { useEffect, useState } from 'react';
 import classes from './AddHourConfigurationNewForm.module.css';
 import AsyncSelect from '../../AsyncSelect/AsyncSelect.jsx';
+import SelectSearch from "react-select";
 import { userService } from '../../../Services/userService';
 import { useUserContext } from '../../../Context/userContext';
 import { shiftService } from '../../../Services/shiftService';
@@ -56,8 +57,8 @@ const AddHourConfigurationNewForm = () => {
         fetchClassrooms();
     }, [shift, year, token]);
 
-    const handleSelectClassroomChange = (value) => {
-        const selectedClassroom = classroomsList.find(classroom => classroom.id === value);
+    const handleSelectClassroomChange = (e) => {
+        const selectedClassroom = classroomsList.find(classroom => classroom.id === e.value);
         if (selectedClassroom && !selectedClassrooms.some(c => c.id === selectedClassroom.id)) {
             setSelectedClassrooms([...selectedClassrooms, selectedClassroom]);
         }
@@ -100,21 +101,20 @@ const AddHourConfigurationNewForm = () => {
                                 placeholder="Año"
                             />
                         </div>
-
                         <div className={classes["input-container"]}>
-                            <label className={classes["label"]}>Agregar salón de clases</label>
-                            <AsyncSelect
-                                value=""
-                                onChange={handleSelectClassroomChange}
-                                className="bg-white Mobile-280:w-full"
-                            >
-                                {classroomsList?.map((classroom) => (
-                                    <Option key={classroom.id} value={classroom.id}>
-                                        {classroom.grade.name}
-                                    </Option>
-                                ))}
-                            </AsyncSelect>
-                        </div>
+                <label className={classes["label"]}>Salón de clases:</label>
+                <SelectSearch
+                                        value=""
+                                        options= {classroomsList?.map((classroom) => ({
+                                            value: classroom.id,
+                                            label: classroom.grade.name
+                                        }))}
+                                        onChange={handleSelectClassroomChange}
+                                        placeholder="Seleccione un salon de clases"
+                                        className=" Mobile-280:w-full text-black"
+                                    />
+            </div>
+                       
                     </div>
                     <Typography className="text-black font-bold text-lg">
                             Salones seleccionados:
@@ -140,6 +140,7 @@ const AddHourConfigurationNewForm = () => {
                 shift={shift}
                 year={year}
                 edit={false}
+                onSuccess={() => setSelectedClassrooms([])}
             />
         </div>
     );

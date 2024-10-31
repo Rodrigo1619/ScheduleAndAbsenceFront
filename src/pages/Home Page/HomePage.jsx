@@ -39,7 +39,7 @@ const HomePage = () => {
     const [shift, setShift] = useState([]);
     const [absenceRecord, setAbsenceRecord] = useState([]);
     const [todayAbsences, setTodayAbsences] = useState([]);
-    const { token } = useUserContext();
+    const { token, user } = useUserContext();
     let date = new Date();
 
     // Callback function to get the shift selected on the ScheduleTable
@@ -164,14 +164,11 @@ const HomePage = () => {
     return (
         <div className={[classes["generalContainer"]]}>
             <header className={[classes["headerContainer"]]}>
-                <Header name="Luis Morales" role="Profesor" />
+                <Header name={user?.name} role={user?.role.name} />
             </header>
 
             <div className={[classes["bodyContainer"]]}>
                 <div className={[classes["allContentContainer"]]}>
-                    <div className={[classes["sideBarContainer"]]}>
-                    <SideBarNav />
-                    </div>
                     <div className={[classes["pageContentContainer"]]}>
                         <div className={[classes["SubtitleContainer"]]}>
                             <QuickAccessButtons title="Acciones Generales:"

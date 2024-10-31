@@ -2,6 +2,7 @@ import { Card, Option } from '@material-tailwind/react';
 import React, { useEffect, useState } from 'react';
 import classes from './AddHourConfigurationEditForm.module.css';
 import AsyncSelect from '../../AsyncSelect/AsyncSelect.jsx';
+import SelectSearch from "react-select";
 import { userService } from '../../../Services/userService.js';
 import { useUserContext } from '../../../Context/userContext.jsx';
 import { shiftService } from '../../../Services/shiftService.js';
@@ -122,19 +123,21 @@ const AddHourConfigurationEditForm = () => {
         setSubject(subject);
     }
 
-    const handleSelectClassroomChange = (value) => {
-        const classroom = classroomsList.find(classroom => classroom.id === value);
+    const handleSelectClassroomChange = (e) => {
+        const classroom = classroomsList.find(classroom => classroom.id === e.value);
         setClassroom(classroom);
+        console.log("classroom", classroom);
     }
 
     const handleSelectShiftChange = (value) => {
         const shift = shiftsList.find(shift => shift.id === value);
         setShift(shift);
+        console.log("shift", shift.name);
     }
 
     return (
         <div className={classes["form-container"]}>
-            <Card className='bg-transparent p-4 mx-4 border-0 shadow-none'>
+            <Card className='bg-purple p-4 mx-4 border-0 shadow-none'>
                 <div className={classes["form-container"]}>
                     <div className={classes["inputsContainer"]}>
                 <div className={classes["input-container"]}>
@@ -159,22 +162,21 @@ const AddHourConfigurationEditForm = () => {
                 </div>
                 <div className={classes["input-container"]}>
                     <label className={classes["label"]}>Salón de clases:</label>
-                   <AsyncSelect
-                        value={classroom ? classroom.id : ''}
-                        onChange={handleSelectClassroomChange}
-                        className="bg-white Mobile-280:w-full"
-                    >
-                        {classroomsList?.map((classroom) => (
-                            <Option key={classroom.id} value={classroom.id}>
-                                {classroom.grade.name}
-                            </Option>
-                        ))}
-                    </AsyncSelect>
+                    <SelectSearch
+                                        value={classroom ? { value: classroom.id, label: classroom.grade.name } : ''}
+                                        options= {classroomsList?.map((classroom) => ({
+                                            value: classroom.id,
+                                            label: classroom.grade.name
+                                        }))}
+                                        onChange={handleSelectClassroomChange}
+                                        placeholder="Seleccione un salon de clases"
+                                        className=" Mobile-280:w-full text-black"
+                                    />
                 </div>
                 </div>
             </div>
             </Card>
-            <AddHourConfigurationTable classroom={classroom?.id} shift={shift} year={year} edit={true} />
+            <AddHourConfigurationTable classroom={classroom?.id} shift={shift} year={year} edit={true} onSuccess={() => {}} />
         </div>
     );
 };

@@ -5,10 +5,12 @@ import {
 import classes from "./AddSchedulePage.module.css";
 import Header from "../../Components/Header/Header";
 import AddScheduleForm from "../../Components/Form/AddScheduleForm/AddScheduleForm";
+import { useUserContext } from "../../Context/userContext";
 
 const AddSchedulePage = () => {
 
     const [isFormVisible, setIsFormVisible] = useState(false);
+    const { user } = useUserContext();
 
     useEffect(() => {
         document.title = "Sistema de Control de Asistencia - Escuela Masferrer";
@@ -21,7 +23,7 @@ const AddSchedulePage = () => {
     return (
         <div className={[classes["generalContainer"]]}>
             <header className={[classes["headerContainer"]]}>
-                <Header/>
+                <Header name={user?.name} role={user?.role.name} />
             </header>
 
             <div className={[classes["bodyContainer"]]}>

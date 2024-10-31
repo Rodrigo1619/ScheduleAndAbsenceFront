@@ -14,11 +14,11 @@ const TABLE_HEAD = ["", "ID", "NIE", "Nombre Completo", "Estado", "",""];
 
 const TABLEH_Class = ["", "ID", "NIE", "Nombre Completo", "Estado"];
 
-const TABLEH2_Class = ["", "ID", "IDEnrollment", "NIE", "Nombre Completo", "Estado", "Salón Actual", "Matriculado en"];
+const TABLEH2_Class = ["", "ID", "IDEnrollment", "NIE", "Nombre Completo", "Salón Actual", "Matriculado en"];
 
 const TABLE_KEYS = ["id", "nie", "fullName"];
 
-const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classroomName, updateSelectedStudents }) => {
+const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classroomName, updateSelectedStudents, populate }) => {
     const { token } = useUserContext();
     const [enrolledStudents, setEnrolledStudents] = useState([]);
     const [enrolledClassrooms, setEnrolledClassrooms] = useState([]);
@@ -45,17 +45,37 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
                     enrolledId: student.id,
                     nie: student.student.nie,
                     name: student.student.name,
-                    active: student.student.active,
                     actualClassroom: student.classroom.grade.name + " - " + student.classroom.shift.name
                      + " " + student.classroom.year,
                     enrolled: student.enrolledClassroom ? student.enrolledClassroom.grade.name + " - " + student.enrolledClassroom.shift.name
                         + " " + student.enrolledClassroom.year : "No matriculado"
                 })));
 
-                
+            notification.success({
+                message: 'Éxito',
+                description: 'Estudiantes obtenidos exitosamente',
+                placement: 'top',
+                duration: 2,
+            });
 
             } catch (error) {
                 console.log(`Hubo un error al obtener los estudiantes matriculados: ${error}`);
+                if (classroomName == undefined && !populate) {
+                    notification.info({
+                        message: 'Información',
+                        description: 'Haga una busqueda por salón de clase para obtener los estudiantes',
+                        placement: 'top',
+                        duration: 2,
+                    });
+                } else
+
+                notification.error({
+                    message: 'Error',
+                    description: 'No se encontraron estudiantes en los registros',
+                    placement: 'top',
+                    duration: 2,
+                });
+                setEnrolledStudents([]);
             }
             setTimeout(() => {
                 setLoading(false);
@@ -71,7 +91,6 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
         id: student.id,
         nie: student.nie,
         fullName: student.name,
-        active: student.active,
     })) : [];
 
 
@@ -80,7 +99,6 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
         enrolledId: student.enrolledId,
         nie: student.nie,
         fullName: student.name,
-        active: student.active,
         actualClassroom: student.actualClassroom,
         enrolled: student.enrolled || "No matriculado"
     })) : STUDENTSWC;

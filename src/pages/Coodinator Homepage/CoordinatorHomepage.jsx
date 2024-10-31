@@ -14,9 +14,12 @@ import QuickAccessButtons from "../../Components/QuickAccessButtons/QuickAccessB
 import SideBarNav from "../../Components/SideBarNav/SideBarNav";
 import StudentAbsencesCard from "../../Components/StudentAbsencesCard/StudentAbsencesCard";
 import Calendar from "../../Components/Calendar/Calendar";
+import { useUserContext } from "../../Context/userContext";
 
 
 const CoordinatorHomepage = () => {
+
+    const { user } = useUserContext();
 
     useEffect(() => {
         document.title = "Sistema de Control de Asistencia - Escuela Masferrer";
@@ -25,14 +28,11 @@ const CoordinatorHomepage = () => {
     return (
         <div className={[classes["generalContainer"]]}>
             <header className={[classes["headerContainer"]]}>
-                <Header name="Luis Morales" role="Coordinador" />
+                <Header name={user?.name} role={user?.role.name} />
             </header>
 
             <div className={[classes["bodyContainer"]]}>
                 <div className={[classes["allContentContainer"]]}>
-                    <div className={[classes["sideBarContainer"]]}>
-                    <SideBarNav />
-                    </div>
                     <div className={[classes["pageContentContainer"]]}>
                         <div className={[classes["SubtitleContainer"]]}>
                             <QuickAccessButtons title="Acciones Generales y de Clase:"

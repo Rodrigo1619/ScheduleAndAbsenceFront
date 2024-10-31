@@ -38,7 +38,10 @@ const Login = () => {
                 navigate('/ModeratorPage');
                 break;
             case "Coordinador":
-                navigate('/CoordinatorHomepage');
+                navigate('/AttendanceGeneralView');
+                break;
+            case "Asistencia":
+                navigate('/AttendanceRegisterView');
                 break;
             default:
                 navigate('/HomePage');
@@ -131,6 +134,13 @@ const Login = () => {
                     <h1 className={classes["systemsubText"]}>
                         Centro Escolar Católico "Alberto Masferrer"
                     </h1>
+
+                    <Typography className='text-xl font-normal mt-20 px-4'>
+                        Realizado por estudiantes de la carrera de Ingeniería Informática
+                    </Typography>
+                    <Typography className='font-bold text-lg px-4'>
+                        Universidad Centroamericana "José Simeón Cañas", 2024
+                    </Typography>
                 </div>
                 <div className={classes["logoFormContainer"]}>
 

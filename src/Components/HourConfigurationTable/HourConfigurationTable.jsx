@@ -2,20 +2,28 @@ import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'rea
 import classes from './HourConfigurationTable.module.css';
 import { CardBody, Input, Typography } from '@material-tailwind/react';
 
-const HourConfigurationTable = forwardRef(({ onTimeSlotsChange, initialTimeSlots, updatedTimeSlots }, ref) => {
-
-    const defaultSubjects = [
-        { id: 1, inicio: "07:00", fin: "07:40" },
-        { id: 2, inicio: "07:40", fin: "08:20" },
-        { id: 3, inicio: "08:20", fin: "08:50" },
-        { id: 4, inicio: "08:50", fin: "09:30" },
-        { id: 5, inicio: "09:30", fin: "10:10" },
-        { id: 6, inicio: "10:10", fin: "10:50" },
-        { id: 7, inicio: "10:50", fin: "11:05" },
-        { id: 8, inicio: "11:05", fin: "11:45" },
-        { id: 9, inicio: "11:45", fin: "12:20" },
-        { id: 10, inicio: "12:20", fin: "13:00" },
+const HourConfigurationTable = forwardRef(({ onTimeSlotsChange, initialTimeSlots, updatedTimeSlots, shift }, ref) => {
+    
+    // Si no se recibe un shift.name = vespertino se asignan los valores por defecto, sino se asignan los valores de la tarde
+    const defaultSubjects = shift.name === "Vespertino" ? [
+        { id: 1, inicio: "13:00", fin: "13:45" },
+        { id: 2, inicio: "13:45", fin: "14:30" },
+        { id: 3, inicio: "14:30", fin: "15:15" },
+        { id: 4, inicio: "15:15", fin: "16:00" },
+        { id: 5, inicio: "16:00", fin: "16:45" },
+        { id: 6, inicio: "16:45", fin: "17:30" },
+        { id: 7, inicio: "17:30", fin: "18:15" },
+    
+    ] : [
+        { id: 1, inicio: "07:00", fin: "07:45" },
+        { id: 2, inicio: "07:45", fin: "08:30" },
+        { id: 3, inicio: "08:30", fin: "09:15" },
+        { id: 4, inicio: "09:15", fin: "10:00" },
+        { id: 5, inicio: "10:00", fin: "10:45" },
+        { id: 6, inicio: "10:45", fin: "11:30" },
+        { id: 7, inicio: "11:30", fin: "12:15" },
     ];
+
 
     const [subjects, setSubjects] = useState(initialTimeSlots.length > 0 ? initialTimeSlots : defaultSubjects);
 

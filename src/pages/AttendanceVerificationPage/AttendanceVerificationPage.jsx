@@ -220,7 +220,7 @@ const AttendanceVerificationViewPage = () => {
 
         <div className={classes["generalContainer"]}>
             <header className={classes["headerContainer"]}>
-                <Header />
+                <Header name={user?.name} role={user?.role.name} />
             </header>
 
             <div className={classes["bodyContainer"]}>

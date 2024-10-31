@@ -4,7 +4,6 @@ import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import AdminPage from './pages/Admin Page/AdminPage';
-import NewClassroomPage from './pages/NewClassroomPage/NewClassroomPage';
 import DBDashboard from './pages/DB Dashboard/DB-Dashboard';
 import StudentPage from './pages/Student Page/StudentPage';
 import TeacherPage from './pages/Teacher Page/TeacherPage';
@@ -53,7 +52,6 @@ function App() {
             <Route path='/RolPage' element={<PrivateElement admittedRoles={["Administrador", "Moderador"]}> <RolPage/> </PrivateElement>}/>
             <Route path='/ShiftPage' element={<PrivateElement admittedRoles={["Administrador", "Moderador"]}> <ShiftPage/> </PrivateElement>}/>
             <Route path='/SubjectPage' element={<PrivateElement admittedRoles={["Administrador", "Moderador"]}> <SubjectPage/> </PrivateElement>}/>
-            <Route path="/AddClassroom" element={<NewClassroomPage />} />
             <Route path="/CodePage" element={<PrivateElement admittedRoles={["Administrador", "Moderador"]}> <CodePage /> </PrivateElement>} />
             <Route path="/HomePage" element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor"]}> <HomePage /> </PrivateElement>} />
             <Route path="/UserxSubjectPage" element={<PrivateElement admittedRoles={["Administrador", "Moderador"]}> <UserxSubjectPage /> </PrivateElement>} />
@@ -66,10 +64,10 @@ function App() {
             <Route path='/ClassroomSchedule' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Coordinador"]}> <ClassroomSchedulePage/> </PrivateElement>}/>
             <Route path='/TeacherSchedule' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor", "Coordinador"]}> <TeacherSchedulePage/> </PrivateElement>}/>
             <Route path='/HourConfiguration' element={<PrivateElement admittedRoles={["Administrador", "Moderador"]}> <AddHourConfigurationPage/> </PrivateElement>}/>
-            <Route path='/AttendanceGeneralView' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor"]}> <AttendanceGeneralViewPage/> </PrivateElement>}/>
-            <Route path='/AttendanceGlobalView' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor"]}> <AttendanceGlobalPage/> </PrivateElement>}/>
+            <Route path='/AttendanceGeneralView' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor", "Coordinador"]}> <AttendanceGeneralViewPage/> </PrivateElement>}/>
+            <Route path='/AttendanceGlobalView' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor", "Coordinador"]}> <AttendanceGlobalPage/> </PrivateElement>}/>
             <Route path='/AttendanceVerificationView' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor"]}> <AttendanceVerification/> </PrivateElement>}/>
-            <Route path='/AttendanceRegisterView' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor", "Estudiante", "Coordinador"]}> <AttendanceRegisterPage/> </PrivateElement>}/> 
+            <Route path='/AttendanceRegisterView' element={<PrivateElement admittedRoles={["Profesor", "Asistencia"]}> <AttendanceRegisterPage/> </PrivateElement>}/> 
             <Route path='/EnrollStudents' element={<PrivateElement admittedRoles={["Administrador", "Moderador"]}> <EnrollStudentsPage/> </PrivateElement>}/>
             <Route path="*" element={<Error404Page/>} />
         </Routes>

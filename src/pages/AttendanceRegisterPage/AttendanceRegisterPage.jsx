@@ -4,6 +4,7 @@ import { Button, Dialog, DialogHeader, DialogBody, DialogFooter } from "@materia
 import { Toaster, toast } from 'sonner';
 import { AiOutlineLoading } from "react-icons/ai";
 import { XCircleIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
+import { Grid } from 'react-loader-spinner';
 
 import classes from "./AttendanceRegisterPage.module.css";
 import Header from "../../Components/Header/Header";
@@ -21,6 +22,7 @@ const tableHeaders = [
 
 const AttendanceRegisterViewPage = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [loading, setLoading] = useState(true);
 
     const currentDate = new Date();
     const minDate = new Date();
@@ -79,7 +81,7 @@ const AttendanceRegisterViewPage = () => {
 
         const year = new Date().getFullYear();
 
-        if(user?.role.name === "Estudiante"){
+        if(user?.role.name === "Asistencia"){
             const fetchStudentList = async () => {
                 try {
 
@@ -100,6 +102,10 @@ const AttendanceRegisterViewPage = () => {
                     setClassroom(data.classroom);
                 } catch (error) {
                     console.log(`Hubo un error al obtener la lista de estudiantes: ${error}`);
+                } finally{
+                    setTimeout(() => {
+                        setLoading(false);
+                    }, 1500);
                 }
             };
 
@@ -143,6 +149,11 @@ const AttendanceRegisterViewPage = () => {
     
                 } catch (error) {
                     console.log(`Hubo un error al obtener la lista de estudiantes: ${error}`);
+                } finally{
+                    console.log("Cargando...");
+                    setTimeout(() => {
+                        setLoading(false);
+                    }, 1500);
                 }
             };
     
@@ -198,14 +209,20 @@ const AttendanceRegisterViewPage = () => {
     };
 
     return (
+        loading ?
+            <div className={[classes["loaderContainer"]]}>
+                <Grid type="Grid" color="#170973" height={80} width={80} visible={loading} />
+            </div>
+
+            :
+
         <div className={classes["generalContainer"]}>
             <header className={classes["headerContainer"]}>
-                <Header name="Luis Morales" role="Administrador" />
+                <Header name={user?.name} role={user?.role.name} />
             </header>
 
             <div className={classes["bodyContainer"]}>
                 <div className={classes["allContentContainer"]}>
-                    <SideBarNav />
                     <div className={classes["pageContentContainerCol"]}>
                         <Toaster />
                         <div className={classes["TitleContainer"]}>

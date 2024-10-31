@@ -8,7 +8,7 @@ import { classPeriodService } from '../../Services/classPeriodService';
 import { classroomConfigurationService } from '../../Services/classroomConfigurationService';
 import { notification } from 'antd';
 
-const AddHourConfigurationTable = ({ classroom, shift, year, edit }) => {
+const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) => {
     const [classroomSelected, setClassroomSelected] = useState("");
     const [shiftSelected, setShiftSelected] = useState("");
     const [yearSelected, setYearSelected] = useState("");
@@ -25,18 +25,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit }) => {
     const { token } = useUserContext();
     const hourConfigTableRef = useRef(null);
 
-    const defaultSubjects = [
-        { id: 1, inicio: "07:00", fin: "07:40", isHidden: false },
-        { id: 2, inicio: "07:40", fin: "08:20", isHidden: false },
-        { id: 3, inicio: "08:20", fin: "08:50", isHidden: false },
-        { id: 4, inicio: "08:50", fin: "09:30", isHidden: false },
-        { id: 5, inicio: "09:30", fin: "10:10", isHidden: false },
-        { id: 6, inicio: "10:10", fin: "10:50", isHidden: false },
-        { id: 7, inicio: "10:50", fin: "11:05", isHidden: false },
-        { id: 8, inicio: "11:05", fin: "11:45", isHidden: false },
-        { id: 9, inicio: "11:45", fin: "12:20", isHidden: false },
-        { id: 10, inicio: "12:20", fin: "13:00", isHidden: false },
-    ];
 
 
     useEffect(() => {
@@ -85,6 +73,29 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit }) => {
         console.log("classrooms" , classroom);
     }
     , [classroom]);
+    
+    
+    const defaultSubjects = shift?.name === "Vespertino" ? [
+        { id: 1, inicio: "13:00", fin: "13:45", isHidden: false },
+        { id: 2, inicio: "13:45", fin: "14:30", isHidden: false },
+        { id: 3, inicio: "14:30", fin: "15:15", isHidden: false },
+        { id: 4, inicio: "15:15", fin: "16:00", isHidden: false },
+        { id: 5, inicio: "16:00", fin: "16:45", isHidden: false },
+        { id: 6, inicio: "16:45", fin: "17:30", isHidden: false },
+        { id: 7, inicio: "17:30", fin: "18:15", isHidden: false },
+    
+    ] : [
+        { id: 1, inicio: "07:00", fin: "07:40", isHidden: false },
+        { id: 2, inicio: "07:40", fin: "08:20", isHidden: false },
+        { id: 3, inicio: "08:20", fin: "08:50", isHidden: false },
+        { id: 4, inicio: "08:50", fin: "09:30", isHidden: false },
+        { id: 5, inicio: "09:30", fin: "10:10", isHidden: false },
+        { id: 6, inicio: "10:10", fin: "10:50", isHidden: false },
+        { id: 7, inicio: "10:50", fin: "11:05", isHidden: false },
+        { id: 8, inicio: "11:05", fin: "11:45", isHidden: false },
+        { id: 9, inicio: "11:45", fin: "12:20", isHidden: false },
+        { id: 10, inicio: "12:20", fin: "13:00", isHidden: false },
+    ];
 
     const fetchClassroomConfiguration = async () => {
         try {
@@ -122,6 +133,7 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit }) => {
                     fin: config.hourEnd
                 })));
             } else {
+                console.log("No classroom configuration found");
                 // Use defaultSubjects if no classroom configuration is found
                 const initialSchedule = defaultSubjects.map((subject, index) => ({
                     hourStart: subject.inicio,
@@ -139,6 +151,16 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit }) => {
                 })));
             }
         } catch (error) {
+            if (edit) {
+                notification.warning({
+                    message: 'Advertencia',
+                    description: `No se encontró una configuración de horas para el salón seleccionado. Cree una nueva configuración para este salón.`,
+                    placement: 'top',
+                    duration: 4,
+                });
+                setSchedule([]);
+                return; // Salir de la función para no continuar con la creación
+            }
             console.log("Error fetching classroom configuration: ", error);
             // Use defaultSubjects in case of error
             const initialSchedule = defaultSubjects.map((subject, index) => ({
@@ -161,12 +183,17 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit }) => {
 
 
 
+    useEffect(() => {
+        if (edit && classroom && shift && year) {
+            fetchClassroomConfiguration();
+        }
+    }, [classroom, shift, year, token]);
 
     useEffect(() => {
         if (classroom && shift && year) {
             fetchClassroomConfiguration();
         }
-    }, [classroom, shift, year, token]);
+    }, [shift, year, token]);
 
     useEffect(() => {
         if (classroom && shift && year) {
@@ -317,7 +344,19 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit }) => {
         return; // Salir de la función para no continuar con la creación
     }
 
-}
+}   
+        // Si no se tiene ningun recreo en la configuracion no permitir guardar
+
+        if (!schedule.some(block => block.type === "Recreo")) {
+            notification.warning({
+                message: 'Advertencia',
+                description: `Debe haber
+                al menos un bloque de tipo "Recreo" en la configuración.`,
+                placement: 'top',
+                duration: 4,
+            });
+            return;
+        }
 
     
         deletedBlocks.forEach((block) => {
@@ -433,7 +472,8 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit }) => {
 
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-    
+
+        
     
         const scheduleToSaveDelete = scheduleToDelete.map(block => block.id);
         console.log("Schedule to save delete: ", scheduleToSaveDelete);
@@ -459,7 +499,7 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit }) => {
                     duration: 2,
                 });
             }
-            await delay(3000); // Wait for 3 seconds
+            await delay(1000);
         } else if (scheduleToDelete.length > 1) {
             try {
                 const response = await classroomConfigurationService.deleteClassroomConfigurations(token, scheduleToSaveDelete);
@@ -481,7 +521,7 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit }) => {
                     duration: 2,
                 });
             }
-            await delay(3000); // Wait for 3 seconds
+            await delay(1000); 
         }
 
         if (sortedScheduleToSaveUpdate.length > 0) {
@@ -504,10 +544,63 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit }) => {
                     duration: 2,
                 });
             }
-            await delay(3000); // Wait for 3 seconds
+            await delay(1000); 
 
         }
+           // Mandar los que tienen id null a los que se "actualizaran" pero en realidad se crearan en la api
+           const scheduleToSaveUpdateCreate = schedule.map((block, index) => {
+            const idClassPeriod = block.type === "Recreo" ? periodSlots[8]?.id : periodSlots[realIndex]?.id;
+            if (block.type !== "Recreo") {
+                realIndex++; // Increment real index only for non-"Recreo" blocks
+            }
+
+            const initialBlock = initialSchedule[index] || {};
+            if (initialBlock && block.id === null) {
+                return {
+                    idClassPeriod,
+                    hourStart: block.hourStart,
+                    hourEnd: block.hourEnd,
+                };
+            } else {
+                return null;
+            }
+        }).filter(item => item !== null); // Filtrar los elementos nulos
+
+        const scheduleToSave = {
+            classConfigurations: [
+                ...scheduleToSaveUpdateCreate
+            ],
+            classrooms: [
+                classroomSelected
+            ]
+
         }
+
+        console.log("Schedule to update create save: ", scheduleToSave);
+
+        if (scheduleToSaveUpdateCreate.length > 0) {
+            try {
+                const response = await classroomConfigurationService.saveClassroomConfiguration(token, scheduleToSave);
+                console.log("Schedule updated: ", response);
+                notification.success({
+                    message: 'Éxito',
+                    description: 'La configuración de horas ha sido actualizada exitosamente',
+                    placement: 'top',
+                    duration: 3,
+                });
+                setSuccess(true);
+            } catch (error) {
+                console.log("Error updating schedule: ", error);
+                notification.error({
+                    message: 'Error',
+                    description: 'Hubo un error al actualizar la configuración de horas',
+                    placement: 'top',
+                    duration: 2,
+                });
+            }
+            await delay(1000); 
+        }
+    }
     
         if (success) {
             fetchClassroomConfiguration();
@@ -520,6 +613,8 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit }) => {
                 duration: 3,
             });
         }
+
+        onSuccess();
     };
 
 
@@ -585,7 +680,7 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit }) => {
                             ))}
                         </tbody>
                     </table>
-                    <HourConfigurationTable ref={hourConfigTableRef} onTimeSlotsChange={handleTimeSlotsChange} initialTimeSlots={timeSlots} updatedTimeSlots={timeSlots} />
+                    <HourConfigurationTable ref={hourConfigTableRef} onTimeSlotsChange={handleTimeSlotsChange} initialTimeSlots={timeSlots} updatedTimeSlots={timeSlots} shift={shiftSelected} />
                 </div>
                 <div className="flex flex-row justify-end items-center mx-auto">
                     <Button

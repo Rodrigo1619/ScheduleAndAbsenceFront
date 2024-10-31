@@ -51,7 +51,7 @@ const UserxSubjectForm = ({ userxsubject, editStatus, onSuccess }) => {
         e.preventDefault();
 
         if (!selectedSubject || !selectedUser) {
-            toast.error('Please select both subject and user', {
+            toast.error('Por favor, elija una materia y un profesor', {
                 duration: 2000,
                 icon: <XCircleIcon style={{ color: "red" }} />,
             });

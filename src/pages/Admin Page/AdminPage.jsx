@@ -27,19 +27,25 @@ import SideBarNav from "../../Components/SideBarNav/SideBarNav";
 
 const AdminPage = () => {
 
+    const { token, user } = useUserContext();
+
     useEffect(() => {
         document.title = "Sistema de Control de Asistencia - Escuela Masferrer";
     }, []);
 
+    useEffect(() => {
+        console.log("User: ", user);
+    }
+        , [user]);
+
     return (
         <div className={[classes["generalContainer"]]}>
             <header className={[classes["headerContainer"]]}>
-                <Header name="Luis Morales" role="Administrador" />
+                <Header name={user?.name} role={user?.role.name} />
             </header>
 
             <div className={[classes["bodyContainer"]]}>
                 <div className={[classes["allContentContainer"]]}>
-                    <SideBarNav role="Administrador"/>
                     <div className={[classes["pageContentContainer"]]}>
                         <div className={[classes["TitleContainer"]]}>
                             <Typography className="font-masferrer text-2xl font-light my-4
@@ -56,7 +62,7 @@ const AdminPage = () => {
                         <div className={[classes["SubtitleContainer"]]}>
                             <QuickAccessButtons title="Acciones profesores:"
                                 iconsvg1={userPlusIcon} description1="Registrar un nuevo profesor" link1="/TeacherPage"
-                                iconsvg2={filePlusIcon} description2="Asignar materia y turno a un profesor" link2="/UserXSubjectPage"
+                                iconsvg2={filePlusIcon} description2="Asignar materia a profesor" link2="/UserXSubjectPage"
                                 iconsvg3={calendarIcon} description3="Asignar horario a salon de clase" link3="/AddSchedule"/>
                         </div>
                         <div className={[classes["SubtitleContainer"]]}>

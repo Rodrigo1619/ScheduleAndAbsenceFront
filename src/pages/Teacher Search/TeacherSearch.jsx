@@ -59,7 +59,7 @@ const gradesListDemo = [
 
 const TeacherSearch = () => {
 
-    const { token } = useUserContext();
+    const { token, user } = useUserContext();
 
     const [teacher, setTeacher] = useState(null);
     const [teachersList, setTeachersList] = useState([]);
@@ -327,12 +327,11 @@ const TeacherSearch = () => {
     return(
         <div className={[classes["generalContainer"]]}>
             <header className={classes["headerContainer"]}>
-                <Header name="Luis Morales" role="Administrador" />
+                <Header name={user?.name} role={user?.role.name} />
             </header>
 
             <div className={classes["bodyContainer"]}>
                 <div className={classes["allContentContainer"]}>
-                    <SideBarNav />
                     <div className={classes["pageContentContainerCol"]}>
                         <div className={[classes["TitleContainer"]]}>
                             <Typography className="font-masferrer text-2xl font-light my-4
