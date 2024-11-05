@@ -6,6 +6,7 @@ import { useUserContext } from '../../../Context/userContext';
 import { shiftService } from '../../../Services/shiftService';
 import ClassroomScheduleTable from '../../ClassroomScheduleTable/ClassroomScheduleTable.jsx';
 import { classroomService } from '../../../Services/classroomService.js';
+import SelectSearch from "react-select";
 
 const SelectClassroomScheduleForm = () => {
 
@@ -56,8 +57,8 @@ const SelectClassroomScheduleForm = () => {
         
 
 
-    const handleSelectClassroomChange = (value) => {
-        const classroom = classroomsList.find(classroom => classroom.id === value);
+    const handleSelectClassroomChange = (e) => {
+        const classroom = classroomsList.find(classroom => classroom.id === e.value);
         setClassroom(classroom);
     }
 
@@ -93,19 +94,18 @@ const SelectClassroomScheduleForm = () => {
                     className="Mobile-280:w-full text-black border-2 text-center mx-auto border-black border-opacity-20" placeholder="Año" />
                 </div>
                 <div className={classes["input-container"]}>
-                    <label className={classes["label"]}>Salón</label>
-                   <AsyncSelect
-                        value={classroom ? classroom.id : ''}
-                        onChange={handleSelectClassroomChange}
-                        className="bg-white Mobile-280:w-full"
-                    >
-                        {classroomsList?.map((classroom) => (
-                            <Option key={classroom.id} value={classroom.id}>
-                                {classroom.grade.name}
-                            </Option>
-                        ))}
-                    </AsyncSelect>
-                </div>
+                <label className={classes["label"]}>Salón de clases:</label>
+                <SelectSearch
+                                        value={classroom ? { value: classroom.id, label: classroom.grade.name } : '' }
+                                        options={classroomsList?.map((selectedClassroom) => ({
+                                            value: selectedClassroom.id,
+                                            label: selectedClassroom.grade.name,
+                                        }))}
+                                        onChange={handleSelectClassroomChange}
+                                        placeholder="Seleccione un salon de clases"
+                                        className=" Mobile-280:w-full text-black"
+                                    />
+            </div>
                 </div>
             </div>
             </Card>

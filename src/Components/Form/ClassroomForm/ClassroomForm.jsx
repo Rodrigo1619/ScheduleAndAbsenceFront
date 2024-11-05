@@ -57,11 +57,9 @@ const ClassroomForm = ({ classroom, editStatus = false, onSuccess }) => {
                 try {
                     const teachers = await userService.getAllTeachersAdmin(token);
                     const shifts = await shiftService.getAllShifts(token);
-                    const grades = await gradeService.getAllGrades(token);
 
                     setTeachersList(teachers.filter(teacher => teacher.role.name === "Profesor"));
                     setShiftsList(shifts);
-                    setGradesList(grades);
                     setLoading(false);
 
                     if (editStatus && classroom) {
@@ -79,17 +77,26 @@ const ClassroomForm = ({ classroom, editStatus = false, onSuccess }) => {
         fetchData();
     }, [token, editStatus, classroom]);
 
+    useEffect(() => {
+        const fetchGrades = async () => {
+            try {
+                const grades = await gradeService.getGradesByShift(token, shift?.id);
+                setGradesList(grades);
+            } catch (error) {
+                console.log("Error fetching grades: ", error);
+            }
+        };
+
+        fetchGrades();
+    }, [shift]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Orientador", teacher);
-        console.log("Grado", grade);
-        console.log("Turno", shift);
-        console.log("Año", year);
+
         try {
             
             if( !teacher ){ throw new Error('Por favor, seleccione un orientador.'); }
             if( !grade ){ throw new Error('Por favor, seleccione un grado.'); }
-            if( !shift ){ throw new Error('Por favor, seleccione un turno.'); }
             if( year === "" ){ throw new Error('Por favor, ingrese el año.'); }
 
         } catch (error) {
@@ -105,7 +112,6 @@ const ClassroomForm = ({ classroom, editStatus = false, onSuccess }) => {
                 const data = await classroomService.updateClassroom(classroom.id, {
                     year: year,
                     idGrade: grade.id,
-                    idShift: shift.id,
                     idTeacher: teacher.id
                 }, token);
                     
@@ -124,7 +130,6 @@ const ClassroomForm = ({ classroom, editStatus = false, onSuccess }) => {
                     const data = await classroomService.createClassroom({
                         year: year,
                         idGrade: grade.id,
-                        idShift: shift.id,
                         idTeacher: teacher.id
                     }, token);
 
@@ -158,9 +163,8 @@ const ClassroomForm = ({ classroom, editStatus = false, onSuccess }) => {
             {editStatus && (
                 <div className={classes["classroomInfoContainer"]}>
                     <Typography className='text-white font-masferrerTitle font-normal text-lg text-center my-2'>EDITANDO ACTUALMENTE:</Typography>
-                    <Typography className='text-white font-masferrerTitle font-normal text-lg'>Grado: {selectedGrade}</Typography>
+                    <Typography className='text-white font-masferrerTitle font-normal text-lg'>Grado: {selectedGrade} - Turno : {selectedShift}</Typography>
                     <Typography className='text-white font-masferrerTitle font-normal text-lg'>Orientador: {selectedTeacher}</Typography>
-                    <Typography className='text-white font-masferrerTitle font-normal text-lg'>Turno: {selectedShift}</Typography>
                     <Typography className='text-white font-masferrerTitle font-normal text-lg'>Año: {selectedYear}</Typography>
                 </div>
             )}
@@ -177,18 +181,6 @@ const ClassroomForm = ({ classroom, editStatus = false, onSuccess }) => {
                 />
             </div>
             <div className={classes["input-container"]}>
-                <label className={classes["label"]}>Grado:</label>
-                <SelectSearch
-                    options={gradesList.map((grade) => ({
-                            value: grade.id,
-                            label: grade.name,
-                        }))}
-                    onChange={handleSelectGradeChange}
-                    placeholder="Seleccione un salon"
-                    className=" Mobile-280:w-full text-black"
-                />
-            </div>
-            <div className={classes["input-container"]}>
                 <label className={classes["label"]}>Turno:</label>
                 <AsyncSelect
                     value={shift ? shift.id : ''}
@@ -201,6 +193,18 @@ const ClassroomForm = ({ classroom, editStatus = false, onSuccess }) => {
                         </Option>
                     ))}
                 </AsyncSelect>
+            </div>
+            <div className={classes["input-container"]}>
+                <label className={classes["label"]}>Grado:</label>
+                <SelectSearch
+                    options={gradesList.map((grade) => ({
+                            value: grade.id,
+                            label: grade.name,
+                        }))}
+                    onChange={handleSelectGradeChange}
+                    placeholder="Seleccione un salon"
+                    className=" Mobile-280:w-full text-black"
+                />
             </div>
             <div className={classes["input-container"]}>
                 <label className={classes["label"]}>Año:</label>

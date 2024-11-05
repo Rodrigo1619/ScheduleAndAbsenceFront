@@ -73,22 +73,34 @@ const TableRegisterComponent = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {paginatedData.map((row, index) => (
-                            <tr key={index}>
-                                <td className="p-4">
-                                    <Typography variant="small" color="blue-gray" className="font-normal">
-                                        {row.name}
-                                    </Typography>
-                                </td>
-                                <td className="p-4">
-                                    <Button
-                                        color={row.absent === "Si" ? "red" : "green"}
-                                        onClick={() => handleStatusChange(index, row.absent === "Si" ? "No" : "Si")}>
-                                        {row.absent}
-                                    </Button>
-                                </td>
-                            </tr>
-                        ))}
+                        {
+                            Array.isArray(paginatedData) && paginatedData.length === 0 ? (
+                                <tr>
+                                    <td colSpan={tableHeaders.length} className="p-4 text-center">
+                                        <Typography variant="small" color="blue-gray" className="font-normal">
+                                            No hay datos para mostrar
+                                        </Typography>
+                                    </td>
+                                </tr>
+                            ) : (
+                                paginatedData.map((row, index) => (
+                                    <tr key={index}>
+                                        <td className="p-4">
+                                            <Typography variant="small" color="blue-gray" className="font-normal">
+                                                {row.name}
+                                            </Typography>
+                                        </td>
+                                        <td className="p-4">
+                                            <Button
+                                                color={row.absent === "Si" ? "red" : "green"}
+                                                onClick={() => handleStatusChange(index, row.absent === "Si" ? "No" : "Si")}>
+                                                {row.absent}
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )
+                        }
                     </tbody>
                 </table>
             </CardBody>

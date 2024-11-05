@@ -341,7 +341,7 @@ const TableVerificationComponent = ({
                             </Typography>
                         )}
                         {isDownload && (
-                            <Typography as="a" href="#" className={styles["save-btn"]} onClick={handleSaveAbsenceChanges}>
+                            <Typography as="a" href="#" className="bg-green-500 text-white font-masferrer font-medium rounded-md px-2 py-1" onClick={handleSaveAbsenceChanges}>
                                 Guardar cambios
                             </Typography>
                         )}
@@ -371,56 +371,68 @@ const TableVerificationComponent = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {paginatedData.map((row, index) => (
-                            <tr key={index} className={selectedRows.includes(row) ? styles["selected-row"] : ""}>
-                                <td className="p-4">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedRows.includes(row)}
-                                        onChange={() => handleCheckboxChange(row)}
-                                    />
-                                </td>
-                                <td className="p-4">
-                                    <Typography variant="small" color="blue-gray" className="font-normal">
-                                        {generalData.classroom.grade.section}
-                                    </Typography>
-                                </td>
-                                <td className="p-4">
-                                    <Typography variant="small" color="blue-gray" className="font-normal">
-                                        {generalData.classroom.grade.idGoverment}
-                                    </Typography>
-                                </td>
-                                <td className="p-4">
-                                    <Typography variant="small" color="blue-gray" className="font-normal">
-                                        {row.date}
-                                    </Typography>
-                                </td>
-                                <td className="p-4">
-                                    <Typography variant="small" color="blue-gray" className="font-normal">
-                                        {row.student.nie}
-                                    </Typography>
-                                </td>
-                                <td className="p-4">
-                                    <Typography variant="small" color="blue-gray" className="font-normal">
-                                        {row.student.name}
-                                    </Typography>
-                                </td>
-                                <td className="p-4">                                    
-                                    <select
-                                        onChange={(e) => handleSelectCodeChange(index, e.target)}>
-                                            <option value={row.code.description}>{row.code.description}</option>
-                                            {codeList.map((codes) => <option key={codes.id} value={codes.id}>{codes.description}</option>)}
-                                    </select>
-                                </td>
-                                <td className="p-4">
-                                    <input
-                                        type="text"
-                                        value={row.comments || ""}
-                                        onChange={(e) => handleObservationChange(index, e.target.value)}
-                                    />
-                                </td>
-                            </tr>
-                        ))}
+                        {
+                            Array.isArray(paginatedData) && paginatedData.length === 0 ? (
+                                <tr>
+                                    <td colSpan={tableHeaders.length} className="p-4 text-center">
+                                        <Typography variant="small" color="blue-gray" className="font-normal">
+                                            No hay datos para mostrar
+                                        </Typography>
+                                    </td>
+                                </tr>
+                            ) : (
+                                paginatedData.map((row, index) => (
+                                    <tr key={index} className={selectedRows.includes(row) ? styles["selected-row"] : ""}>
+                                        <td className="p-4">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedRows.includes(row)}
+                                                onChange={() => handleCheckboxChange(row)}
+                                            />
+                                        </td>
+                                        <td className="p-4">
+                                            <Typography variant="small" color="blue-gray" className="font-normal">
+                                                {generalData.classroom.grade.section}
+                                            </Typography>
+                                        </td>
+                                        <td className="p-4">
+                                            <Typography variant="small" color="blue-gray" className="font-normal">
+                                                {generalData.classroom.grade.idGoverment}
+                                            </Typography>
+                                        </td>
+                                        <td className="p-4">
+                                            <Typography variant="small" color="blue-gray" className="font-normal">
+                                                {row.date}
+                                            </Typography>
+                                        </td>
+                                        <td className="p-4">
+                                            <Typography variant="small" color="blue-gray" className="font-normal">
+                                                {row.student.nie}
+                                            </Typography>
+                                        </td>
+                                        <td className="p-4">
+                                            <Typography variant="small" color="blue-gray" className="font-normal">
+                                                {row.student.name}
+                                            </Typography>
+                                        </td>
+                                        <td className="p-4">                                    
+                                            <select
+                                                onChange={(e) => handleSelectCodeChange(index, e.target)}>
+                                                    <option value={row.code.description}>{row.code.description}</option>
+                                                    {codeList.map((codes) => <option key={codes.id} value={codes.id}>{codes.description}</option>)}
+                                            </select>
+                                        </td>
+                                        <td className="p-4">
+                                            <input
+                                                type="text"
+                                                value={row.comments || ""}
+                                                onChange={(e) => handleObservationChange(index, e.target.value)}
+                                            />
+                                        </td>
+                                    </tr>
+                                ))
+                            )
+                        }
                     </tbody>
                 </table>
             </CardBody>

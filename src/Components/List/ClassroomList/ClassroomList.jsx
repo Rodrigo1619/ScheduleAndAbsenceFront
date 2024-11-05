@@ -25,7 +25,7 @@ const ClassroomList = ({ classrooms = [], fetchClassrooms }) => {
         id: classroom.id,
         year: classroom.year,
         grade: classroom.grade?.name ?? "N/A",
-        shift: classroom.shift?.name ?? "N/A", 
+        shift: classroom.grade?.shift.name ?? "N/A", 
         teacher: classroom.homeroomTeacher?.name ?? "N/A"
     })) : [];
 

@@ -29,7 +29,9 @@ export const classroomConfigurationService = {
             },
         });
         
-        if (!response.ok) {
+        if(response.status === 204){
+            return null;
+        } else if (!response.ok) {
             throw new Error('Error: ' + response.status);
         }
 

@@ -9,7 +9,7 @@ import { useUserContext } from '../../../Context/userContext.jsx';
 import { gradeService } from '../../../Services/gradeService.js';
 import GradeForm from '../../Form/GradeForm/GradeForm.jsx';
 
-const TABLE_HEAD = [" ","ID", "Nombre", "Sección", "ID Gubernamental",  " ", " "];
+const TABLE_HEAD = [" ","ID", "Nombre", "Sección", "ID Gubernamental", "Turno", " ", " "];
 
 const GradeList = ({ grades = [], fetchGrades }) => {
 
@@ -142,7 +142,7 @@ const GradeList = ({ grades = [], fetchGrades }) => {
                 selectedRows={selectedRows}
                 setSelectedRows={setSelectedRows} // Asegúrate de pasar setSelectedRows aquí
                 tableHeaders={TABLE_HEAD}
-                tableKeys={["id", "name", "section", "idGoverment"]}
+                tableKeys={["id", "name", "section", "idGoverment", "shift.name"]}
                 isDownload={true}
                 allRows={visibleGrades}
                 handleSelectAllChange={handleSelectAllChange} // Pasar handleSelectAllChange aquí

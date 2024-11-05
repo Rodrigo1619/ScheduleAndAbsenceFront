@@ -62,6 +62,8 @@ function ProfileMenu() {
           const splitName = user.name.split(" ");
 
           switch (splitName.length) {
+            case 1:
+              return splitName[0];
             case 3:
               return `${splitName[0]} ${splitName[1]} ${splitName[2]}`;
             case 4:
@@ -175,11 +177,6 @@ const navListItemsAdmin = [
     label: "Revisar asistencia",
     icon: UsersIcon,
     path: "/AttendanceGeneralView"
-  },
-  {
-    label: "Reportar inasistencia",
-    icon: ClipboardDocumentListIcon,
-    path: "/AttendanceRegisterView"
   },
   {
     label: "Buscar maestro",
@@ -330,14 +327,9 @@ const navListItemsCoordinator = [
 
 const navListItemsDefault = [
   {
-    label: "Inicio",
-    icon: HomeIcon,
-    path: "/HomePage"
-  },
-  {
-    label: "Reportar inasistencia",
-    icon: ClipboardDocumentListIcon,
-    path: "/AttendanceRegisterView"
+    label: "Revisar asistencia general",
+    icon: UsersIcon,
+    path: "/AttendanceGeneralView"
   },
 ];
 

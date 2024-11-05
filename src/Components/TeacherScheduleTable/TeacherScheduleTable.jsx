@@ -167,14 +167,15 @@ const TeacherScheduleTable = ({ shiftList, year, updateShift }) => {
                     return;
                 }
                 const response = await scheduleService.getScheduleByTokenShiftYear(token, shiftSelected.id, year);
+                console.log("Response: ", response);
                 if (response && Array.isArray(response)){
                     
                     // Toma los schedules que corresponden al shift y año seleccionado, necesito mapear ya que vienen varios dentro del objeto
                     const teacherSchedule = response
                     console.log("teacherSchedule: ", teacherSchedule);
                     updateSchedule(teacherSchedule, initialSchedule);
-                } else {
-                    notification.info({ message: "No se encontró un horario para el profesor" });
+                } else if (response === null) {
+                    notification.info({ message: "No se puede obtener el horario. No tiene ninguna clase asignada en el turno: " + shiftSelected.name });
                     setSchedule(initialSchedule);
                 }
             } catch (error) {

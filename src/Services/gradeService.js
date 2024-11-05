@@ -65,7 +65,8 @@ export const gradeService = {
                 body: JSON.stringify({
                     name: grade.name,
                     idGoverment: grade.idGoverment,
-                    section: grade.section
+                    section: grade.section,
+                    idShift: grade.idShift
                 })
             });
 
@@ -102,7 +103,8 @@ export const gradeService = {
                 body: JSON.stringify({
                     name: grade.name,
                     idGoverment: grade.idGoverment,
-                    section: grade.section
+                    section: grade.section,
+                    idShift: grade.idShift
                 }),
                 headers: {
                     'Content-Type': 'application/json',
@@ -118,6 +120,28 @@ export const gradeService = {
 
         } catch (error) {
             console.log(error);
+            throw error;
+        }
+    },
+    getGradesByShift: async (token, shiftId) => {
+        try {
+            const response = await fetch(`${BASE_URL}/grade/by?shiftId=${shiftId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+            });
+            
+            if (!response.ok) {
+                throw new Error('Error getting grades: ' + response.status);
+            }
+    
+            const data = await response.json()
+    
+            return data
+        } catch (error) {
+            console.log(`Hubo un error al obtener los grados: ${error}`);
             throw error;
         }
     },

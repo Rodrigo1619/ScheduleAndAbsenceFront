@@ -76,7 +76,7 @@ export const classroomService = {
     },
 
     getByParameters: async (token, year, gradeId, shiftId) => {
-        const response = await fetch(`${BASE_URL}/classroom/by-parameters/${gradeId}/${shiftId}/${year}`, {
+        const response = await fetch(`${BASE_URL}/classroom/by?gradeId=${gradeId}&year=${year}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -95,7 +95,7 @@ export const classroomService = {
 
     getByUserAndYear: async (token, year) => {
         try {
-            const response = await fetch(`${BASE_URL}/classroom/by-user-and-year?year=${year}`, {
+            const response = await fetch(`${BASE_URL}/classroom/by-teacher?year=${year}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -126,7 +126,9 @@ export const classroomService = {
                 },
             });
             
-            if (!response.ok) {
+            if(response.status === 204){
+                return [];
+            }else if (!response.ok) {
                 throw new Error(response.status);
             }
     
@@ -190,7 +192,6 @@ export const classroomService = {
                 body: JSON.stringify({
                     year: classroom.year,
                     idGrade: classroom.idGrade,
-                    idShift: classroom.idShift,
                     idTeacher: classroom.idTeacher,
                 }),
             })
@@ -215,7 +216,6 @@ export const classroomService = {
                 body: JSON.stringify({
                     year: classroom.year,
                     idGrade: classroom.idGrade,
-                    idShift: classroom.idShift,
                     idTeacher: classroom.idTeacher,
                 }),
                 headers: {
@@ -239,7 +239,7 @@ export const classroomService = {
     getClassroomsByUserAndYear: async (token, year) => {
         try {
 
-            const response = await fetch(`${BASE_URL}/classroom/by-user-and-year?year=${year}`, {
+            const response = await fetch(`${BASE_URL}/classroom/by-teacher?year=${year}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -261,7 +261,7 @@ export const classroomService = {
     
     getClassroomsByUserYearAndShift: async (token, year, shift) => {
         try {
-            const response = await fetch(`${BASE_URL}/classroom/by-user-and-year-and-shift?year=${year}&shift=${shift}`, {
+            const response = await fetch(`${BASE_URL}/classroom/by-teacher?year=${year}&shift=${shift}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -281,8 +281,8 @@ export const classroomService = {
         }
     },
 
-    getEnrollmentsByGradeandShift: async (token, grade, shift, year) => {
-        const response = await fetch(`${BASE_URL}/classroom/enrollments?idGrade=${grade}&idShift=${shift}&year=${year}`, {
+    getEnrollmentsByClassroom: async (token, classroomID) => {
+        const response = await fetch(`${BASE_URL}/classroom/${classroomID}/enrollments`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

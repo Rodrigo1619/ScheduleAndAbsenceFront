@@ -6,7 +6,6 @@ import {
     Typography,
     Select,
     Option,
-    Button,
 
 } from "@material-tailwind/react";
 
@@ -15,7 +14,6 @@ import { notification } from 'antd';
 
 import classes from "./TeacherSearch.module.css";
 import Header from "../../Components/Header/Header";
-import SideBarNav from "../../Components/SideBarNav/SideBarNav";
 import NextSubjectCard from "../../Components/NextClassCard/NextSubjectCard";
 import AsyncSelect from '../../Components/AsyncSelect/AsyncSelect';
 
@@ -25,37 +23,14 @@ import { classroomService } from "../../Services/classroomService";
 import { scheduleService } from "../../Services/scheduleService";
 import { shiftService } from "../../Services/shiftService";
 import { classPeriodService } from "../../Services/classPeriodService";
-import { set } from "lodash";
-
-const HoursListDemo = [
-    { start: "07:00:00", name: "1er Hora"},
-    { start: "07:40:00", name: "2da Hora"},
-    { start: "08:50:00", name: "3ra Hora"},
-    { start: "09:30:00", name: "4ta Hora"},
-    { start: "10:10:00", name: "5ta Hora"},
-    { start: "11:05:00", name: "6ta Hora"},
-    { start: "11:45:00", name: "7ma Hora"},
-];
 
 const DayList = [
-    { name: "Lunes"},
-    { name: "Martes"},
-    { name: "Miercoles"},
-    { name: "Jueves"},
-    { name: "Viernes"},
+    { label: "Lunes", value: "Lunes"},
+    { label: "Martes", value: "Martes"},
+    { label: "Miercoles", value: "Miercoles"},
+    { label: "Jueves", value: "Jueves"},
+    { label: "Viernes", value: "Viernes"},
 ];
-
-const teachersListDemo = [
-    { id: 1, name: "Brandon Moisa" },
-    { id: 2, name: "Wilmer Pacuso" },
-    { id: 3, name: "Kevin Zepeda" },
-]; 
-
-const gradesListDemo = [
-    { id: 1, name: "1° General A" },
-    { id: 2, name: "2° General A" },
-    { id: 3, name: "3° General A" },
-]; 
 
 const TeacherSearch = () => {
 
@@ -71,8 +46,9 @@ const TeacherSearch = () => {
     const [year, setYear] = useState(null);
     
     const selectedHourRef = useRef({id: "", name: ""});
-    const selectedDayRef = useRef(null);
-    const selectedShiftRef = useRef({id: "", name: ""});
+    const [hour, setHour] = useState(null);
+    const [day, setDay] = useState(null);
+
 
     const [cardTeacher, setCardTeacher] = useState(null);
     const [cardSubject, setCardSubject] = useState(null);
@@ -120,7 +96,10 @@ const TeacherSearch = () => {
             try {
                 const data = await classPeriodService.getClassPeriods(token);
                 console.log("Horas ", data);
-                setClassPeriod(data.splice(0, 8));
+
+                const formattedData = data.splice(0,8);
+
+                setClassPeriod(formattedData);
             } catch (error) {
                 console.log("Hubo un error al obtener los periodos de clases" + error);
             }
@@ -150,18 +129,22 @@ const TeacherSearch = () => {
         fetchClassrooms();
     }, [shift, year, token]);
 
-    const handleSelectChange = (e) => {
+    const handleSelectHourChange = (e) => {
+        // se debe dar click 2 veces para mostrar el valor en el select, corregirlo
+
         const selectedHour = classPeriod.find(hour => hour.id === e);
         selectedHourRef.current = selectedHour;
+        setHour(selectedHour);
 
-        console.log("La hora de clase cambio a: " + selectedHourRef.current.name);
+        console.log("La hora de clase seleccionada es: ", selectedHour.name);
     };
 
     const handleSelectDayChange = (e) => {
-        const selectedDay = DayList.find(day => day.name === e);
-        selectedDayRef.current = selectedDay;
+        console.log("Dia de clase seleccionado: ", e);
+        const selectedDay = DayList.find(day => day.value === e);
+        setDay(selectedDay);
 
-        console.log("El dia de clase cambio a: " + selectedDayRef.current.name);
+        console.log("El dia de clase cambio a: ", selectedDay.label);
     };
 
     const handleSelectTeacherChange = (e) => {
@@ -196,22 +179,23 @@ const TeacherSearch = () => {
 
         console.log("Buscando horario de clase...");
 
-       // console.log(selectedDayRef.current.name + " " + selectedHourRef.current.name + " " + teacher ? teacher.label : "N/A" + " " + grade ? grade.label : "N/A" + " " + year)
-
-
-
-        if(selectedDayRef.current && selectedHourRef.current && teacher && shift){
+        if(day && hour && teacher && shift){
 
             console.log("Buscando horario de clase por profesor...")
-            console.log(`Turno: ${shift.id} <-> ${shift.name} Profesor: ${teacher.label}, Año: ${year}, Hora: ${selectedHourRef.current.name}`)
-
+            console.log(`Turno: ${shift.id} <-> ${shift.name} Profesor: ${teacher.label}, Año: ${year}, Hora: ${hour.name}`)
             try {
                 const data = await scheduleService.getScheduleByUserId(token, teacher.value, year);
-            
-                const cardinfo = data[0].schedules.find((schedule) => 
-                    schedule.weekday.day === selectedDayRef.current.name &&
-                    schedule.classroomConfiguration.classPeriod.id === selectedHourRef.current.id &&
-                    data[0].classroom.shift.id === shift.id);
+                
+                let cardinfo = null;
+                data.forEach((teacherSchedule) => {
+                    const foundSchedule = teacherSchedule.schedules.find((schedule) => 
+                        schedule.weekday.day === day.value &&
+                        schedule.classroomConfiguration.classPeriod.id === hour.id &&
+                        teacherSchedule.classroom.grade.shift.id === shift.id);
+                    if (foundSchedule) {
+                        cardinfo = foundSchedule;
+                    }
+                });
 
                 if(cardinfo){
 
@@ -224,10 +208,13 @@ const TeacherSearch = () => {
                     setCardHour(`${cardinfo.classroomConfiguration.classPeriod.name} ${cardinfo.classroomConfiguration.hourStart.substring(0,5)} - ${cardinfo.classroomConfiguration.hourEnd.substring(0,5)}`);
 
                     selectedHourRef.current = null;
-                    selectedDayRef.current = null;
+                    setHour(null);
+                    setDay(null);
                     setTeacher(null);
                     setClassroom(null);
                     setShift(null);
+                }else{
+                    throw new Error("No se encontro horario de clase");
                 }
             } catch (error) {
                 console.log(`Hubo un error al obtener los horarios: ${error}`);
@@ -238,7 +225,8 @@ const TeacherSearch = () => {
                 setCardHour(selectedHourRef.current.name);
 
                 selectedHourRef.current = null;
-                selectedDayRef.current = null;
+                setHour(null);
+                setDay(null);
                 setTeacher(null);
                 setClassroom(null);
                 setShift(null);
@@ -251,7 +239,7 @@ const TeacherSearch = () => {
                     duration: 3,})
             }
 
-        }else if(selectedDayRef.current && selectedHourRef.current && classroom && shift){
+        }else if(day && hour && classroom && shift){
             
 
             console.log("Buscando horario de clase por salon de clases...", classroom.value);
@@ -265,9 +253,9 @@ const TeacherSearch = () => {
                 const data = await scheduleService.getScheduleByClassroomId(token, classroomFound.id, year);
     
                 const cardinfo = data[0].schedules.find((schedule) => 
-                    schedule.weekday.day === selectedDayRef.current.name &&
-                    schedule.classroomConfiguration.classPeriod.id === selectedHourRef.current.id &&
-                    data[0].classroom.shift.id === shift.id);
+                    schedule.weekday.day === day.value &&
+                    schedule.classroomConfiguration.classPeriod.id === hour.id &&
+                    data[0].classroom.grade.shift.id === shift.id);
     
                 if(cardinfo){
     
@@ -278,11 +266,15 @@ const TeacherSearch = () => {
                     setCardSubject(cardinfo.user_x_subject.subject.name);
                     setCardClassroom(data[0].classroom.grade.name);
                     setCardHour(`${cardinfo.classroomConfiguration.classPeriod.name} ${cardinfo.classroomConfiguration.hourStart.substring(0,5)} - ${cardinfo.classroomConfiguration.hourEnd.substring(0,5)}`);
+                    
                     selectedHourRef.current = null;
-                    selectedDayRef.current = null;
+                    setHour(null);
+                    setDay(null);
                     setTeacher(null);
                     setClassroom(null);
                     setShift(null);
+                }else{
+                    throw new Error("No se encontro horario de clase");
                 }
             } catch (error) {
                 console.log(`Hubo un error al obtener los horarios: ${error}`);
@@ -293,7 +285,8 @@ const TeacherSearch = () => {
                 setCardHour(selectedHourRef.current.name);
 
                 selectedHourRef.current = null;
-                selectedDayRef.current = null;
+                setHour(null);
+                setDay(null);
                 setTeacher(null);
                 setClassroom(null);
                 setShift(null);
@@ -309,7 +302,8 @@ const TeacherSearch = () => {
         }else{
 
             selectedHourRef.current = null;
-            selectedDayRef.current = null;
+            setHour(null);
+            setDay(null);
             setTeacher(null);
             setClassroom(null);
             setShift(null);
@@ -343,17 +337,6 @@ const TeacherSearch = () => {
                         <div className={classes["searchFormContainer"]}>
                             <div className={classes["pageContentContainerRow"]}>
                                 <div className={classes["input-container"]}>
-                                    {/* <label className={classes["label"]}> Hora:</label>
-                                    <Select
-                                        value={selectedHourRef.current ? selectedHourRef.current.name : ''}
-                                        onChange={handleSelectChange}
-                                        className="bg-white Mobile-280:w-full">
-                                        {classPeriod.map((hour) => (
-                                            <Option key={hour.id} value={hour.id}>
-                                                {hour.name}
-                                            </Option>
-                                        ))}
-                                    </Select> */}
                                     <label className={classes["label"]}> Turno:</label>
                                     <AsyncSelect
                                         value={shift ? shift.id : ''}
@@ -367,17 +350,6 @@ const TeacherSearch = () => {
                                     </AsyncSelect> 
                                 </div>
                                 <div className={classes["input-container"]}>
-                                    {/* <label className={classes["label"]}> Dia:</label>
-                                    <Select
-                                        value={selectedDayRef.current ? selectedDayRef.current.name : ''}
-                                        onChange={handleSelectDayChange}
-                                        className="bg-white Mobile-280:w-full">
-                                        {DayList.map((day) => (
-                                            <Option key={day.name} value={day.name}>
-                                                {day.name}
-                                            </Option>
-                                        ))}
-                                    </Select> */}
                                     <label className={classes["label"]}> Profesor:</label>
                                     <SelectSearch
                                         value={teacher}
@@ -393,66 +365,31 @@ const TeacherSearch = () => {
                             </div>
                             <div className={classes["pageContentContainerRow"]}>
                                 <div className={classes["input-container"]}>
-                                    {/* <label className={classes["label"]}> Profesor:</label>
-                                    <SelectSearch
-                                        value={teacher}
-                                        options={teachersList.map((teacher) => ({
-                                            value: teacher.id,
-                                            label: teacher.name,
-                                        }))}
-                                        onChange={handleSelectTeacherChange}
-                                        placeholder="Seleccione un maestro"
-                                        className=" Mobile-280:w-full text-black"
-                                    /> */}
                                     <label className={classes["label"]}> Hora:</label>
-                                    <Select
-                                        value={selectedHourRef.current ? selectedHourRef.current.name : ''}
-                                        onChange={handleSelectChange}
-                                        className="bg-white Mobile-280:w-full">
-                                        {classPeriod.map((hour) => (
-                                            <Option key={hour.id} value={hour.id}>
+                                    <AsyncSelect
+                                        onChange={handleSelectHourChange}
+                                        className="bg-white Mobile-280:w-full"
+                                        value={hour ? hour.id : ""}>
+                                        {classPeriod.map((hour, index) => (
+                                            <Option key={index} value={hour.id}>
                                                 {hour.name}
                                             </Option>
                                         ))}
-                                    </Select> 
+                                    </AsyncSelect> 
                                 </div>
                                 <div className={classes["input-container"]}>
-                                    {/* <label className={classes["label"]}> Salon de Clases:</label>
-                                    <SelectSearch
-                                        value={classroom}
-                                        options={classroomsList.map((classroom) => ({
-                                            value: classroom.grade.id,
-                                            label: classroom.grade.name,
-                                        }))}
-                                        onChange={handleSelectClassroomChange}
-                                        placeholder="Seleccione un salon de clases"
-                                        className=" Mobile-280:w-full text-black"
-                                    /> */}
                                     <label className={classes["label"]}> Dia:</label>
-                                    <Select
-                                        value={selectedDayRef.current ? selectedDayRef.current.name : ''}
-                                        onChange={handleSelectDayChange}
-                                        className="bg-white Mobile-280:w-full">
-                                        {DayList.map((day) => (
-                                            <Option key={day.name} value={day.name}>
-                                                {day.name}
-                                            </Option>
+                                    <Select 
+                                        onChange={handleSelectDayChange} 
+                                        className="bg-white Mobile-280:w-full text-black" 
+                                        value={day ? day.value : ""}>
+                                        {DayList.map((day, index) => (
+                                            <Option key={index} value={day.value}>{day.label}</Option>
                                         ))}
                                     </Select>
                                 </div>
 
                                 <div className={classes["input-container"]}>
-                                    {/* <label className={classes["label"]}> Turno:</label>
-                                    <AsyncSelect
-                                        value={shift ? shift.id : ''}
-                                        onChange={handleSelectShiftChange}
-                                        className="bg-white Mobile-280:w-full">
-                                        {shiftList?.map((shift) => (
-                                            <Option key={shift.id} value={shift.id}>
-                                                {shift.name}
-                                            </Option>
-                                        ))}
-                                    </AsyncSelect> */}
                                     <label className={classes["label"]}> Salon de Clases:</label>
                                     <SelectSearch
                                         value={classroom}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Dialog, DialogHeader, DialogBody, DialogFooter } from "@material-tailwind/react";
+import { useNavigate } from "react-router-dom";
 
 import { Toaster, toast } from 'sonner';
 import { AiOutlineLoading } from "react-icons/ai";
@@ -8,19 +9,21 @@ import { Grid } from 'react-loader-spinner';
 
 import classes from "./AttendanceRegisterPage.module.css";
 import Header from "../../Components/Header/Header";
-import SideBarNav from "../../Components/SideBarNav/SideBarNav";
 import TableAttendanceComponent from '../../Components/TableRegisterAttendance/TableRegisterAttendanceComponent';
 
 import { useUserContext } from "../../Context/userContext";
 
 import { classroomService } from "../../Services/classroomService";
 import { absenceRecordService } from "../../Services/absenceRecordService";
+import { userService } from "../../Services/userService";
 
 const tableHeaders = [
     "Nombre", "Faltó"
 ];
 
 const AttendanceRegisterViewPage = () => {
+    const navigate = useNavigate();
+
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [loading, setLoading] = useState(true);
 
@@ -55,7 +58,8 @@ const AttendanceRegisterViewPage = () => {
         }
     };
 
-    const { token, user } = useUserContext();
+    const { token } = useUserContext();
+    const [user, setUser] = useState();
 
     const [classroom, setClassroom] = useState();
     const [studentList, setStudentList] = useState([]);
@@ -77,6 +81,19 @@ const AttendanceRegisterViewPage = () => {
     };
 
     useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await userService.verifyToken(token);
+                setUser(response);
+            } catch (error) {
+                setUser(null);
+            }
+        };
+
+        fetchUser();
+    },[token]);
+
+    useEffect(() => {
         console.log("Usuario: ", user);
 
         const year = new Date().getFullYear();
@@ -88,6 +105,11 @@ const AttendanceRegisterViewPage = () => {
                     const nie = user?.email.split('@')[0];
 
                     const data = await classroomService.getClassStudentsByNieAndYear(token, nie, year);
+
+                    if(data.students.length === 0){
+                        console.log("No hay estudiantes en el salon");
+                        return;
+                    }
 
                     const formatedData = data.students.map(student => {
                         return {
@@ -102,10 +124,6 @@ const AttendanceRegisterViewPage = () => {
                     setClassroom(data.classroom);
                 } catch (error) {
                     console.log(`Hubo un error al obtener la lista de estudiantes: ${error}`);
-                } finally{
-                    setTimeout(() => {
-                        setLoading(false);
-                    }, 1500);
                 }
             };
 
@@ -127,6 +145,10 @@ const AttendanceRegisterViewPage = () => {
             fetchClassrooms();
         };
 
+        setTimeout(() => {
+            setLoading(false);
+        }, 1500);
+
     }, [token, user]);
 
     useEffect(() => {
@@ -136,6 +158,10 @@ const AttendanceRegisterViewPage = () => {
                 try {
                     const data = await classroomService.getClassStudentsByClassroomID(token, classroom.id);
     
+                    if(data.length === 0){
+                        return;
+                    }
+            
                     const formatedData = data.map(student => {
                         return {
                             ...student,
@@ -149,17 +175,15 @@ const AttendanceRegisterViewPage = () => {
     
                 } catch (error) {
                     console.log(`Hubo un error al obtener la lista de estudiantes: ${error}`);
-                } finally{
-                    console.log("Cargando...");
-                    setTimeout(() => {
-                        setLoading(false);
-                    }, 1500);
                 }
             };
     
             fetchStudentList();
-        }
 
+            setTimeout(() => {
+                setLoading(false);
+            }, 1500);
+        }
     }, [classroom]);
 
     const handleBoyCountChange = (e) => {
@@ -254,7 +278,6 @@ const AttendanceRegisterViewPage = () => {
                                     →
                                 </button>
                             </div>
-                            {/* Botón Verificar */}
                             <Button className={classes["yearSelect"]} onClick={handleOpenDialog}>
                                 Enviar
                             </Button>
@@ -266,9 +289,9 @@ const AttendanceRegisterViewPage = () => {
                                 
                                 <p className={classes["dialogInfo"]}>
                                     Fecha: &nbsp; <span className="font-bold">{selectedDate.toISOString().split('T')[0]}</span> <br/>
-                                    Grado: &nbsp; <span className="font-bold">{classroom?.grade.name}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turno: &nbsp; <span className="font-bold">{classroom?.shift.name}</span> <br/>
+                                    Grado: &nbsp; <span className="font-bold">{classroom?.grade.name}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turno: &nbsp; <span className="font-bold">{classroom?.grade.shift.name}</span> <br/>
                                     Orientador: &nbsp; <span className="font-bold">{classroom?.homeroomTeacher.name}</span> <br/> <br/>
-                                    Cantidad de Niños: &nbsp; <span className="font-bold">{boysCount}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Cantidad de Niñas: &nbsp; <span className="font-bold">{girlsCount}</span> 
+                                    # de Niños presentes: &nbsp; <span className="font-bold">{boysCount}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # de Niñas presentes: &nbsp; <span className="font-bold">{girlsCount}</span> 
                                 </p>
                                 <br/>
                                 <p className={classes["dialogInfo"]}>
@@ -305,13 +328,13 @@ const AttendanceRegisterViewPage = () => {
                             <form onSubmit={() => (a)} className={[classes["form"]]}>
                                 <div className={[classes["input-container"]]}>            
                                     <label className={[classes["label"]]}>
-                                        Cantidad de Niños:
+                                        # de Niños presentes:
                                     </label>
                                     <input type="number" value={boysCount} onChange={handleBoyCountChange} className={[classes["input"]]} />
                                 </div>
                                 <div className={[classes["input-container"]]}>            
                                     <label className={[classes["label"]]}>
-                                        Cantidad de Niñas:
+                                        # de Niñas presentes:
                                     </label>
                                     <input type="number" value={girlsCount} onChange={handleGirlCountChange} className={[classes["input"]]} />
                                 </div>

@@ -7,6 +7,8 @@ import { weekdayService } from '../../Services/weekdayService';
 import { classPeriodService } from '../../Services/classPeriodService';
 import { classroomConfigurationService } from '../../Services/classroomConfigurationService';
 import { notification } from 'antd';
+import { toast, Toaster } from 'sonner';
+import { AiOutlineLoading } from 'react-icons/ai';
 
 const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) => {
     const [classroomSelected, setClassroomSelected] = useState("");
@@ -411,6 +413,9 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     
         if (scheduleToSaveCreate.length > 0) {
+            const loadingToast = toast('Cargando...', {
+                icon: <AiOutlineLoading className="animate-spin" />,
+            });
             try {
                 const response = await classroomConfigurationService.saveClassroomConfiguration(token, scheduleToSave);
                 console.log("Schedule saved: ", response);
@@ -429,6 +434,9 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                     placement: 'top',
                     duration: 2,
                 });
+            }
+            finally {
+                toast.dismiss(loadingToast);
             }
             await delay(3000); // Wait for 3 seconds
         }
@@ -479,28 +487,36 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
         console.log("Schedule to save delete: ", scheduleToSaveDelete);
     
         if (scheduleToDelete.length === 1) {
+            const loadingToast = toast('Cargando...', {
+                icon: <AiOutlineLoading className="animate-spin" />,
+            });
             try {
                 const response = await classroomConfigurationService.deleteClassroomConfiguration(token, scheduleToSaveDelete[0]);
                 console.log("Schedule deleted: ", response);
-                notification.success({
+               /*  notification.success({
                     message: 'Éxito',
                     description: 'La configuración de horas ha sido eliminada exitosamente',
                     placement: 'top',
                     duration: 3,
-                });
+                }); */
                 setDeletedBlocks([]);
                 setSuccess(true);
             } catch (error) {
                 console.log("Error deleting schedule: ", error);
-                notification.error({
+                /* notification.error({
                     message: 'Error',
                     description: 'Hubo un error al eliminar la configuración de horas',
                     placement: 'top',
                     duration: 2,
-                });
+                }); */
+            } finally {
+                toast.dismiss(loadingToast);
             }
             await delay(1000);
         } else if (scheduleToDelete.length > 1) {
+            const loadingToast = toast('Cargando...', {
+                icon: <AiOutlineLoading className="animate-spin" />,
+            });
             try {
                 const response = await classroomConfigurationService.deleteClassroomConfigurations(token, scheduleToSaveDelete);
                 console.log("Schedule deleted: ", response);
@@ -521,10 +537,16 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                     duration: 2,
                 });
             }
+            finally {
+                toast.dismiss(loadingToast);
+            }
             await delay(1000); 
         }
 
         if (sortedScheduleToSaveUpdate.length > 0) {
+            const loadingToast = toast('Cargando...', {
+                icon: <AiOutlineLoading className="animate-spin" />,
+            });
             try {
                 const response = await classroomConfigurationService.updateClassroomConfiguration(token, sortedScheduleToSaveUpdate);
                 console.log("Schedule updated: ", response);
@@ -543,6 +565,8 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                     placement: 'top',
                     duration: 2,
                 });
+            } finally {
+                toast.dismiss(loadingToast);
             }
             await delay(1000); 
 
@@ -579,6 +603,9 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
         console.log("Schedule to update create save: ", scheduleToSave);
 
         if (scheduleToSaveUpdateCreate.length > 0) {
+            const loadingToast = toast('Cargando...', {
+                icon: <AiOutlineLoading className="animate-spin" />,
+            });
             try {
                 const response = await classroomConfigurationService.saveClassroomConfiguration(token, scheduleToSave);
                 console.log("Schedule updated: ", response);
@@ -598,6 +625,10 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                     duration: 2,
                 });
             }
+            finally {
+                toast.dismiss(loadingToast);
+            }
+
             await delay(1000); 
         }
     }
@@ -627,6 +658,7 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
 
     return (
         <div className={classes.generalCardContainer}>
+            <Toaster />
             <CardBody className="flex flex-col bg-white border-2 border-black border-opacity-75 px-2 py-1">
                 <div className="flex flex-row justify-center items-center mx-auto">
                     <table className="table-auto text-left w-full">

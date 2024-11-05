@@ -9,7 +9,6 @@ import {
 } from "@material-tailwind/react";
 import classes from "./ClassroomPage.module.css";
 import Header from "../../Components/Header/Header";
-import SideBarNav from "../../Components/SideBarNav/SideBarNav";
 import ClassroomList from "../../Components/List/ClassroomList/ClassroomList";
 import { classroomService } from "../../Services/classroomService";
 import { useUserContext } from "../../Context/userContext";
@@ -84,7 +83,6 @@ const ClassroomPage = () => {
 
                 <div className={[classes["bodyContainer"]]}>
                     <div className={[classes["allContentContainer"]]}>
-                        <SideBarNav />
                         <div className={[classes["pageContentContainerCol"]]}>
                             <div className={[classes["TitleContainer"]]}>
                                 <Button color="white" className={classes["quickAddButton"]} onClick={handleOpenDialog}>

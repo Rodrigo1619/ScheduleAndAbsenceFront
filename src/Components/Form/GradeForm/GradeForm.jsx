@@ -5,8 +5,9 @@ import { useUserContext } from '../../../Context/userContext.jsx';
 
 import { Toaster, toast } from 'sonner';
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
-import { notification } from 'antd';
+
 import { gradeService } from '../../../Services/gradeService.js';
+import { shiftService } from '../../../Services/shiftService.js';
 
 const DefaultSections = [
     {label: "A", value: "A"},
@@ -22,9 +23,27 @@ const GradeForm = ({ grade, editStatus, onSuccess }) => {
 
     const { token } = useUserContext();
 
+    const [shifts, setShifts] = useState([]);
+
     const [gradeName, setGradeName] = useState('');
     const [governmentId, setGovernmentId] = useState('');
     const [section, setSection] = useState('');
+    const [selectedShift, setSelectedShift] = useState('');
+
+    useEffect(() => {
+        const fetchShifts = async () => {
+            try {
+                const data = await shiftService.getAllShifts(token);
+
+                setShifts(data);
+            } catch (error) {
+                console.log("Hubo un error al obtener las aulas" + error);
+                setShifts([]);
+            }
+        };
+
+        fetchShifts();
+    }, []);
 
     const handleGradeNameChange = (e) => {
         setGradeName(e.target.value);
@@ -41,11 +60,20 @@ const GradeForm = ({ grade, editStatus, onSuccess }) => {
         setSection(e.target.value);
     };
 
+    const handleShiftChange = (e) => {
+        const shift = shifts.find(shift => shift.id === e.target.value);
+
+        setSelectedShift(shift);
+
+        console.log("Turno elegido: ", shift);
+    }
+
     useEffect(() => {
         if (grade) {
             setGradeName(grade.name);
             setGovernmentId(grade.idGoverment);
             setSection(grade.section);
+            setSelectedShift(grade.shift);
         }
     }, [grade]);
 
@@ -56,7 +84,8 @@ const GradeForm = ({ grade, editStatus, onSuccess }) => {
         const gradeJSON = {
             name: gradeName,
             idGoverment: governmentId,
-            section: section
+            section: section,
+            idShift: selectedShift.id
         }
         
         if (editStatus &&  grade && grade.id !== undefined && token !== undefined) {      
@@ -118,14 +147,25 @@ const GradeForm = ({ grade, editStatus, onSuccess }) => {
                 Sección:
             </label>
             <select onChange={handleSectionChange} className={[classes["input"]]}>
-                <option value={section ? section : ""}>{section ? section : "Elija una opción"}</option>
+                <option value={section ? section : ""}>{section ? section : "Elija una sección"}</option>
                 {DefaultSections.map((section, index) => (
                     <option key={index} value={section.value}>{section.label}</option>
                 ))}
             </select>
         </div>
+        <div className={[classes["input-container"]]}>            
+            <label className={[classes["label"]]}>
+                Turno:
+            </label>
+            <select onChange={handleShiftChange} className={[classes["input"]]}>
+                <option value={selectedShift?.id ? selectedShift?.id : ""}>{selectedShift?.name ? selectedShift?.name : "Elija un turno"}</option>
+                {shifts.map((shift, index) => (
+                    <option key={index} value={shift.id}>{shift.name}</option>
+                ))}
+            </select>
+        </div>
         <div className={[classes["button-container"]]}>
-            <button type="submit" className={[classes["submit-button"]]}>Registrar</button>
+            <button type="submit" className={[classes["submit-button"]]}>{editStatus ? "Editar" : "Registar"}</button>
         </div>
         </form>
     );

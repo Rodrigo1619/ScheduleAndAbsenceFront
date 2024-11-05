@@ -5,6 +5,7 @@ import studentTeachersClasroomIcon from "../../assets/icons/studentTeachersClass
 import enrollIcon from "../../assets/icons/enroll-student.svg";
 import clockIcon from "../../assets/icons/clock-solid.svg";
 import searchIcon from "../../assets/icons/search-icon.svg";
+import schoolIcon from "../../assets/icons/school-icon.svg";
 
 
 import userPlusIcon from "../../assets/icons/user-plus-icon.svg";
@@ -40,14 +41,14 @@ const ModeratorPage = () => {
                         <div className={classes.SubtitleContainer}>
                             <QuickAccessButtons 
                                 title="Acciones Profesores:"
-                                iconsvg1={userPlusIcon} description1="Registrar un nuevo profesor" link1="/TeacherPage"
+                                iconsvg1={userPlusIcon} description1="Registrar un nuevo usuario" link1="/TeacherPage"
                                 iconsvg3={filePlusIcon} description3="Asignar materia a un profesor" link3="/UserxSubjectPage"
                             />
                         </div>
                         <div className={classes.SubtitleContainer}>
                             <QuickAccessButtons 
                                 title="Acciones Alumnos y Salón de Clase:"
-                                iconsvg1={filePlusIcon} description1="Asignar orientador a salón de clase" link1="/ClassroomPage"
+                                iconsvg1={schoolIcon} description1="Registrar un nuevo salón de clase" link1="/ClassroomPage"
                                 iconsvg2={userPlusIcon} description2="Registrar un nuevo alumno" link2="/StudentPage"
                                 iconsvg3={studentTeachersClasroomIcon} description3="Asignar alumnos a un aula" link3="/PopulateClassroom"
                             />

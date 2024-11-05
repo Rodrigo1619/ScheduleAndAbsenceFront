@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classes from './AddScheduleTable.module.css';
 import { Button, CardBody, Tooltip, Typography } from '@material-tailwind/react';
 import { ExclamationTriangleIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
@@ -10,6 +10,8 @@ import { classroomConfigurationService } from '../../Services/classroomConfigura
 import { notification } from 'antd';
 import { classPeriodService } from '../../Services/classPeriodService';
 import HourDynamicTable from '../HourDynamicTable/HourDynamicTable';
+import { toast, Toaster } from 'sonner';
+import { AiOutlineLoading } from 'react-icons/ai';
 
 const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
     const [teacherSelected, setTeacherSelected] = useState("");
@@ -25,6 +27,8 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
     const [weekdays, setWeekdays] = useState([]);
     const { token } = useUserContext();
     const [warnings, setWarnings] = useState({});
+    const [isScheduleCreated, setIsScheduleCreated] = useState(false);
+    const [scheduleMapping, setScheduleMapping] = useState({});
 
     const defaultSubject = {
         teacher: "",
@@ -40,10 +44,20 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
             const fetchHourConfiguration = async () => {
                 try {
                     const response = await classroomConfigurationService.getClassroomConfigurationById(token, grade.id);
-                    console.log("Hour configuration: ", response[0].classroomConfigurations);
-                    setHourConfiguration(response[0].classroomConfigurations);
+                    if(response){
+                        console.log("Hour configuration: ", response[0].classroomConfigurations);
+                        setHourConfiguration(response[0].classroomConfigurations);
+                    } else if ( response === null) {
+                        console.log("No hour configuration found for the classroom");
+                        notification.warning({ message: "No se ha configurado las horas para el aula seleccionada" });
+                        setHourConfiguration([]);
+                        setSchedule([]);
+                    }
                 } catch (error) {
                     console.log("Error fetching hour configuration: ", error);
+                    notification.warning({ message: "Error al obtener configuracion de horas del salon seleccionado" });
+                    setHourConfiguration([]);
+                    setSchedule([]);
                 }
             };
 
@@ -109,7 +123,37 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
         setWarnings({});
     }, [schedule]);
 
+    const scheduleMappingRef = useRef({});
 
+    const updateSchedule = (classroomSchedule, initialSchedule) => {
+        classroomSchedule.forEach(entry => {
+            if (entry && entry.schedules) {
+                entry.schedules.forEach(schedule => {
+                    const day = schedule.weekday.day;
+                    const timeSlot = `${schedule.classroomConfiguration.hourStart?.slice(0, 5)}-${schedule.classroomConfiguration.hourEnd?.slice(0, 5)}`;
+                    const slotIndex = scheduleMappingRef.current[timeSlot];
+                    if (slotIndex !== undefined) {
+                        initialSchedule[slotIndex][day] = {
+                            ...initialSchedule[slotIndex][day],
+                            teacher: schedule?.user_x_subject?.teacher.name,
+                            subject: schedule?.user_x_subject?.subject.name,
+                            grade: entry?.classroom.grade?.name,
+                            shift: entry?.classroom.grade.shift?.name,
+                            year: entry?.classroom?.year,
+                            hourStart: schedule?.classroomConfiguration.hourStart,
+                            hourEnd: schedule?.classroomConfiguration.hourEnd,
+                            id: schedule.id,
+                            classroomConfigurationId: schedule.classroomConfiguration.id
+                        };
+                    }
+                });
+            } else {
+                console.error("Invalid entry structure: ", entry);
+            }
+        });
+        console.log("Updated schedule: ", initialSchedule);
+        setSchedule([...initialSchedule]);
+    };
 
     const initializeSchedule = (token, hourConfiguration, classPeriod) => {
         const createDefaultEntry = (hourStart, hourEnd, weekday, classroomConfigurationId) => ({
@@ -143,31 +187,46 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
 
         setSchedule(initialSchedule); // Asegúrate de actualizar el estado de `schedule`
 
-        const scheduleMapping = sortedHourConfiguration.reduce((acc, block, index) => {
+        scheduleMappingRef.current = sortedHourConfiguration.reduce((acc, block, index) => {
             if (block.classPeriod.id !== recreoId) {
                 acc[`${block.hourStart?.slice(0, 5)}-${block.hourEnd?.slice(0, 5)}`] = index;
             }
             return acc;
         }, {});
 
+        console.log("Schedule mapping: ", scheduleMappingRef.current);
+
+        setScheduleMapping(scheduleMapping);
         console.log("Schedule mapping: ", scheduleMapping);
 
         const getClassroomSchedule = async () => {
+            const loadingToast = toast('Cargando...', {
+                icon: <AiOutlineLoading className="animate-spin" />,
+            });
             try {
                 console.log("Getting classroom schedule...");
                 const response = await scheduleService.getScheduleByClassroomId(token, grade.id);
-                if (response) {
+                if (response === null) {
+                    console.log("No schedule found for the classroom");
+                    notification.warning({ message: "No hay un horario de clases creado para el aula seleccionada" });
+                    setIsScheduleCreated(false);
+                }
+                else if (response) {
                     console.log("Teacher schedule: ", response);
                     notification.success({ message: "Horario de clases encontrado" });
+                    setIsScheduleCreated(true);
                     updateSchedule(response, initialSchedule);
+
                 } else {
                     console.log("No schedule found for the teacher");
-                    notification.info({ message: "No se encontró el horario de clases para el profesor" });
+                    notification.info({ message: "No se encontró el horario de clases" });
+                    setIsScheduleCreated(false);
                     setSchedule(initialSchedule);
                 }
             } catch (error) {
                 if (error.message === "Error: 404") {
-                    notification.info({ message: "No se encontró el horario de clases para el profesor" });
+                    notification.info({ message: "No se encontró el horario de clases" });
+                    setIsScheduleCreated(false);
                     setSchedule(initialSchedule);
                 } else {
                     console.log("Error getting teacher schedule: ", error);
@@ -177,43 +236,12 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                         placement: 'top',
                         duration: 4,
                     });
+                    setIsScheduleCreated(false);
                     setSchedule(initialSchedule);
                 }
+            } finally {
+                toast.dismiss(loadingToast);
             }
-        };
-
-        const updateSchedule = (classroomSchedule, initialSchedule) => {
-            classroomSchedule.forEach(entry => {
-                // Verificar que entry y entry.schedules existan
-                if (entry && entry.schedules) {
-                    entry.schedules.forEach(schedule => {
-                        const day = schedule.weekday.day; // "Lunes", "Martes", etc.
-                        console.log("Day: ", day);
-                        const timeSlot = `${schedule.classroomConfiguration.hourStart?.slice(0, 5)}-${schedule.classroomConfiguration.hourEnd?.slice(0, 5)}`;
-                        console.log("Time slot: ", timeSlot);
-                        const slotIndex = scheduleMapping[timeSlot];
-                        console.log("Slot index: ", slotIndex);
-                        if (slotIndex !== undefined) {
-                            initialSchedule[slotIndex][day] = {
-                                ...initialSchedule[slotIndex][day],
-                                teacher: schedule?.user_x_subject?.teacher.name,
-                                subject: schedule?.user_x_subject?.subject.name,
-                                grade: entry?.classroom.grade?.name,
-                                shift: entry?.classroom.shift?.name,
-                                year: entry?.classroom?.year,
-                                hourStart: schedule?.classroomConfiguration.hourStart,
-                                hourEnd: schedule?.classroomConfiguration.hourEnd,
-                                id: schedule.id,
-                                classroomConfigurationId: schedule.classroomConfiguration.id
-                            };
-                        }
-                    });
-                } else {
-                    console.error("Invalid entry structure: ", entry);
-                }
-            });
-            console.log("Initial schedule: ", initialSchedule);
-            setSchedule([...initialSchedule]);
         };
 
         getClassroomSchedule();
@@ -231,7 +259,7 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                         sched.weekday.id === weekdayId &&
                         sched.classroomConfiguration.id !== classroomConfigurationId;
                 })) && 
-            (entry.classroom.shift.id === shiftSelected.id &&
+            (entry.classroom.grade.shift.id === shiftSelected.id &&
                 entry.classroom.id !== gradeSelected.id)
             );
     
@@ -367,6 +395,9 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
     };
 
     const deleteSchedule = async (scheduleToDelete) => {
+        const loadingToast = toast('Cargando...', {
+            icon: <AiOutlineLoading className="animate-spin" />,
+        });
         try {
             console.log("Deleting schedule...");
 
@@ -388,10 +419,15 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                 placement: 'top',
                 duration: 4,
             });
+        } finally {
+            toast.dismiss(loadingToast);
         }
     };
 
     const createSchedule = async (scheduleToCreate) => {
+        const loadingToast = toast('Cargando...', {
+            icon: <AiOutlineLoading className="animate-spin" />,
+        });
         try {
             console.log("Creating schedule...");
             const schedulesCreate = {
@@ -400,7 +436,6 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                     id_subject: schedule.subject,
                     id_classroomConfiguration: schedule.classroomConfigurationId,
                     id_weekday: schedule.weekday,
-                    year: schedule.year
                 }))
             };
 
@@ -415,30 +450,104 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                 placement: 'top',
                 duration: 4,
             });
+
+            // Fetch the updated schedule from the server and update the state
+            const updatedSchedule = await scheduleService.getScheduleByClassroomId(token, grade.id);
+            updateSchedule(updatedSchedule, schedule);
         } catch (error) {
-            console.log("Error creating schedule: ", error);
+            if(error.message === "Error: 409"){
+                console.log("Error creating schedule: ", error);
+                setScheduleToCreate([]);
+                notification.error({
+                    message: 'Error',
+                    description: 'El profesor ya tiene asignada una clase en esta hora',
+                    placement: 'top',
+                    duration: 4,
+                });
+            } else {
+                console.log("Error creating schedule: ", error);
+                setScheduleToCreate([]);
+                notification.error({
+                    message: 'Error',
+                    description: 'Hubo un error al crear el horario',
+                    placement: 'top',
+                    duration: 4,
+                });
+            }
+        } finally {
+            toast.dismiss(loadingToast);
+        }
+    };
+
+    const createAndDeleteSchedule = async (scheduleToCreate, scheduleTodelete) => {
+        const loadingToast = toast('Cargando...', {
+            icon: <AiOutlineLoading className="animate-spin" />,
+        });
+        try {
+            console.log("Updating schedule...");
+            const schedulesUpdate = {
+                deleteList: scheduleTodelete.map(schedule => schedule.id),
+                newSchedules: scheduleToCreate.map(schedule => ({
+                    id_user: schedule.teacher,
+                    id_subject: schedule.subject,
+                    id_classroomConfiguration: schedule.classroomConfigurationId,
+                    id_weekday: schedule.weekday,
+                }))
+            };
+
+            console.log("Schedules to update: ", schedulesUpdate);
+
+            const response = await scheduleService.updateSchedule(token, schedulesUpdate);
+            console.log("Schedule updated: ", response);
             setScheduleToCreate([]);
-            notification.error({
-                message: 'Error',
-                description: 'Hubo un error al crear el horario',
+            setScheduleToDelete([]);
+            notification.success({
+                message: 'Éxito',
+                description: 'El horario se ha actualizado con éxito',
                 placement: 'top',
                 duration: 4,
             });
+
+            // Fetch the updated schedule from the server and update the state
+            const updatedSchedule = await scheduleService.getScheduleByClassroomId(token, grade.id);
+            updateSchedule(updatedSchedule, schedule);
+        } catch (error) {
+            if(error.message === "Error: 409"){
+                console.log("Error updating schedule: ", error);
+                setScheduleToCreate([]);
+                setScheduleToDelete([]);
+                notification.error({
+                    message: 'Error',
+                    description: 'El profesor ya tiene asignada una clase en esta hora',
+                    placement: 'top',
+                    duration: 4,
+                });
+            } else {
+                console.log("Error updating schedule: ", error);
+                setScheduleToCreate([]);
+                setScheduleToDelete([]);
+                notification.error({
+                    message: 'Error',
+                    description: 'Hubo un error al actualizar el horario',
+                    placement: 'top',
+                    duration: 4,
+                });
+            }
+        } finally {
+            toast.dismiss(loadingToast);
         }
     };
 
     const saveSchedule = async (scheduleToCreate, scheduleToDelete) => {
-
         try {
-
-            if (scheduleToDelete.length > 0) {
-                deleteSchedule(scheduleToDelete);
-            }
-
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
-            if (scheduleToCreate.length > 0) {
-                createSchedule(scheduleToCreate);
+            if (scheduleToDelete.length > 0 && scheduleToCreate.length > 0) {
+                if (isScheduleCreated) {
+                    await createAndDeleteSchedule(scheduleToCreate, scheduleToDelete);
+                }
+            } else if (scheduleToDelete.length > 0 && scheduleToCreate.length === 0) {
+                await deleteSchedule(scheduleToDelete);
+            } else if (scheduleToDelete.length === 0 && scheduleToCreate.length > 0) {
+                await createSchedule(scheduleToCreate);
             }
         }
         catch (error) {
@@ -449,7 +558,7 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                 placement: 'top',
                 duration: 4,
             });
-        }
+        } 
     };
 
 
@@ -459,6 +568,7 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
         console.log("Schedule to delete: ", scheduleToDelete);
         if (scheduleToCreate.length > 0 || scheduleToDelete.length > 0) {
             saveSchedule(scheduleToCreate, scheduleToDelete);
+            initializeSchedule(token, hourConfiguration, classPeriod);
         }
     };
 
@@ -469,6 +579,7 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
         <div className={classes["generalCardContainer"]}>
             <CardBody className="flex flex-col bg-white border-2 border-black border-opacity-75 px-2 py-1">
                 <div className="flex flex-row justify-center items-center mx-auto">
+                <Toaster />
                     <table className="table-auto text-left w-max">
                         <thead>
                             <tr>

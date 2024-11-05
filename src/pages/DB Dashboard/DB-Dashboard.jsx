@@ -23,15 +23,9 @@ const HEAD_TEACHERS = ["Nombre Completo", "Correo", "Rol Asignado", "Correo de V
 
 const HEAD_STUDENTS = ["NIE", "Nombre Completo"];
 
-const HEAD_ROLES = ["Rol"];
+const HEAD_CLASSROOMS = ["Año", "Grado", "Maestro", "Sección", "Turno"];
 
-const HEAD_CLASSROOMS = ["Año", "Grado", "Turno", "Maestro",  "Sección"];
-
-const HEAD_GRADES = ["Grado", "ID Gubernamental", "Sección"];
-
-const TABLE_SCH = ["ID", "Hora Inicio", "Hora Final"];
-
-const HEAD_SCHEDULE = ["ID", "Inicia", "Finaliza", "Profesor", "Materia", "Clase", "Año", "Grado", "Día"];
+const HEAD_GRADES = ["Grado", "ID Gubernamental", "Sección", "Turno"];
 
 const HEAD_SUBJECTS = ["Materia"];
 
@@ -114,6 +108,7 @@ const DBDashboard = () => {
                     ...classroom,
                     grade: classroom.grade.name.split(" ").slice(0, -1).join(" "),
                     section: classroom.grade.name.split(" ").pop(),
+                    shift: classroom.grade.shift,
                 }
             });
 

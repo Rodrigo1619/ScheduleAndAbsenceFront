@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
-    Navbar,
-    Button,
     Typography,
 } from "@material-tailwind/react";
 import classes from "./AdminPage.module.css";
-import { FcPhone, FcClock, FcHome } from "react-icons/fc";
 import tableIcon from "../../assets/icons/table-icon.svg";
 import usersIcon from "../../assets/icons/users-icon.svg";
-import clipboardListIcon from "../../assets/icons/clipboard-list-icon.svg";
+import studentIcon from "../../assets/icons/student-icon.svg";
 import userPlusIcon from "../../assets/icons/user-plus-icon.svg";
 import filePlusIcon from "../../assets/icons/file-plus-icon.svg";
 import calendarIcon from "../../assets/icons/calendar-icon.svg";
@@ -20,7 +17,7 @@ import studentTeachersClasroomIcon from "../../assets/icons/studentTeachersClass
 import enrollIcon from "../../assets/icons/enroll-student.svg";
 import QuickAccessButtons from "../../Components/QuickAccessButtons/QuickAccessButtons";
 import Header from "../../Components/Header/Header";
-import SideBarNav from "../../Components/SideBarNav/SideBarNav";
+
 
 import { useUserContext } from "../../Context/userContext"
 
@@ -58,12 +55,12 @@ const AdminPage = () => {
                         <div className={[classes["SubtitleContainer"]]}>
                             <QuickAccessButtons title="Acciones Generales:"
                                 iconsvg1={tableIcon} description1="Administrar tablas de bases de datos" link1="/DBDashboard"
-                                iconsvg2={usersIcon} description2="Revisar listado de asistencias" link2="/AttendanceGeneralView"
-                                iconsvg3={clipboardListIcon} description3="Reportar inasistencias" link3="/AttendanceRegisterView"/>
+                                iconsvg2={studentIcon} description2="Registrar un nuevo alumno" link2="/StudentPage"
+                                iconsvg3={usersIcon} description3="Revisar listado de asistencias" link3="/AttendanceGeneralView"/>
                         </div>
                         <div className={[classes["SubtitleContainer"]]}>
                             <QuickAccessButtons title="Acciones profesores:"
-                                iconsvg1={userPlusIcon} description1="Registrar un nuevo profesor" link1="/TeacherPage"
+                                iconsvg1={userPlusIcon} description1="Registrar un nuevo usuario" link1="/TeacherPage"
                                 iconsvg2={filePlusIcon} description2="Asignar materia a profesor" link2="/UserXSubjectPage"
                                 iconsvg3={calendarIcon} description3="Asignar horario a salon de clase" link3="/AddSchedule"/>
                         </div>

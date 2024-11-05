@@ -23,6 +23,7 @@ module.exports = withMT({
         "4/7": "57.1428571%",
         "5/7": "71.4285714%",
         "6/7": "85.7142857%",
+        "emptyButton" : "340px",
         "CarouselItemPC-1920*1080": "1300px",
         "CarouselItemPC-1600*900": "1100px",
         "CarouselItemPC-1366*768": "925px",

@@ -18,7 +18,8 @@ const TABLEH2_Class = ["", "ID", "IDEnrollment", "NIE", "Nombre Completo", "Sal�
 
 const TABLE_KEYS = ["id", "nie", "fullName"];
 
-const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classroomName, updateSelectedStudents, populate }) => {
+const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classroomName, 
+    updateSelectedStudents, populate }) => {
     const { token } = useUserContext();
     const [enrolledStudents, setEnrolledStudents] = useState([]);
     const [enrolledClassrooms, setEnrolledClassrooms] = useState([]);
@@ -38,18 +39,21 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
         setLoading(true);
         const fetchEnrolledStudents = async () => {
             try {
-                const data = await classroomService.getEnrollmentsByGradeandShift(token, classroomName.grade.id, classroomName.shift.id, classroomName.year);
-                console.log("Data: ", data);
+                const data = await classroomService.getEnrollmentsByClassroom(token, classroomName.id);
+                console.log("Students: ", data);
                 setEnrolledStudents(data.map((student) => ({
                     id: student.student.id,
                     enrolledId: student.id,
                     nie: student.student.nie,
                     name: student.student.name,
-                    actualClassroom: student.classroom.grade.name + " - " + student.classroom.shift.name
+                    actualClassroom: student.classroom.grade.name + " - " + student.classroom.grade.shift.name
                      + " " + student.classroom.year,
                     enrolled: student.enrolledClassroom ? student.enrolledClassroom.grade.name + " - " + student.enrolledClassroom.shift.name
                         + " " + student.enrolledClassroom.year : "No matriculado"
                 })));
+                setTimeout(() => {
+                    setLoading(false);
+                }, 2000);
 
             notification.success({
                 message: 'Éxito',
@@ -69,17 +73,20 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
                     });
                 } else
 
+                if (!populate && enrolledStudents.length == 0) {
                 notification.error({
                     message: 'Error',
                     description: 'No se encontraron estudiantes en los registros',
                     placement: 'top',
                     duration: 2,
                 });
-                setEnrolledStudents([]);
             }
-            setTimeout(() => {
-                setLoading(false);
-            }, 1500);
+                setEnrolledStudents([]);
+                setTimeout(() => {
+                    setLoading(false);
+                }, 2000);
+            }
+            
         };
 
         fetchEnrolledStudents();
@@ -91,6 +98,7 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
         id: student.id,
         nie: student.nie,
         fullName: student.name,
+        active: student.active,
     })) : [];
 
 
@@ -223,24 +231,7 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
     }
 
     const handleChangeStatus = async () => {
-        try {
-            console.log("Cambiando estado...");
-            const data = await studentService.toggleStatus(token, selectedStudent.id);
-
-            if (data) {
-                setOpenStatus(false);
-                notification.success({
-                    message: 'Éxito',
-                    description: 'El estado del alumno ha sido actualizado exitosamente',
-                    placement: 'top',
-                    duration: 2,
-                });
-
-                fetchStudents();
-            }
-        } catch (error) {
-            console.log(`Hubo un error al cambiar el estado del alumno: ${error}`);
-        }
+        console.log("nel");
     };
 
     useEffect(() => {
@@ -281,6 +272,7 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
                 handleUpdate={handleUpdateStudents}
                 handleStatus={handleOpenStatusDialog}
                 isFromClassroom={classroom}
+                editStatus={false}
             />
             <PaginationFooter 
                 rowsPerPage={rowsPerPage}

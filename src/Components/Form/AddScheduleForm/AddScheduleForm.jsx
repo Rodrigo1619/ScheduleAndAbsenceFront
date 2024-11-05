@@ -8,6 +8,7 @@ import { shiftService } from '../../../Services/shiftService';
 import { subjectService } from '../../../Services/subjectService';
 import AddScheduleTable from '../../Add Schedule Table/AddScheduleTable.jsx';
 import { classroomService } from '../../../Services/classroomService.js';
+import SelectSearch  from "react-select";
 
 const AddScheduleForm = () => {
 
@@ -112,18 +113,19 @@ const AddScheduleForm = () => {
         fetchClassrooms();
     }, [year]);
 
-    const handleSelectTeacherChange = (value) => {
-        const teacher = teachersList.find(teacher => teacher.id === value);
+    const handleSelectTeacherChange = (e) => {
+        const teacher = teachersList.find(teacher => teacher.id === e.value);
         setTeacher(teacher);
     };
 
-    const handleSelectSubjectChange = (value) => {
-        const subject = subjectsList.find(subject => subject.id === value);
+    const handleSelectSubjectChange = (e) => {
+        const subject = subjectsList.find(subject => subject.id === e.value);
         setSubject(subject);
+        setTeacher(null);
     }
 
-    const handleSelectClassroomChange = (value) => {
-        const classroom = classroomsList.find(classroom => classroom.id === value);
+    const handleSelectClassroomChange = (e) => {
+        const classroom = classroomsList.find(classroom => classroom.id === e.value);
         setClassroom(classroom);
     }
 
@@ -137,34 +139,6 @@ const AddScheduleForm = () => {
             <Card className='bg-transparent p-4 mx-4 border-0 shadow-none'>
                 <div className={classes["form-container"]}>
                     <div className={classes["inputsContainer"]}> 
-            <div className={classes["input-container"]}>
-                    <label className={classes["label"]}> Materia:</label>
-                    <AsyncSelect
-                        value={subject ? subject.id : ''}
-                        onChange={handleSelectSubjectChange}
-                        className="bg-white Mobile-280:w-full"
-                    >
-                        {subjectsList?.map((subject) => (
-                            <Option key={subject.id} value={subject.id}>
-                                {subject.name}
-                            </Option>
-                        ))}
-                    </AsyncSelect>
-                </div>
-                <div className={classes["input-container"]}>
-                <label className={classes["label"]}>Profesor/a:</label>
-                <AsyncSelect
-                    value={teacher ? teacher.id : ''}
-                    onChange={handleSelectTeacherChange}
-                    className="bg-white Mobile-280:w-full"
-                >
-                    {teachersList?.map((teacher) => (
-                        <Option key={teacher.id} value={teacher.id}>
-                            {teacher.name}
-                        </Option>
-                    ))}
-                </AsyncSelect>
-            </div>
                 <div className={classes["input-container"]}>
                     <label className={classes["label"]}>Turno:</label>
                    <AsyncSelect
@@ -187,18 +161,44 @@ const AddScheduleForm = () => {
                 </div>
                 <div className={classes["input-container"]}>
                     <label className={classes["label"]}>Salón de clases:</label>
-                   <AsyncSelect
-                        value={classroom ? classroom.id : ''}
-                        onChange={handleSelectClassroomChange}
-                        className="bg-white Mobile-280:w-full"
-                    >
-                        {classroomsList?.map((classroom) => (
-                            <Option key={classroom.id} value={classroom.id}>
-                                {classroom.grade.name}
-                            </Option>
-                        ))}
-                    </AsyncSelect>
+                    <SelectSearch
+                                        value={classroom ? { value: classroom.id, label: classroom.grade.name } : '' }
+                                        options={classroomsList?.map((selectedClassroom) => ({
+                                            value: selectedClassroom.id,
+                                            label: selectedClassroom.grade.name,
+                                        }))}
+                                        onChange={handleSelectClassroomChange}
+                                        placeholder="Seleccione un salon de clases"
+                                        className=" Mobile-280:w-full text-black"
+                                    />
                 </div>
+                <div className={classes["input-container"]}>
+                    <label className={classes["label"]}> Materia:</label>
+                    <SelectSearch
+                    value={subject ? { value: subject.id, label: subject.name } : '' }
+                    options={subjectsList?.map((subject) => ({
+                        value: subject.id,
+                        label: subject.name,
+                    }))}
+                    onChange={handleSelectSubjectChange}
+                    placeholder="Seleccione una materia"
+                    className=" Mobile-280:w-full text-black"
+                />
+
+                </div>
+                <div className={classes["input-container"]}>
+                <label className={classes["label"]}>Profesor/a:</label>
+                <SelectSearch
+                    value={teacher ? { value: teacher.id, label: teacher.name } : ''}
+                    options={teachersList?.map((teacher) => ({
+                        value: teacher.id,
+                        label: teacher.name,
+                    }))}
+                    onChange={handleSelectTeacherChange}
+                    placeholder="Seleccione un profesor"
+                    className=" Mobile-280:w-full text-black"
+                />
+            </div>
                 </div>
             </div>
             </Card>

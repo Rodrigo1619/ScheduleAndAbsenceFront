@@ -66,7 +66,7 @@ function App() {
             <Route path='/HourConfiguration' element={<PrivateElement admittedRoles={["Administrador", "Moderador"]}> <AddHourConfigurationPage/> </PrivateElement>}/>
             <Route path='/AttendanceGeneralView' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor", "Coordinador"]}> <AttendanceGeneralViewPage/> </PrivateElement>}/>
             <Route path='/AttendanceGlobalView' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor", "Coordinador"]}> <AttendanceGlobalPage/> </PrivateElement>}/>
-            <Route path='/AttendanceVerificationView' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor"]}> <AttendanceVerification/> </PrivateElement>}/>
+            <Route path='/AttendanceVerificationView' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor", "Coordinador"]}> <AttendanceVerification/> </PrivateElement>}/>
             <Route path='/AttendanceRegisterView' element={<PrivateElement admittedRoles={["Profesor", "Asistencia"]}> <AttendanceRegisterPage/> </PrivateElement>}/> 
             <Route path='/EnrollStudents' element={<PrivateElement admittedRoles={["Administrador", "Moderador"]}> <EnrollStudentsPage/> </PrivateElement>}/>
             <Route path="*" element={<Error404Page/>} />

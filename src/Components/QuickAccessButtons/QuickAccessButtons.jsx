@@ -46,7 +46,14 @@ const QuickAccessButtons = ({title, iconsvg1, description1, iconsvg2, descriptio
                                 </a>
                             </div>
                         ) : (
-                            <div className='px-12 my-4 min-w-40'>
+                            <div className='w-emptyButton h-auto flex flex-row justify-center
+                                rounded-full px-12 my-4 
+                                PC-1280*720:my-0 PC-1280*720:mx-2 PC-1280*720:px-4
+                                PC-800*600:my-0 PC-800*600:mx-2 PC-800*600:px-4 PC-800*600:w-auto PC-800*600:h-auto
+                                PC-640*480:my-0 PC-640*480:mx-2 PC-640*480:px-4 PC-640*480:w-auto PC-640*480:h-auto
+                                Mobile-390*844:my-0 Mobile-390*844:mx-2 Mobile-390*844:px-20 Mobile-390*844:w-auto Mobile-390*844:h-auto
+                                Mobile-280:my-0 Mobile-280:mx-2 Mobile-280:px-20 Mobile-280:w-auto Mobile-280:h-auto
+                                IpadAir:my-0 IpadAir:mx-0 IpadAir:px-4 IpadAir:w-auto IpadAir:h-auto'>
                             </div>
                         )
                     }
@@ -81,7 +88,14 @@ const QuickAccessButtons = ({title, iconsvg1, description1, iconsvg2, descriptio
                                 </a>
                             </div>
                         ) : (
-                            <div className='px-12 my-4 min-w-56'>
+                            <div className='w-emptyButton h-auto flex flex-row justify-center
+                                rounded-full px-12 my-4 
+                                PC-1280*720:my-0 PC-1280*720:mx-2 PC-1280*720:px-4
+                                PC-800*600:my-0 PC-800*600:mx-2 PC-800*600:px-4 PC-800*600:w-auto PC-800*600:h-auto
+                                PC-640*480:my-0 PC-640*480:mx-2 PC-640*480:px-4 PC-640*480:w-auto PC-640*480:h-auto
+                                Mobile-390*844:my-0 Mobile-390*844:mx-2 Mobile-390*844:px-20 Mobile-390*844:w-auto Mobile-390*844:h-auto
+                                Mobile-280:my-0 Mobile-280:mx-2 Mobile-280:px-20 Mobile-280:w-auto Mobile-280:h-auto
+                                IpadAir:my-0 IpadAir:mx-0 IpadAir:px-4 IpadAir:w-auto IpadAir:h-auto'>
                             </div>
                         )
                     }
@@ -116,7 +130,14 @@ const QuickAccessButtons = ({title, iconsvg1, description1, iconsvg2, descriptio
                                 </a>
                             </div>
                         ) : (
-                            <div className='px-12 my-4 min-w-40'>
+                            <div className='w-emptyButton h-auto flex flex-row justify-center
+                                rounded-full px-12 my-4 
+                                PC-1280*720:my-0 PC-1280*720:mx-2 PC-1280*720:px-4
+                                PC-800*600:my-0 PC-800*600:mx-2 PC-800*600:px-4 PC-800*600:w-auto PC-800*600:h-auto
+                                PC-640*480:my-0 PC-640*480:mx-2 PC-640*480:px-4 PC-640*480:w-auto PC-640*480:h-auto
+                                Mobile-390*844:my-0 Mobile-390*844:mx-2 Mobile-390*844:px-20 Mobile-390*844:w-auto Mobile-390*844:h-auto
+                                Mobile-280:my-0 Mobile-280:mx-2 Mobile-280:px-20 Mobile-280:w-auto Mobile-280:h-auto
+                                IpadAir:my-0 IpadAir:mx-0 IpadAir:px-4 IpadAir:w-auto IpadAir:h-auto'>
                             </div>
                         )
                     }

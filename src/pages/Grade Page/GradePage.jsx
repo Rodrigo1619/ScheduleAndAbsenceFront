@@ -27,19 +27,20 @@ const GradePage = () => {
         try {
             const data = await gradeService.getAllGrades(token);
 
-            console.log(data);
             const formattedData = data.map(grade => {
                 return {
                     id: grade.id,
                     name: grade.name.split("").slice(0, -1).join(""),
                     section: grade.section,
                     idGoverment: grade.idGoverment,
+                    shift: grade.shift
                 }
             });
 
             setGrades(formattedData);
         } catch (error) {
             console.log("Hubo un error al obtener las aulas" + error);
+            setGrades([]);
         }
     }
 
@@ -110,16 +111,16 @@ const GradePage = () => {
                             <div className={classes["SubtitleContainer"]}>
                             <GradeList grades={grades} fetchGrades={fetchGrades} />
                             </div>
-                            <Dialog open={open} handler={handleOpenDialog} >
-                                <DialogHeader> Registrar Grado </DialogHeader>
-                                <DialogBody> 
-                                    <GradeForm onCreate={handleCreateSuccess}/>
-                                </DialogBody>
-                                <DialogFooter>
-                                    <Button color="red" className="m-4" onClick={handleCloseDialog}>Cancelar</Button>
-                                </DialogFooter>
-                            </Dialog>
                         </div>
+                        <Dialog open={open} handler={handleOpenDialog} className="overflow-auto h-6/7">
+                            <DialogHeader> Registrar Grado </DialogHeader>
+                            <DialogBody> 
+                                <GradeForm onCreate={handleCreateSuccess}/>
+                            </DialogBody>
+                            <DialogFooter>
+                                <Button color="red" className="m-4" onClick={handleCloseDialog}>Cancelar</Button>
+                            </DialogFooter>
+                        </Dialog>
                     </div>
                 </div>
             </div>

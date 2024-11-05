@@ -9,7 +9,6 @@ import { AiOutlineLoading } from "react-icons/ai";
 import { XCircleIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 
 import Header from "../../Components/Header/Header";
-import SideBarNav from "../../Components/SideBarNav/SideBarNav";
 import TableAttendanceComponent from '../../Components/TableVerificationAttendance/TableVerificationAttendanceComponent';
 
 import { useUserContext } from "../../Context/userContext";
@@ -91,6 +90,10 @@ const AttendanceVerificationViewPage = () => {
             try {
                 const data = await absenceRecordService.getByClassroomAndShift(classroomID, token, shiftID);
                 
+                if (data.length === 0) {
+                    return;
+                }
+
                 const formatedDate = selectedDate.toISOString().split('T')[0];
                 const filteredList = data.filter(record => record.date === formatedDate);
 
@@ -225,7 +228,6 @@ const AttendanceVerificationViewPage = () => {
 
             <div className={classes["bodyContainer"]}>
                 <div className={classes["allContentContainer"]}>
-                    <SideBarNav />
                     <div className={classes["pageContentContainerCol"]}>
                         <Toaster />
                         <div className={classes["TitleContainer"]}>

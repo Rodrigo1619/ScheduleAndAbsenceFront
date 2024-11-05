@@ -61,7 +61,7 @@ const AbsenceRecordReminderCard = ({ classroomName, classroomSection, todayAbsen
                                     </Typography>
                                     <Typography className="text-red-600 font-masferrerTitle font-normal
                                     text-xl max-w-60 justify-center mx-auto ">
-                                        Sección "{classroomSection}""
+                                        Sección "{classroomSection}"
                                     </Typography>
                                     </>
                                 ) : (

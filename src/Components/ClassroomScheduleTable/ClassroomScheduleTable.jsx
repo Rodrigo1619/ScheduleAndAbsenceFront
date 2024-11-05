@@ -12,6 +12,20 @@ import { notification } from 'antd';
 import { classPeriodService } from '../../Services/classPeriodService';
 import HourDynamicTable from '../HourDynamicTable/HourDynamicTable';
 
+    // Generador de colores (puedes modificar la paleta)
+    const generateRandomColor = () => {
+        const colors = [
+            'bg-blue-400', 'bg-yellow-400', 'bg-green-400', 'bg-red-400',
+            'bg-purple-400', 'bg-pink-400', 'bg-gray-400', 'bg-indigo-400',
+            'bg-blue-500', 'bg-yellow-500', 'bg-green-500', 'bg-red-500',
+            'bg-purple-500', 'bg-pink-500', 'bg-gray-500', 'bg-indigo-500',
+            'bg-blue-600', 'bg-yellow-600', 'bg-green-600', 'bg-red-600',
+            'bg-purple-600', 'bg-pink-600', 'bg-gray-600', 'bg-indigo-600',
+        ];
+        return colors[Math.floor(Math.random() * colors.length)];
+    };
+
+
 const ClassroomScheduleTable = ({ grade, shift, year }) => {
     const [gradeSelected, setGradeSelected] = useState("");
     const [shiftSelected, setShiftSelected] = useState("");
@@ -31,40 +45,44 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
         year: "",
     };
 
-    const subjectColors = {
-        "Matemáticas": "bg-blue-400",
-        "Lenguaje y Literatura": "bg-yellow-400",
-        "Ciencias Naturales": "bg-green-400",
-        "Estudios Sociales": "bg-red-400",
-        "Educación Física": "bg-purple-400",
-        "Educación Artística": "bg-pink-400",
-        "Educación Religiosa": "bg-gray-400",
-        "Informática": "bg-indigo-400",
-        "Inglés": "bg-blue-400",
-        "Formación Cívica": "bg-yellow-400",
-        "Orientación": "bg-green-400",
-        "Tutoría": "bg-red-400",
-        "Laboratorio": "bg-purple-400",
-        "Biblioteca": "bg-pink-400",
-        // Añade más materias y colores aquí
-    };
+     // Diccionario para almacenar los colores asignados a cada materia
+     const subjectColorMap = {};
+
+     // Función para obtener el color de una materia
+     const getSubjectColor = (subject) => {
+         if (!subjectColorMap[subject]) {
+             subjectColorMap[subject] = generateRandomColor();
+         }
+         return subjectColorMap[subject];
+     };
+
 
     useEffect(() => {
 
         if (grade?.id && token) {
-        const fetchHourConfiguration = async () => {
-            try {
-                const response = await classroomConfigurationService.getClassroomConfigurationById(token, grade.id);
-                console.log("Hour configuration: ", response[0].classroomConfigurations);
-                setHourConfiguration(response[0].classroomConfigurations);
-            } catch (error) {
-                console.log("Error fetching hour configuration: ", error);
-            }
-        };
+            const fetchHourConfiguration = async () => {
+                try {
+                    const response = await classroomConfigurationService.getClassroomConfigurationById(token, grade.id);
+                    if(response){
+                        console.log("Hour configuration: ", response[0].classroomConfigurations);
+                        setHourConfiguration(response[0].classroomConfigurations);
+                    } else if ( response === null) {
+                        console.log("No hour configuration found for the classroom");
+                        notification.warning({ message: "No se ha configurado las horas para el aula seleccionada" });
+                        setHourConfiguration([]);
+                        setSchedule([]);
+                    }
+                } catch (error) {
+                    console.log("Error fetching hour configuration: ", error);
+                    notification.warning({ message: "Error al obtener configuracion de horas del salon seleccionado" });
+                    setHourConfiguration([]);
+                    setSchedule([]);
+                }
+            };
 
-        fetchHourConfiguration();
-    }
-    
+            fetchHourConfiguration();
+        }
+
     }, [token, grade]);
 
     useEffect(() => {
@@ -105,32 +123,6 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
         }
     }, [grade, shift, year]);
 
-    useEffect(() => {
-        if (gradeSelected && shiftSelected && yearSelected) {
-            
-            const getClassroom = async () => {
-                try {
-                    const response = await classroomService.getByParameters(token, yearSelected, gradeSelected.id, shiftSelected.id);
-                    console.log("Classroom: ", response);
-                    setClassroom(response);
-                } catch (error) {
-                    if (error.message === "Error: 404") {
-                        notification.error({ message: "No se encontró el salón de clases" });
-                        // Reiniciar el horario si no se encuentra el salón de clases
-                        setSchedule([]);
-                        setClassroom([]);
-
-                    } else {
-                    console.log("Error fetching classroom: ", error);
-                    notification.error({ message: "Error al obtener el salón de clases" });
-
-                }
-            }
-            };
-        
-            getClassroom();
-        }
-    }, [gradeSelected, shiftSelected, yearSelected]);
 
     useEffect(() => {
     
@@ -191,27 +183,26 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
                 const response = await scheduleService.getScheduleByClassroomId(token, grade.id);
                 if (response) {
                     console.log("Teacher schedule: ", response);
-                    notification.success({ message: "Horario de clases encontrado" });
+                    notification.success({ message: "Horario de clases encontrado"
+                        , placement: 'top', duration: 2
+                     });
                     updateSchedule(response, initialSchedule);
                 } else {
                     console.log("No schedule found for the teacher");
-                    notification.info({ message: "No se encontró el horario de clases para el profesor" });
+                    notification.info({ message: "No se encontró el horario de clases", 
+                    placement: 'top', duration: 2
+                     });
                     setSchedule(initialSchedule);
                 }
             } catch (error) {
-                if (error.message === "Error: 404") {
-                    notification.info({ message: "No se encontró el horario de clases para el profesor" });
-                    setSchedule(initialSchedule);
-                } else {
                 console.log("Error getting teacher schedule: ", error);
                 notification.error({
                     message: 'Error',
                     description: 'Hubo un error al obtener el horario del profesor',
                     placement: 'top',
-                    duration: 4,
+                    duration: 2,
                 });
-                setSchedule(initialSchedule);
-            }              
+                setSchedule(initialSchedule);       
             }
         };
     
@@ -248,10 +239,19 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
             console.log("Initial schedule: ", initialSchedule);
             setSchedule([...initialSchedule]);
         };
-    
+        if (hourConfiguration.length > 0) {
         getClassroomSchedule();
+        }
+        else {
+            setSchedule([]);
+            updateSchedule([], schedule);
+        }
+        console.log(grade);
     };
 
+    useEffect(() => {
+        console.log("Schedule: ", schedule);
+    }, [schedule]);
 
     const TABLE_HEAD = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
 
@@ -259,7 +259,7 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
         <div className={classes["generalCardContainer"]}>
             <CardBody className="flex flex-col bg-white border-2 border-black border-opacity-75 px-2 py-1">
                 <Typography className='font-masferrerTitle font-bold text-lg'>
-                {classroom.grade ? `Horario de ${classroom.grade.name} - ${classroom.shift.name}` : 
+                {grade?.grade ? `Horario de ${grade?.grade.name} - ${grade?.grade.shift.name}` : 
                 "Horario del salón de clases"
                 }
             </Typography>
@@ -282,6 +282,20 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
                             </tr>
                         </thead>
                         <tbody>
+                            {schedule.length === 0 && (
+                                <tr>
+                                    <td colSpan={TABLE_HEAD.length} className="p-4 bg-transparent">
+                                        <div className="font-masferrer text-2xl font-bold border-2
+                                    px-14 py-2 text-center border-black">
+                                            <Typography
+                                                className="font-masferrerTitle text-lg font-bold uppercase"
+                                            >
+                                                No hay horario
+                                            </Typography>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
                             {schedule.map((subject, index) => (
                                 subject.Recreo ? (
                                     <tr key={`recreo-${index}`}>
@@ -300,13 +314,9 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
                                     <tr key={index}>
                                         {TABLE_HEAD.map((day, idx) => (
                                             subject[day].grade ? (
-                                                // Different color for any subject that is not free
                                                 <td key={idx} className="p-4 bg-transparent">
-                                                    <div className={`font-masferrer text-lg font-regular border-2
-                                                px-6 py-3 border-black ${subjectColors[subject[day].subject]}`}>
-                                                        <Typography
-                                                            className="font-masferrerTitle text-center text-lg font-bold"
-                                                        >
+                                                    <div className={`font-masferrer text-lg font-regular border-2 px-6 py-3 border-black ${getSubjectColor(subject[day].subject)}`}>
+                                                        <Typography className="font-masferrerTitle text-center text-lg font-bold">
                                                             {subject[day].subject}
                                                         </Typography>
                                                     </div>

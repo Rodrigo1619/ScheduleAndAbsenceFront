@@ -1,21 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import {
-    Button,
-    Dialog,
-    DialogHeader,
-    DialogBody,
-    DialogFooter,
-    Typography
-} from "@material-tailwind/react";
+
 import classes from "./AttendanceGlobalPage.module.css";
 import Header from "../../Components/Header/Header";
-import SideBarNav from "../../Components/SideBarNav/SideBarNav";
 import TableAttendanceComponent from '../../Components/TableGlobalAttendance/TableGlobalAttendanceComponent';
-import { shiftService } from '../../Services/shiftService';
 import { useUserContext } from '../../Context/userContext';
 import { classroomService } from '../../Services/classroomService';
-import { absenceRecordService } from '../../Services/absenceRecordService'; // Importar el servicio de absenceRecordService
+import { absenceRecordService } from '../../Services/absenceRecordService'; 
 
 const tableHeaders = ["", "NIE", "Nombre", "Inasistencia Total", "No justificada", "Justificada"];
 const tableKeys = ["student.nie", "student.name", "totalAbsences", "unjustifiedAbsences", "justifiedAbsences"];
@@ -31,7 +22,7 @@ const AttendanceGlobalPage = () => {
     const [selectedShift, setSelectedShift] = useState(shiftId || "Matutino");
     const [shiftName, setShiftName] = useState("");
     const [classroomGrade, setClassroomGrade] = useState("");
-    const [tableData, setTableData] = useState([]); // Estado para almacenar los datos de los estudiantes ausentes
+    const [tableData, setTableData] = useState([]); 
     const { token, user } = useUserContext();
 
     useEffect(() => {
@@ -42,7 +33,7 @@ const AttendanceGlobalPage = () => {
                     const classroom = classrooms.find(c => c.id === classroomId);
                     if (classroom) {
                         setClassroomGrade(classroom.grade.name);
-                        setShiftName(classroom.shift.name);
+                        setShiftName(classroom.grade.shift.name);
                     }
                 }
             } catch (error) {

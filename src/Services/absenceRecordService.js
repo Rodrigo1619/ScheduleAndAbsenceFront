@@ -11,7 +11,9 @@ export const absenceRecordService = {
                 },
             });
     
-            if (!response.ok) {
+            if(response.status === 204){
+                return [];
+            }else if (!response.ok) {
                 throw new Error(response.status);
             }
     
@@ -96,7 +98,7 @@ export const absenceRecordService = {
     },
     editAbsenceRecord: async (token, absenceRecord) => {
         try {
-            const response = await fetch(`${BASE_URL}/absence_record/edit/${absenceRecord.id}`, {
+            const response = await fetch(`${BASE_URL}/absence_record/${absenceRecord.id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -146,9 +148,9 @@ export const absenceRecordService = {
             throw (error);
         }
     },
-    getAllAbsentStudentsByYear: async (studentId, token, year) => {
+    getAllAbsentStudentsByYear: async (classroomId, token, year) => {
         try {
-            const response = await fetch(`${BASE_URL}/absence_record/all-absent-student/${studentId}?year=${year}`, {
+            const response = await fetch(`${BASE_URL}/absence_record/absent-student-count/${classroomId}?year=${year}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

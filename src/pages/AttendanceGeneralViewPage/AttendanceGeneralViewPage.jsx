@@ -16,7 +16,7 @@ import { classroomService } from '../../Services/classroomService';
 import { useUserContext } from '../../Context/userContext';
 
 const tableHeaders = ["", "ID", "Salón", "Turno", "Inasistencia Diaria", "Inasistencia Global"];
-const tableKeys = ["id", "grade.name", "shift.name"];
+const tableKeys = ["id", "grade.name", "grade.shift.name"];
 
 const AttendanceGeneralViewPage = () => {
     const currentYear = new Date().getFullYear();
@@ -47,12 +47,16 @@ const AttendanceGeneralViewPage = () => {
             if (token && selectedYear && selectedShift !== "Seleccionar turno") {
                 try {
                     let classrooms;
-                    if (user && user.role && user.role.name !== 'Profesor') {
-                        classrooms = await classroomService.getClassrooms(token, selectedYear, selectedShift);
-                    } else {
+                    if (user && user.role && user.role.name === 'Profesor') {
                         classrooms = await classroomService.getClassroomsByUserYearAndShift(token, selectedYear, selectedShift);
+
+                    } else {
+                        classrooms = await classroomService.getClassrooms(token, selectedYear, selectedShift);
                     }
-                    setTableData(classrooms || []);
+
+                    const formatedData = classrooms.filter(classroom => { return classroom.grade.shift.id === selectedShift });
+
+                    setTableData(formatedData || []);
                 } catch (error) {
                     console.error("Error fetching classrooms:", error);
                     setTableData([]);

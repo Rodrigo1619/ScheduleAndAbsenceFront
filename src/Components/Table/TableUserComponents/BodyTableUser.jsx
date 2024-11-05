@@ -5,7 +5,9 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { IoMdCheckmarkCircleOutline, IoMdCloseCircleOutline } from "react-icons/io";
 import styles from "./BodyTableUser.module.css";
 
-const BodyTableUser = ({ TABLE_HEAD, USERS, selectedRows, handleCheckboxChange, handleUpdate, handleDelete, handleStatus, noChange = true, showUpdateButton = true, isFromClassroom = false }) => {
+const BodyTableUser = ({ TABLE_HEAD, USERS, selectedRows, handleCheckboxChange, handleUpdate, 
+    handleDelete, handleStatus, noChange = true, showUpdateButton = true, isFromClassroom = false,
+editStatus = true }) => {
     console.log("en la tabla", USERS);
     return (
         <CardBody className={`${styles["table-container"]} px-0 py-1 overflow-scroll`}>
@@ -55,7 +57,7 @@ const BodyTableUser = ({ TABLE_HEAD, USERS, selectedRows, handleCheckboxChange, 
                                                     href="#"
                                                     variant="small"
                                                     className="font-medium"
-                                                    onClick={() => handleStatus(row)}>
+                                                    onClick={editStatus ? () => handleStatus(row) : undefined}>
                                                     {value ? (
                                                         <IoMdCheckmarkCircleOutline size={24} color={"green"} />
                                                     ) : (

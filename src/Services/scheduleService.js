@@ -78,7 +78,7 @@ export const scheduleService = {
             
 
             if (!response.ok) {
-                throw new Error('Hubo un error al crear el horario: ' + response.status);
+                throw new Error('Error: ' + response.status);
             }
 
             return response.text();
@@ -89,31 +89,26 @@ export const scheduleService = {
         
     },
 
-    updateSchedule: async (id, schedule, token) => {
+    updateSchedule: async (token, schedules) => {
         try {
-            const response = await fetch(`${BASE_URL}/schedule/${id}`, {
+            const response = await fetch(`${BASE_URL}/schedule/`, {
                 method: 'PATCH',
-                body: JSON.stringify({
-                    id_userxsubject: schedule.id_userxsubject,
-                    id_classroom: schedule.id_classroom,
-                    startHour: schedule.startHour,
-                    endHour: schedule.endHour
-                }),
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
                 },
+                body: JSON.stringify(schedules)
             });
-        
+
             if (!response.ok) {
-                throw new Error('Error updating schedule: ' + response.status);
+                throw new Error('Error: ' + response.status);
             }
-        
+
             return response.text();
             
         } catch (error) {
             console.log(`Hubo un error al actualizar el horario: ${error}`);
-            throw error; // Esto permite que los componentes que llaman a esta función capturen y manejen el error
+            throw error;
         }
     },
 
@@ -149,7 +144,9 @@ export const scheduleService = {
                 }
             });
 
-            if(!response.ok){
+            if(response.status === 204){
+                return null;
+            } else if(!response.ok){
                 throw new Error('Error getting schedule: ' + response.status);
             }
 
@@ -159,7 +156,9 @@ export const scheduleService = {
         } catch (error) {
             throw error;
         }
-    },getAllSchedule: async (token) => {
+    },
+    
+    getAllSchedule: async (token) => {
         try {
             const response = await fetch(`${BASE_URL}/schedule/all`, {
                 method: 'GET',
@@ -223,8 +222,10 @@ export const scheduleService = {
                 }
             });
 
-            if (!response.ok) {
-                throw new Error('Error getting schedule: ' + response.status);
+            if(response.status === 204){
+                return null;
+            } else if (!response.ok) {
+                throw new Error('Error: ' + response.status);
             }
 
             const data = await response.json();

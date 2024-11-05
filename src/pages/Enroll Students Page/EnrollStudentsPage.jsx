@@ -44,7 +44,7 @@ const EnrollStudentsPage = () => {
 
     const fetchEnrolledStudents = async () => {
         try {
-            const data = await classroomService.getEnrollmentsByGradeandShift(token, classroom.grade.id, classroom.shift.id, classroom.year);
+            const data = await classroomService.getEnrollmentsByClassroom(token, classroom.id);
             console.log("Data: ", data);
             setStudents(data.map((student) => ({
                 id: student.student.id,
@@ -160,10 +160,10 @@ const EnrollStudentsPage = () => {
                             <div className={[classes["SubtitleContainer"]]}>
                             <StudentListEnrollment students={students} classroom={true} classroomName={classroom} updateSelectedStudents={updateSelectedStudents}/>
                             </div>
-                            <div className="flex flex-col justify-center items-center">
-                            <Dialog open={open} handler={handleOpenDialog} >
-                                <DialogHeader> Busqueda de Alumnos por Aula </DialogHeader>
-                                <DialogBody className="overflow-auto h-auto"> 
+                            <div className="flex flex-col justify-center items-center mx-auto">
+                            <Dialog open={open} handler={handleOpenDialog} className="overflow-auto h-CarouselItemPC-1920*1080" >
+                                <DialogHeader className="justify-center items-center text-center"> Busqueda de Alumnos por Aula </DialogHeader>
+                                <DialogBody className="flex justify-center h-auto items-center mx-auto"> 
                                     <PopulateClassForm fromDialog={true} onSuccess={handleCreateSuccess} setClassroom={setClassroomName} />
                                 </DialogBody>
                                 <DialogFooter>
