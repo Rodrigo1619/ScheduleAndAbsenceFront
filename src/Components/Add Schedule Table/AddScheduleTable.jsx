@@ -248,27 +248,40 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
     };
 
     const checkTeacherConflict = async (teacherId, hourStart, hourEnd, weekdayId, token, yearSelected, gradeSelected, classPeriodId, classroomConfigurationId) => {
-        try {
-            // Obtener los horarios del profesor
+              // Obtener los horarios del profesor
+
             const schedule = await scheduleService.getScheduleByUserId(token, teacherId, yearSelected);
 
-    
-            const conflict = schedule.some((entry) =>
-            (entry.schedules.some((sched) => {
-                    return sched.classroomConfiguration.classPeriod.id === classPeriodId &&
-                        sched.weekday.id === weekdayId &&
-                        sched.classroomConfiguration.id !== classroomConfigurationId;
-                })) && 
-            (entry.classroom.grade.shift.id === shiftSelected.id &&
-                entry.classroom.id !== gradeSelected.id)
+             console.log("Teacher schedule: ", schedule);
+
+              const conflict = schedule.some((entry) =>
+
+                   entry.schedules.some((sched) => {
+
+                        const schedStart = sched.classroomConfiguration.hourStart;
+
+                         const schedEnd = sched.classroomConfiguration.hourEnd;
+
+                          return  sched.classroomConfiguration.id !== classroomConfigurationId &&
+
+                                sched.weekday.id === weekdayId &&
+
+                                 ((schedStart <= hourStart && schedEnd > hourStart) ||
+
+                                      (schedStart < hourEnd && schedEnd >= hourEnd) ||
+
+                                       (schedStart >= hourStart && schedEnd <= hourEnd) ||
+
+                                        (schedStart === hourStart && schedEnd === hourEnd));
+
+                    })
+
             );
-    
+
             return conflict;
-        } catch (error) {
-            console.error('Error checking teacher conflict:', error);
-            return false; // En caso de error, devuelve falso para no bloquear la asignación
-        }
+
     };
+
     
 
     const handleAddGradeSubjectToSchedule = async (e, day, index, hourStart, hourEnd) => {

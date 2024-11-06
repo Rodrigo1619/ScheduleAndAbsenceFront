@@ -19,7 +19,6 @@ const HourDynamicTable = ({ hourConfiguration}) => {
          return acc;
      }, {});
 
-     console.log("Schedule mapping el otro: ", scheduleMapping);
 
 
      const SUBJECTS = scheduleMapping ? Object.keys(scheduleMapping).map((key) => {
