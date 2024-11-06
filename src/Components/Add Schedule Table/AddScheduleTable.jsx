@@ -549,6 +549,7 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
             } else if (scheduleToDelete.length === 0 && scheduleToCreate.length > 0) {
                 await createSchedule(scheduleToCreate);
             }
+            initializeSchedule(token, hourConfiguration, classPeriod);
         }
         catch (error) {
             console.log("Error saving schedule: ", error);
@@ -566,30 +567,46 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
     const handleSaveSchedule = async () => {
         console.log("Schedule to create: ", scheduleToCreate);
         console.log("Schedule to delete: ", scheduleToDelete);
-        if (scheduleToCreate.length > 0 || scheduleToDelete.length > 0) {
-            saveSchedule(scheduleToCreate, scheduleToDelete);
-            initializeSchedule(token, hourConfiguration, classPeriod);
-        }
+            saveSchedule(scheduleToCreate, scheduleToDelete);    
     };
-
 
     const TABLE_HEAD = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
 
+    const [selectedDay, setSelectedDay] = useState(TABLE_HEAD[0]); // Día seleccionado por defecto: Lunes
+
+    const handleDayChange = (event) => {
+        setSelectedDay(event.target.value);
+    };
+
+    
+
     return (
         <div className={classes["generalCardContainer"]}>
-            <CardBody className="flex flex-col bg-white border-2 border-black border-opacity-75 px-2 py-1">
-                <div className="flex flex-row justify-center items-center mx-auto">
+            {/* Selector de día solo visible en dispositivos móviles */}
+            <div className="block md:hidden mb-4 w-48 justify-center items-center mx-auto">
+                    <label htmlFor="day-select" className="block text-sm font-bold mb-2">Seleccione un día:</label>
+                    <select
+                        id="day-select"
+                        value={selectedDay}
+                        onChange={handleDayChange}
+                        className="w-full border border-gray-400 rounded px-2 py-1"
+                    >
+                        {TABLE_HEAD.map((day) => (
+                            <option key={day} value={day}>{day}</option>
+                        ))}
+                    </select>
+                </div>
+            <CardBody className="flex flex-col bg-white border-2 border-black border-opacity-75 overflow-auto px-2 py-1 mx-4">
                 <Toaster />
+                {/* Tabla completa para dispositivos grandes */}
+                <div className="hidden md:flex flex-row justify-center items-center mx-auto ">
                     <table className="table-auto text-left w-max">
                         <thead>
                             <tr>
                                 {TABLE_HEAD.map((head, index) => (
                                     <th key={index} className="p-4 bg-transparent">
-                                        <div className="font-masferrer text-xl font-regular border-2 
-                                    px-14 py-2 border-black">
-                                            <Typography
-                                                className="font-masferrerTitle text-center text-xl font-bold"
-                                            >
+                                        <div className="font-masferrer text-xl font-regular border-2 px-14 py-2 border-black">
+                                            <Typography className="font-masferrerTitle text-center text-xl font-bold">
                                                 {head}
                                             </Typography>
                                         </div>
@@ -602,11 +619,8 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                                 subject.Recreo ? (
                                     <tr key={`recreo-${index}`}>
                                         <td colSpan={TABLE_HEAD.length} className="p-4 bg-transparent">
-                                            <div className="font-masferrer text-2xl font-bold border-2 
-                                    px-14 py-2 text-center border-black">
-                                                <Typography
-                                                    className="font-masferrerTitle text-lg font-bold uppercase"
-                                                >
+                                            <div className="font-masferrer text-2xl font-bold border-2 px-14 py-2 text-center border-black">
+                                                <Typography className="font-masferrerTitle text-lg font-bold uppercase">
                                                     {subject.Recreo}
                                                 </Typography>
                                             </div>
@@ -617,18 +631,13 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                                         {TABLE_HEAD.map((day, idx) => (
                                             <td key={idx} className="p-4 bg-transparent">
                                                 {subject[day].teacher ? (
-                                                    <div className="font-masferrer text-lg font-regular border-2 
-                                            px-4 py-2 border-black">
+                                                    <div className="font-masferrer text-lg font-regular border-2 px-4 py-2 border-black">
                                                         <div className="flex justify-center items-center mx-auto">
                                                             <div className="flex flex-col justify-center items-center mx-auto">
-                                                                <Typography
-                                                                    className="font-masferrerTitle font-bold text-center text-sm"
-                                                                >
+                                                                <Typography className="font-masferrerTitle font-bold text-center text-sm">
                                                                     {subject[day].teacher}
                                                                 </Typography>
-                                                                <Typography
-                                                                    className="font-masferrerTitle font-bold text-center text-sm"
-                                                                >
+                                                                <Typography className="font-masferrerTitle font-bold text-center text-sm">
                                                                     {subject[day].subject}
                                                                 </Typography>
                                                             </div>
@@ -650,8 +659,7 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                                                         </div>
                                                     </div>
                                                 ) : (
-                                                    <div className="flex items-center justify-center font-masferrer text-lg font-regular border-2 
-                                            px-6 py-2 border-black">
+                                                    <div className="flex items-center justify-center font-masferrer text-lg font-regular border-2 px-6 py-2 border-black">
                                                         <Button
                                                             color="lightBlue"
                                                             buttonType="filled"
@@ -660,8 +668,7 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                                                             block={false}
                                                             iconOnly={false}
                                                             ripple="light"
-                                                            className="w-auto justify-center text-center mx-auto 
-                                                bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg"
+                                                            className="w-auto justify-center text-center mx-auto bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg"
                                                             onClick={(e) => {
                                                                 handleAddGradeSubjectToSchedule(e, day, index, subject[day].hourStart, subject[day].hourEnd);
                                                             }}
@@ -680,15 +687,94 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                     </table>
                     <HourDynamicTable hourConfiguration={hourConfiguration} />
                 </div>
+
+                {/* Tabla filtrada para dispositivos móviles */}
+                <div className="md:hidden flex flex-row overflow-auto">
+                    <table className="table-auto text-left w-full overflow-auto">
+                        <thead>
+                            <tr>
+                                <th className="p-4 bg-transparent">
+                                    <Typography className="font-masferrerTitle text-center text-xl font-bold">
+                                        {selectedDay}
+                                    </Typography>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {schedule.map((subject, index) => (
+                                subject.Recreo ? (
+                                    <tr key={`recreo-${index}`}>
+                                        <td className="p-4 bg-transparent">
+                                            <div className="font-masferrer text-2xl font-bold border-2 px-14 py-2 text-center border-black">
+                                                <Typography className="font-masferrerTitle text-base font-bold uppercase">
+                                                    {subject.Recreo}
+                                                </Typography>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    <tr key={index}>
+                                        <td className="p-4 bg-transparent">
+                                            {subject[selectedDay].teacher ? (
+                                                <div className="flex flex-row font-masferrer text-lg font-regular border-2 px-1 py-1 border-black">
+                                                    <div className="flex flex-col justify-center items-center mx-auto">
+                                                        <Typography className="font-masferrerTitle font-bold text-center text-xs">
+                                                            {subject[selectedDay].teacher}
+                                                        </Typography>
+                                                        <Typography className="font-masferrerTitle font-bold text-center text-xs">
+                                                            {subject[selectedDay].subject}
+                                                        </Typography>
+                                                    </div>
+                                                    <Button
+                                                                color="lightBlue"
+                                                                buttonType="filled"
+                                                                size="small"
+                                                                rounded={false}
+                                                                block={false}
+                                                                iconOnly={false}
+                                                                onClick={(e) => {
+                                                                    handleDeleteSubjectFromSchedule(e, selectedDay, index, subject[selectedDay].hourStart, subject[selectedDay].hourEnd);
+                                                                }}
+                                                                ripple="light"
+                                                                className="w-auto h-fit justify-center m-auto bg-red-300 hover:bg-red-700 text-white font-bold rounded-lg py-2 px-2 mx-2"
+                                                            >
+                                                                <TrashIcon className="h-2 w-2" />
+                                                            </Button>
+                                                </div>
+                                            ) : (
+                                                <div className="flex items-center justify-center font-masferrer text-lg font-regular border-2 px-6 py-2 border-black">
+                                                    <Button
+                                                        color="lightBlue"
+                                                        buttonType="filled"
+                                                        size="regular"
+                                                        rounded={false}
+                                                        block={false}
+                                                        iconOnly={false}
+                                                        ripple="light"
+                                                        className="w-auto justify-center text-center mx-auto bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg"
+                                                        onClick={(e) => {
+                                                            handleAddGradeSubjectToSchedule(e, selectedDay, index, subject[selectedDay].hourStart, subject[selectedDay].hourEnd);
+                                                        }}
+                                                    >
+                                                        <PlusIcon className="h-5 w-5" />
+                                                    </Button>
+                                                    {renderWarningIcon(selectedDay, index)}
+                                                </div>
+                                            )}
+                                        </td>
+                                    </tr>
+                                )
+                            ))}
+                        </tbody>
+                    </table>
+                    <HourDynamicTable hourConfiguration={hourConfiguration} />
+                </div>
                 <div className="flex flex-row justify-end items-center mx-auto">
-                    <Button
-                        className="w-auto bg-red-500 hover:bg-red-700 text-white font-bold py-4 px-4 rounded-lg"
-                    >
+                    <Button className="w-auto bg-red-500 hover:bg-red-700 text-white font-bold py-4 px-4 rounded-lg">
                         Cancelar
                     </Button>
                     <Button
-                        className="w-auto mx-4 bg-blueMasferrer bg-opacity-85 hover:bg-opacity-100 
-                text-white font-bold py-4 px-4 rounded-lg"
+                        className="w-auto mx-4 bg-blueMasferrer bg-opacity-85 hover:bg-opacity-100 text-white font-bold py-4 px-4 rounded-lg"
                         onClick={handleSaveSchedule}
                     >
                         Guardar

@@ -7,14 +7,15 @@ import styles from "./BodyTableUser.module.css";
 
 const BodyTableUser = ({ TABLE_HEAD, USERS, selectedRows, handleCheckboxChange, handleUpdate, 
     handleDelete, handleStatus, noChange = true, showUpdateButton = true, isFromClassroom = false,
-editStatus = true }) => {
+editStatus = true, enroll = false, populate = false }) => {
     console.log("en la tabla", USERS);
+    const tableHead = populate ? TABLE_HEAD.slice(1) : (enroll ? ["", ...TABLE_HEAD.slice(2)] : TABLE_HEAD);
     return (
         <CardBody className={`${styles["table-container"]} px-0 py-1 overflow-scroll`}>
             <table className={`${styles.table} text-left`}>
                 <thead>
                     <tr>
-                        {TABLE_HEAD.map((head, index) => (
+                        {tableHead.map((head, index) => (
                             <th key={index} className="bg-blue-gray-50 p-4">
                                 <Typography
                                     variant="small"
@@ -31,16 +32,17 @@ editStatus = true }) => {
                     {
                         USERS.length === 0 ? (
                             <tr>
-                                <td colSpan={TABLE_HEAD.length} className="p-4">
+                                <td colSpan={tableHead.length} className="p-4">
                                     <Typography variant="small" color="blue-gray" className="font-masferrer text-center">
                                         No hay datos para mostrar
                                     </Typography>
                                 </td>
                             </tr>
                         ) : (
-                            USERS.map((row, index) => (
-                                <tr key={index} className={selectedRows.some(selected => selected.id === row.id) ? styles["selected-row"] : ""}>
-                                    {noChange &&
+                            USERS.map((row, index) => {
+                                const rowData = populate ? { ...row, [Object.keys(row)[0]]: undefined } : (enroll ? Object.fromEntries(Object.entries(row).slice(2)) : row);
+                                return (
+                                    <tr key={index} className={selectedRows.some(selected => selected.id === row.id) ? styles["selected-row"] : ""}>
                                         <td className="p-4">
                                             <input
                                                 type="checkbox"
@@ -48,63 +50,63 @@ editStatus = true }) => {
                                                 onChange={() => handleCheckboxChange(row)}
                                             />
                                         </td>
-                                    }
-                                    {Object.entries(row).map(([key, value]) => (
-                                        <td className="p-4" key={key}>
-                                            {key === "active" ? (
+                                        {Object.entries(rowData).map(([key, value]) => (
+                                            <td className="p-4" key={key}>
+                                                {key === "active" ? (
+                                                    <Typography
+                                                        as={"a"}
+                                                        href="#"
+                                                        variant="small"
+                                                        className="font-medium"
+                                                        onClick={editStatus ? () => handleStatus(row) : undefined}>
+                                                        {value ? (
+                                                            <IoMdCheckmarkCircleOutline size={24} color={"green"} />
+                                                        ) : (
+                                                            <IoMdCloseCircleOutline size={24} color={"red"} />
+                                                        )}
+                                                    </Typography>
+                                                ) : typeof value === 'object' ? (
+                                                    <Typography variant="small" color="blue-gray" className="font-normal">
+                                                        {value && value.name ? value.name : "N/A"}
+                                                    </Typography>
+                                                ) : (
+                                                    <Typography variant="small" color="blue-gray" className="font-normal">
+                                                        {value}
+                                                    </Typography>
+                                                )}
+                                            </td>
+                                        ))}
+                                        {showUpdateButton && noChange && !isFromClassroom &&
+                                            <td className="p-4 w-auto">
                                                 <Typography
-                                                    as={"a"}
+                                                    as="a"
                                                     href="#"
                                                     variant="small"
+                                                    color="blue-gray"
                                                     className="font-medium"
-                                                    onClick={editStatus ? () => handleStatus(row) : undefined}>
-                                                    {value ? (
-                                                        <IoMdCheckmarkCircleOutline size={24} color={"green"} />
-                                                    ) : (
-                                                        <IoMdCloseCircleOutline size={24} color={"red"} />
-                                                    )}
+                                                    onClick={() => handleUpdate(row)}
+                                                >
+                                                    <MdOutlineEdit size={24} />
                                                 </Typography>
-                                            ) : typeof value === 'object' ? (
-                                                <Typography variant="small" color="blue-gray" className="font-normal">
-                                                    {value && value.name ? value.name : "N/A"}
+                                            </td>
+                                        }
+                                        {noChange && !isFromClassroom &&
+                                            <td className="p-4 w-auto">
+                                                <Typography
+                                                    as="a"
+                                                    href="#"
+                                                    variant="small"
+                                                    color="blue-gray"
+                                                    className="font-medium"
+                                                    onClick={() => handleDelete(row)}
+                                                >
+                                                    <RiDeleteBin6Line size={24} />
                                                 </Typography>
-                                            ) : (
-                                                <Typography variant="small" color="blue-gray" className="font-normal">
-                                                    {value}
-                                                </Typography>
-                                            )}
-                                        </td>
-                                    ))}
-                                    {showUpdateButton && noChange && !isFromClassroom &&
-                                        <td className="p-4 w-auto">
-                                            <Typography
-                                                as="a"
-                                                href="#"
-                                                variant="small"
-                                                color="blue-gray"
-                                                className="font-medium"
-                                                onClick={() => handleUpdate(row)}
-                                            >
-                                                <MdOutlineEdit size={24} />
-                                            </Typography>
-                                        </td>
-                                    }
-                                    {noChange && !isFromClassroom &&
-                                        <td className="p-4 w-auto">
-                                            <Typography
-                                                as="a"
-                                                href="#"
-                                                variant="small"
-                                                color="blue-gray"
-                                                className="font-medium"
-                                                onClick={() => handleDelete(row)}
-                                            >
-                                                <RiDeleteBin6Line size={24} />
-                                            </Typography>
-                                        </td>
-                                    }
-                                </tr>
-                            ))
+                                            </td>
+                                        }
+                                    </tr>
+                                );
+                            })
                         )
                     }
                 </tbody>

@@ -58,3 +58,7 @@
     Mobile-280:my-0 Mobile-280:mx-2 Mobile-280:px-20 Mobile-280:w-auto Mobile-280:h-auto
     IpadAir:my-0 IpadAir:mx-0 IpadAir:px-4 IpadAir:w-auto IpadAir:h-auto
 }
+
+.formContainer {
+    @apply flex flex-col w-full items-center justify-center mx-2 my-2;
+}

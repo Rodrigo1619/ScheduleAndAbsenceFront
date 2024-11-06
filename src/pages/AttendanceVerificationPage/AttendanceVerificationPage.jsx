@@ -117,6 +117,14 @@ const AttendanceVerificationViewPage = () => {
         }, 1500);
     }, [selectedDate, token, user]);
 
+    const handleRole = () => {
+        if ( user?.role.name === "Profesor" || user?.role.name === "Coordinador" ){
+            return true;
+        }else {
+            return false;
+        }
+    };
+
     const formatDateForInput = (date) => {
         return date.toISOString().split('T')[0]; // YYYY-MM-DD
     };
@@ -259,15 +267,23 @@ const AttendanceVerificationViewPage = () => {
                                     →
                                 </button>
                             </div>
-                            {/* Selector de turno con estilos personalizados */}
                             <div className={classes["yearSelect"]}>
                                 <p>Profesor: {teacherValidation ? "Verificado" : "Sin Verificar"}</p>
                                 <p>Coordinador: {coordinationValidation ? "Verificado" : "Sin Verificar"}</p>
                             </div>
-                            {/* Botón Verificar */}
-                            <Button onClick={handleOpenDialog} className={classes["yearSelect"]}>
-                                Verificar
-                            </Button>
+                            {
+                                handleRole() ? (
+                                    <Button 
+                                        onClick={handleOpenDialog} 
+                                        className={classes["yearSelect"]}>
+                                        Verificar
+                                    </Button>
+                                ) : (
+                                    <Button className={classes["yearSelect"]} disabled>
+                                        Verificar
+                                    </Button>
+                                )
+                            }
                         </div>
                         <div className={classes["pageContentContainerRow"]}>
                             <div className={classes["SubtitleContainer"]}>
@@ -278,7 +294,7 @@ const AttendanceVerificationViewPage = () => {
                                     tableData={abscentStudentList}
                                     tableKeys={tableKeys}
                                     absenceRecordDetails={absenceRecord}
-                                    rowsPerPageOptions={[5, 10, 15]} // Opciones para paginación
+                                    rowsPerPageOptions={[5, 10, 15]} 
                                     isDownload={true}
                                 />
                             </div>

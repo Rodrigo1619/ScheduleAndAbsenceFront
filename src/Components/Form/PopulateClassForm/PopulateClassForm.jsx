@@ -389,7 +389,8 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
                                         }))}
                                         onChange={handleSelectClassroomChange}
                                         placeholder="Seleccione un salon de clases"
-                                        className=" Mobile-280:w-full text-black"
+                                        className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20"
+                                        menuPlacement='top'
                                     />
             </div>
             <div className="button-container">

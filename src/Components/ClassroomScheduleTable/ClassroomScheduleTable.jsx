@@ -12,18 +12,6 @@ import { notification } from 'antd';
 import { classPeriodService } from '../../Services/classPeriodService';
 import HourDynamicTable from '../HourDynamicTable/HourDynamicTable';
 
-    // Generador de colores (puedes modificar la paleta)
-    const generateRandomColor = () => {
-        const colors = [
-            'bg-blue-400', 'bg-yellow-400', 'bg-green-400', 'bg-red-400',
-            'bg-purple-400', 'bg-pink-400', 'bg-gray-400', 'bg-indigo-400',
-            'bg-blue-500', 'bg-yellow-500', 'bg-green-500', 'bg-red-500',
-            'bg-purple-500', 'bg-pink-500', 'bg-gray-500', 'bg-indigo-500',
-            'bg-blue-600', 'bg-yellow-600', 'bg-green-600', 'bg-red-600',
-            'bg-purple-600', 'bg-pink-600', 'bg-gray-600', 'bg-indigo-600',
-        ];
-        return colors[Math.floor(Math.random() * colors.length)];
-    };
 
 
 const ClassroomScheduleTable = ({ grade, shift, year }) => {
@@ -35,7 +23,24 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
     const [weekdays, setWeekdays] = useState([]);
     const [hourConfiguration, setHourConfiguration] = useState([]);
     const [classPeriod, setClassPeriod] = useState([]);
+    const [scheduleEmpty, setScheduleEmpty] = useState(true);
     const { token } = useUserContext();
+
+        // Generador de colores (puedes modificar la paleta)
+        const generateRandomColor = () => {
+            const colors = [
+                "bg-pastelPink", "bg-pastelOrange", "bg-pastelYellow", "bg-pastelGreen", "bg-pastelBlue",
+                "bg-pastelMint", "bg-pastelPurple", "bg-pastelLavender", "bg-pastelPeach",
+                "bg-pastelSky", "bg-pastelCoral", "bg-pastelLemon", "bg-pastelLilac", "bg-pastelAqua",
+                "bg-pastelRose", "bg-pastelLime", "bg-pastelCream"
+            ];
+            let color;
+            do {
+                color = colors[Math.floor(Math.random() * colors.length)];
+            } while (Object.values(subjectColorMap).includes(color));
+            return color;
+        };
+    
 
     const defaultSubject = {
         teacher: "",
@@ -66,11 +71,13 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
                     if(response){
                         console.log("Hour configuration: ", response[0].classroomConfigurations);
                         setHourConfiguration(response[0].classroomConfigurations);
+                        setScheduleEmpty(false);
                     } else if ( response === null) {
                         console.log("No hour configuration found for the classroom");
                         notification.warning({ message: "No se ha configurado las horas para el aula seleccionada" });
                         setHourConfiguration([]);
                         setSchedule([]);
+                        setScheduleEmpty(true);
                     }
                 } catch (error) {
                     console.log("Error fetching hour configuration: ", error);
@@ -255,16 +262,37 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
 
     const TABLE_HEAD = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
 
+    const [selectedDay, setSelectedDay] = useState(TABLE_HEAD[0]); // Día seleccionado por defecto: Lunes
+
+    const handleDayChange = (event) => {
+        setSelectedDay(event.target.value);
+    };
+
     return (
         <div className={classes["generalCardContainer"]}>
-            <CardBody className="flex flex-col bg-white border-2 border-black border-opacity-75 px-2 py-1">
+            {/* Selector de día solo visible en dispositivos móviles */}
+            <div className="block md:hidden mb-4 w-48 justify-center items-center mx-auto">
+                    <label htmlFor="day-select" className="block text-sm font-bold mb-2">Seleccione un día:</label>
+                    <select
+                        id="day-select"
+                        value={selectedDay}
+                        onChange={handleDayChange}
+                        className="w-full border border-gray-400 rounded px-2 py-1"
+                    >
+                        {TABLE_HEAD.map((day) => (
+                            <option key={day} value={day}>{day}</option>
+                        ))}
+                    </select>
+                </div>
+            <CardBody className="flex flex-col bg-white border-2 border-black border-opacity-75 overflow-auto px-2 py-1">
                 <Typography className='font-masferrerTitle font-bold text-lg'>
                 {grade?.grade ? `Horario de ${grade?.grade.name} - ${grade?.grade.shift.name}` : 
                 "Horario del salón de clases"
                 }
             </Typography>
-                <div className="flex flex-row justify-center items-center mx-auto">
-                    <table className="table-auto text-left w-max">
+                <div className="flex flex-row justify-center items-center mx-auto Mobile-390*844:hidden Mobile-280:hidden">
+                    {/* Tabla completa para dispositivos grandes */}
+                    <table className="table-auto text-left w-max Mobile-390*844:hidden Mobile-280:hidden">
                         <thead>
                             <tr>
                                 {TABLE_HEAD.map((head, index) => (
@@ -282,7 +310,7 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {schedule.length === 0 && (
+                            {scheduleEmpty && (
                                 <tr>
                                     <td colSpan={TABLE_HEAD.length} className="p-4 bg-transparent">
                                         <div className="font-masferrer text-2xl font-bold border-2
@@ -296,7 +324,7 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
                                     </td>
                                 </tr>
                             )}
-                            {schedule.map((subject, index) => (
+                            {!scheduleEmpty && schedule.map((subject, index) => (
                                 subject.Recreo ? (
                                     <tr key={`recreo-${index}`}>
                                         <td colSpan={TABLE_HEAD.length} className="p-4 bg-transparent">
@@ -344,6 +372,77 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
                     </table>
                     <HourDynamicTable hourConfiguration={hourConfiguration} />
                 </div>
+                {/* Tabla filtrada para dispositivos móviles */}
+
+                <div className="md:hidden flex flex-row overflow-auto">
+                <table className="table-auto text-left w-full overflow-auto">
+                <thead>
+                            <tr>
+                                <th className="p-4 bg-transparent">
+                                    <Typography className="font-masferrerTitle text-center text-xl font-bold">
+                                        {selectedDay}
+                                    </Typography>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {scheduleEmpty && (
+                                <tr>
+                                    <td colSpan={TABLE_HEAD.length} className="p-4 bg-transparent">
+                                        <div className="font-masferrer text-2xl font-bold border-2
+                                    px-14 py-2 text-center border-black">
+                                            <Typography
+                                                className="font-masferrerTitle text-lg font-bold uppercase"
+                                            >
+                                                No hay horario
+                                            </Typography>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
+                            {!scheduleEmpty && schedule.map((subject, index) => (
+                                subject.Recreo ? (
+                                    <tr key={`recreo-${index}`}>
+                                        <td className="p-4 bg-transparent">
+                                            <div className="font-masferrer text-2xl font-bold border-2 px-14 py-2 text-center border-black">
+                                                <Typography className="font-masferrerTitle text-base font-bold uppercase">
+                                                    {subject.Recreo}
+                                                </Typography>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    <tr key={index}>
+                                        <td key={index} className="p-4 bg-transparent mt-2">
+                                            {subject[selectedDay].grade ? (
+                                                <div className={`font-masferrer text-lg font-regular border-2 px-4 py-2 max-h-14 overflow-auto
+                                                border-black ${getSubjectColor(subject[selectedDay].subject)}`}>
+                                                    <Typography className="font-masferrerTitle font-bold text-center text-base">
+                                                        {subject[selectedDay].subject}
+                                                    </Typography>
+                                                </div>
+                                            ) : (
+                                                <div className="font-masferrer text-base font-regular border-2 
+                                                px-4 py-3 border-black bg-orange-400">
+                                                    <div className="flex justify-center items-center mx-auto">
+                                                        <Typography
+                                                            className="font-masferrerTitle text-center text-lg font-bold"
+                                                        >
+                                                            LIBRE
+                                                        </Typography>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </td>
+                                    </tr>
+                                )
+                            ))}
+
+                        </tbody>
+                    </table>
+                    <HourDynamicTable hourConfiguration={hourConfiguration} />
+                </div>
+                    
             </CardBody>
         </div>
     );

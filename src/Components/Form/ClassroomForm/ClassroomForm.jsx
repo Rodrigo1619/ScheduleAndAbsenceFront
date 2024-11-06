@@ -177,8 +177,8 @@ const ClassroomForm = ({ classroom, editStatus = false, onSuccess }) => {
                         }))}
                     onChange={handleSelectTeacherChange}
                     placeholder="Seleccione un maestro"
-                    className=" Mobile-280:w-full text-black"
-                />
+                    className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20"
+                    />
             </div>
             <div className={classes["input-container"]}>
                 <label className={classes["label"]}>Turno:</label>
@@ -203,8 +203,8 @@ const ClassroomForm = ({ classroom, editStatus = false, onSuccess }) => {
                         }))}
                     onChange={handleSelectGradeChange}
                     placeholder="Seleccione un salon"
-                    className=" Mobile-280:w-full text-black"
-                />
+                    className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20"
+                    />
             </div>
             <div className={classes["input-container"]}>
                 <label className={classes["label"]}>Año:</label>

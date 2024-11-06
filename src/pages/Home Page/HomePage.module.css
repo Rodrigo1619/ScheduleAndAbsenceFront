@@ -73,9 +73,6 @@
     PC-800*600:w-CarouselItemPC-800*600
     PC-640*480:w-CarouselItemPC-640*480
     IpadAir:w-auto IpadAir:mx-auto IpadAir:px-0 IpadAir:justify-center IpadAir:items-center IpadAir:flex
-    Mobile-390*844:hidden
-    Mobile-390*844:p-4 
-    Mobile-280:hidden
-    Mobile-280:p-4
+
     ;
 }

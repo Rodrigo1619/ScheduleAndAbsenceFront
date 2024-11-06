@@ -1,3 +1,5 @@
 .generalCardContainer {
-  @apply flex flex-col justify-center mx-auto overflow-auto;
+  @apply flex flex-col justify-center mx-auto overflow-auto
+  Mobile-390*844:w-96
+  Mobile-280:w-96;
 }

@@ -43,7 +43,12 @@ const HourDynamicTable = ({ hourConfiguration}) => {
                                     <div className="font-masferrer text-xl font-regular border-2 
                                     px-2 py-1 border-black">
                                     <Typography
-                                        className="font-masferrerTitle text-center text-xl font-bold"
+                                        className="font-masferrerTitle text-center text-xl font-bold
+                                        Mobile-280:text-lg Mobile-280:font-bold Mobile-280:font-masferrerTitle
+                                        Mobile-390*844:text-lg Mobile-390*844:font-bold Mobile-390*844:font-masferrerTitle
+                                        Mobile-390*844:py-0
+                                        Mobile-280:py-0
+                                        "
                                     >
                                         {head}
                                     </Typography>
@@ -56,10 +61,16 @@ const HourDynamicTable = ({ hourConfiguration}) => {
                         {SUBJECTS.map((subject, index) => (
                             <tr key={index}>
                                 {Object.values(subject).map((value, index) => (
-                                    <td key={index} className="p-4 w-auto bg-transparent">
+                                    <td key={index} className="py-4 px-2 w-auto bg-transparent">
                                          <div className="flex font-masferrer text-lg font-regular border-2 
-                                                px-2 py-3 border-black">
-                                        <Typography className="font-masferrerTitle text-center font-bold mx-auto justify-center text-lg">{value}</Typography>
+                                                px-2 py-3 border-black
+                                                Mobile-280:text-lg Mobile-280:font-regular Mobile-280:font-masferrer
+                                                Mobile-390*844:text-lg Mobile-390*844:font-regular Mobile-390*844:font-masferrer
+                                                ">
+                                        <Typography className="font-masferrerTitle text-center font-bold mx-auto justify-center text-lg
+                                        Mobile-280:text-lg Mobile-280:font-bold Mobile-280:font-masferrerTitle
+                                        Mobile-390*844:text-lg Mobile-390*844:font-bold Mobile-390*844:font-masferrerTitle
+                                        ">{value}</Typography>
                                         </div>
                                     </td>
                                 ))}

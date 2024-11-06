@@ -136,7 +136,8 @@ const AddScheduleForm = () => {
 
     return (
         <div className={classes["form-container"]}>
-            <Card className='bg-transparent p-4 mx-4 border-0 shadow-none'>
+            <Card className='bg-transparent p-4 mx-4 border-0 shadow-none
+            '>
                 <div className={classes["form-container"]}>
                     <div className={classes["inputsContainer"]}> 
                 <div className={classes["input-container"]}>
@@ -169,7 +170,9 @@ const AddScheduleForm = () => {
                                         }))}
                                         onChange={handleSelectClassroomChange}
                                         placeholder="Seleccione un salon de clases"
-                                        className=" Mobile-280:w-full text-black"
+                                        className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20"
+                                        menuPlacement='top'
+                                        menuPortalTarget={document.body}
                                     />
                 </div>
                 <div className={classes["input-container"]}>
@@ -182,8 +185,10 @@ const AddScheduleForm = () => {
                     }))}
                     onChange={handleSelectSubjectChange}
                     placeholder="Seleccione una materia"
-                    className=" Mobile-280:w-full text-black"
-                />
+                    className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20"
+                    menuPlacement='top'
+                    menuPortalTarget={document.body}
+                    />
 
                 </div>
                 <div className={classes["input-container"]}>
@@ -196,8 +201,10 @@ const AddScheduleForm = () => {
                     }))}
                     onChange={handleSelectTeacherChange}
                     placeholder="Seleccione un profesor"
-                    className=" Mobile-280:w-full text-black"
-                />
+                    className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20"
+                    menuPlacement='top'
+                    menuPortalTarget={document.body}
+                    />
             </div>
                 </div>
             </div>

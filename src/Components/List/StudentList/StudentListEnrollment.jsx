@@ -12,14 +12,14 @@ import { Grid } from 'react-loader-spinner';
 
 const TABLE_HEAD = ["", "ID", "NIE", "Nombre Completo", "Estado", "",""];
 
-const TABLEH_Class = ["", "ID", "NIE", "Nombre Completo", "Estado"];
+const TABLEH_Class = ["", "", "", "NIE", "Nombre Completo", "Estado"];
 
-const TABLEH2_Class = ["", "ID", "IDEnrollment", "NIE", "Nombre Completo", "Salón Actual", "Matriculado en"];
+const TABLEH2_Class = ["", "", "NIE", "Nombre Completo", "Salón Actual", "Matriculado en"];
 
 const TABLE_KEYS = ["id", "nie", "fullName"];
 
 const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classroomName, 
-    updateSelectedStudents, populate }) => {
+    updateSelectedStudents, populate, enroll }) => {
     const { token } = useUserContext();
     const [enrolledStudents, setEnrolledStudents] = useState([]);
     const [enrolledClassrooms, setEnrolledClassrooms] = useState([]);
@@ -48,7 +48,7 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
                     name: student.student.name,
                     actualClassroom: student.classroom.grade.name + " - " + student.classroom.grade.shift.name
                      + " " + student.classroom.year,
-                    enrolled: student.enrolledClassroom ? student.enrolledClassroom.grade.name + " - " + student.enrolledClassroom.shift.name
+                    enrolled: student.enrolledClassroom ? student.enrolledClassroom.grade.name + " - " + student.enrolledClassroom.grade.shift.name
                         + " " + student.enrolledClassroom.year : "No matriculado"
                 })));
                 setTimeout(() => {
@@ -273,6 +273,8 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
                 handleStatus={handleOpenStatusDialog}
                 isFromClassroom={classroom}
                 editStatus={false}
+                enroll={enroll}
+                populate={populate}
             />
             <PaginationFooter 
                 rowsPerPage={rowsPerPage}

@@ -23,6 +23,7 @@ import { classroomService } from "../../Services/classroomService";
 import { scheduleService } from "../../Services/scheduleService";
 import { shiftService } from "../../Services/shiftService";
 import { classPeriodService } from "../../Services/classPeriodService";
+import { weekdayService } from "../../Services/weekdayService";
 
 const DayList = [
     { label: "Lunes", value: "Lunes"},
@@ -47,7 +48,9 @@ const TeacherSearch = () => {
     
     const selectedHourRef = useRef({id: "", name: ""});
     const [hour, setHour] = useState(null);
+    const selectedDayRef = useRef({value: "", label: ""});
     const [day, setDay] = useState(null);
+    const [DayList, setDayList] = useState([]);
 
 
     const [cardTeacher, setCardTeacher] = useState(null);
@@ -105,8 +108,25 @@ const TeacherSearch = () => {
             }
         };
 
+        const fetchDayList = async () => {
+            try {
+                
+                const data = await weekdayService.getWeekdays(token);
+
+                const formattedData = data.map((day) => ({
+                    label: day.day,
+                    value: day.id,
+                }));
+
+                setDayList(formattedData);
+            } catch (error) {
+                console.log("Hubo un error al obtener los dias de la semana" + error);
+            };
+        }
+
         fetchTeachers();
         fetchClassPeriod();
+        fetchDayList();
 
     }, [token]);
 
@@ -130,24 +150,28 @@ const TeacherSearch = () => {
     }, [shift, year, token]);
 
     const handleSelectHourChange = (e) => {
-        // se debe dar click 2 veces para mostrar el valor en el select, corregirlo
-
         const selectedHour = classPeriod.find(hour => hour.id === e);
         selectedHourRef.current = selectedHour;
         setHour(selectedHour);
 
-        console.log("La hora de clase seleccionada es: ", selectedHour.name);
+        console.log("La hora de clase seleccionada es: ", selectedHour.id, selectedHour.name);
     };
 
     const handleSelectDayChange = (e) => {
-        console.log("Dia de clase seleccionado: ", e);
         const selectedDay = DayList.find(day => day.value === e);
+        selectedDayRef.current = selectedDay;
         setDay(selectedDay);
 
-        console.log("El dia de clase cambio a: ", selectedDay.label);
+        console.log("El dia de clase cambio a: ", selectedDay.value, selectedDay.label);
     };
 
     const handleSelectTeacherChange = (e) => {
+
+        if(e === null){
+            setTeacher(null);
+            return;
+        }
+
         const selectedTeacher = teachersList.find((teacher) => teacher.id === e.value);
 
         
@@ -160,6 +184,12 @@ const TeacherSearch = () => {
     };
 
     const handleSelectClassroomChange = (e) => {
+
+        if(e === null){
+            setClassroom(null);
+            return;
+        }
+
         const selectedClassroom = classroomsList.find((classroom) => classroom.grade.id === e.value);
         
         if(selectedClassroom){
@@ -189,7 +219,7 @@ const TeacherSearch = () => {
                 let cardinfo = null;
                 data.forEach((teacherSchedule) => {
                     const foundSchedule = teacherSchedule.schedules.find((schedule) => 
-                        schedule.weekday.day === day.value &&
+                        schedule.weekday.id === day.value &&
                         schedule.classroomConfiguration.classPeriod.id === hour.id &&
                         teacherSchedule.classroom.grade.shift.id === shift.id);
                     if (foundSchedule) {
@@ -201,6 +231,13 @@ const TeacherSearch = () => {
 
                     console.log("Horario de clase encontrado")
                     console.log(cardinfo)
+
+                    notification.success({
+                        message: 'Exito!',
+                        description: "Busqueda realizada exitosamente",
+                        placement: 'bottomRight',
+                        duration: 2,
+                    });
 
                     setCardTeacher(cardinfo.user_x_subject.teacher.name);
                     setCardSubject(cardinfo.user_x_subject.subject.name);
@@ -248,19 +285,35 @@ const TeacherSearch = () => {
             try {
 
                 const classroomFound = await classroomService.getByParameters(token, year, classroom.value, shift.id);
-                console.log(`Turno: ${shift.id}<->${shift.name} Salon: ${classroomFound.id} ${classroomFound.grade.name}, Año: ${year}`)
+                console.log(`Turno: ${shift.id}<->${shift.name} Salon: ${classroomFound.id} ${classroomFound.grade.name}, Año: ${year}, Hora: ${hour.id} <-> ${hour.name}, Dia: ${day.value} <-> ${day.label}`);
     
                 const data = await scheduleService.getScheduleByClassroomId(token, classroomFound.id, year);
+
+                console.log("Horarios de clase encontrados", data);
     
-                const cardinfo = data[0].schedules.find((schedule) => 
-                    schedule.weekday.day === day.value &&
-                    schedule.classroomConfiguration.classPeriod.id === hour.id &&
-                    data[0].classroom.grade.shift.id === shift.id);
+                let cardinfo = null;
+
+                data.forEach((teacherSchedule) => {
+                    const foundSchedule = teacherSchedule.schedules.find((schedule) => 
+                        schedule.weekday.id === day.value &&
+                        schedule.classroomConfiguration.classPeriod.id === hour.id &&
+                        teacherSchedule.classroom.grade.shift.id === shift.id);
+                    if (foundSchedule) {
+                        cardinfo = foundSchedule;
+                    }
+                });
     
                 if(cardinfo){
     
                     console.log("Horario de clase encontrado")
                     console.log(cardinfo)
+
+                    notification.success({
+                        message: 'Exito!',
+                        description: "Busqueda realizada exitosamente",
+                        placement: 'bottomRight',
+                        duration: 2,
+                    });
     
                     setCardTeacher(cardinfo.user_x_subject.teacher.name);
                     setCardSubject(cardinfo.user_x_subject.subject.name);
@@ -328,42 +381,14 @@ const TeacherSearch = () => {
                 <div className={classes["allContentContainer"]}>
                     <div className={classes["pageContentContainerCol"]}>
                         <div className={[classes["TitleContainer"]]}>
-                            <Typography className="font-masferrer text-2xl font-light my-4
+                            <Typography className="font-masferrer text-2xl font-semibold my-4
                                 Mobile-390*844:text-sm
                                 Mobile-280:text-sm
                                 ">BUSQUEDA DE PROFESOR
                             </Typography>
                         </div>
                         <div className={classes["searchFormContainer"]}>
-                            <div className={classes["pageContentContainerRow"]}>
-                                <div className={classes["input-container"]}>
-                                    <label className={classes["label"]}> Turno:</label>
-                                    <AsyncSelect
-                                        value={shift ? shift.id : ''}
-                                        onChange={handleSelectShiftChange}
-                                        className="bg-white Mobile-280:w-full">
-                                        {shiftList?.map((shift) => (
-                                            <Option key={shift.id} value={shift.id}>
-                                                {shift.name}
-                                            </Option>
-                                        ))}
-                                    </AsyncSelect> 
-                                </div>
-                                <div className={classes["input-container"]}>
-                                    <label className={classes["label"]}> Profesor:</label>
-                                    <SelectSearch
-                                        value={teacher}
-                                        options={teachersList.map((teacher) => ({
-                                            value: teacher.id,
-                                            label: teacher.name,
-                                        }))}
-                                        onChange={handleSelectTeacherChange}
-                                        placeholder="Seleccione un maestro"
-                                        className=" Mobile-280:w-full text-black"
-                                    />
-                                </div>
-                            </div>
-                            <div className={classes["pageContentContainerRow"]}>
+                            <div className={classes["pageContentContainerCol"]}>
                                 <div className={classes["input-container"]}>
                                     <label className={classes["label"]}> Hora:</label>
                                     <AsyncSelect
@@ -378,33 +403,66 @@ const TeacherSearch = () => {
                                     </AsyncSelect> 
                                 </div>
                                 <div className={classes["input-container"]}>
+                                    <label className={classes["label"]}> Turno:</label>
+                                    <AsyncSelect
+                                        value={shift ? shift.id : ''}
+                                        onChange={handleSelectShiftChange}
+                                        className="bg-white Mobile-280:w-full">
+                                        {shiftList?.map((shift) => (
+                                            <Option key={shift.id} value={shift.id}>
+                                                {shift.name}
+                                            </Option>
+                                        ))}
+                                    </AsyncSelect> 
+                                </div>
+                                <div className={classes["input-container"]}>
                                     <label className={classes["label"]}> Dia:</label>
-                                    <Select 
+                                    <AsyncSelect 
                                         onChange={handleSelectDayChange} 
-                                        className="bg-white Mobile-280:w-full text-black" 
+                                        className="bg-white Mobile-280:w-full" 
                                         value={day ? day.value : ""}>
                                         {DayList.map((day, index) => (
                                             <Option key={index} value={day.value}>{day.label}</Option>
                                         ))}
-                                    </Select>
+                                    </AsyncSelect>
                                 </div>
+                            </div>
+                            <div className={classes["pageContentContainerCol"]}>
+                                
+                                <Typography className="font-masferrer font-normal text-black -mt-4">
+                                    Seleccionar una opción:
+                                </Typography>
 
+                                <div className={classes["input-container"]}>
+                                    <label className={classes["label"]}> Profesor:</label>
+                                    <SelectSearch
+                                        value={teacher}
+                                        isClearable={true}
+                                        options={teachersList.map((teacher) => ({
+                                            value: teacher.id,
+                                            label: teacher.name,
+                                        }))}
+                                        onChange={handleSelectTeacherChange}
+                                        placeholder="Seleccione un maestro"
+                                        className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20 overflow-visible"
+                                    />
+                                </div>
                                 <div className={classes["input-container"]}>
                                     <label className={classes["label"]}> Salon de Clases:</label>
                                     <SelectSearch
                                         value={classroom}
+                                        isClearable={true}
                                         options={classroomsList.map((classroom) => ({
                                             value: classroom.grade.id,
                                             label: classroom.grade.name,
                                         }))}
                                         onChange={handleSelectClassroomChange}
                                         placeholder="Seleccione un salon de clases"
-                                        className=" Mobile-280:w-full text-black"
+                                        className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20 overflow-visible"
                                     />
                                 </div>
                             </div>
                         </div>
-
                         <div className={classes["cardContainer"]}>
                             <NextSubjectCard 
                                 fromSearch={false}
@@ -413,15 +471,9 @@ const TeacherSearch = () => {
                                 classroom={cardClassroom ? cardClassroom :"Salon de Clases"} 
                                 hour={cardHour ? cardHour : "Hora"}/>
                             
-                            <button className='text-sm justify-center my-auto
-                                font-masferrerTitle font-normal PC-1280*720:text-xs 
-                                PC-800*600:text-xs
-                                PC-640*480:text-xs
-                                Mobile-390*844:text-xs
-                                Mobile-280:text-xs
-                                IpadAir:text-xs'
+                            <button className="bg-indigo-900 text-white rounded-lg py-2 px-7 self-center Mobile-390*844:mb-4"
                                 onClick={handleRefresh}>
-                                    <IoSearchSharp size={24}/>
+                                <IoSearchSharp className="inline-block text-white text-xl" /> Buscar
                             </button>
 
                         </div>

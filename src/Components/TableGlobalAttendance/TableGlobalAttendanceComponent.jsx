@@ -9,10 +9,10 @@ import styles from "./TableGlobalAttendanceComponent.module.css";
 
 const TableAttendanceComponent = ({
     title,
-    tableHeaders, // Headers for the table
-    tableData = [], // Default to an empty array if tableData is undefined
-    tableKeys,    // Keys for accessing nested data
-    rowsPerPageOptions = [5, 10, 15], // Options for number of rows per page
+    tableHeaders, 
+    tableData,
+    tableKeys,
+    rowsPerPageOptions = [5, 10, 15],
     isDownload = false
 }) => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -152,22 +152,34 @@ const TableAttendanceComponent = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {paginatedData.map((row, index) => (
-                            <tr key={index} className={selectedRows.includes(row) ? styles["selected-row"] : ""}>
-                                <td className="p-4">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedRows.includes(row)}
-                                        onChange={() => handleCheckboxChange(row)}
-                                    />
-                                </td>
-                                {tableKeys.map((key, idx) => (
-                                    <td key={idx} className="p-4">
-                                        {key.split(".").reduce((acc, part) => acc ? acc[part] : "N/A", row)}
+                        {
+                            Array.isArray(paginatedData) && paginatedData.length === 0 ? (
+                                <tr>
+                                    <td colSpan={tableHeaders.length} className="p-4 text-center">
+                                        <Typography variant="small" color="blue-gray" className="font-normal">
+                                            No hay datos para mostrar
+                                        </Typography>
                                     </td>
-                                ))}
-                            </tr>
-                        ))}
+                                </tr>
+                            ) : (
+                                paginatedData.map((row, index) => (
+                                    <tr key={index} className={selectedRows.includes(row) ? styles["selected-row"] : ""}>
+                                        <td className="p-4">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedRows.includes(row)}
+                                                onChange={() => handleCheckboxChange(row)}
+                                            />
+                                        </td>
+                                        {tableKeys.map((key, idx) => (
+                                            <td key={idx} className="p-4">
+                                                {key.split(".").reduce((acc, part) => acc ? acc[part] : "N/A", row)}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))
+                            )
+                        }
                     </tbody>
                 </table>
             </CardBody>

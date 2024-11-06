@@ -39,7 +39,7 @@ import { IoTimeSharp } from "react-icons/io5";
 // profile menu component
 const profileMenuItems = [
   {
-    label: "Sign Out",
+    label: "Cerrar sesión",
     icon: PowerIcon,
   },
 ];
@@ -361,7 +361,7 @@ function NavList({ role, closeNav }) {
 
   return (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-col lg:items-start">
-      {navListItems.map(({ label, icon, path }, key) => (
+      {navListItems?.map(({ label, icon, path }, key) => (
         <Typography
           key={label}
           as="a"
@@ -380,9 +380,41 @@ function NavList({ role, closeNav }) {
   );
 }
 
-export default function Header({ name, role }) {
+export default function Header() {
   const [isNavOpen, setIsNavOpen] = React.useState(false);
   const navRef = useRef();
+  const [name, setName] = React.useState("");
+  const [role, setRole] = React.useState("");
+
+  const { token, logout } = useUserContext();
+
+  React.useEffect(() => {
+    async function getUser() {
+      const user = await userService.verifyToken(token);
+
+      if (user) {
+        const headerName = () => {
+          const splitName = user.name.split(" ");
+
+          switch (splitName.length) {
+            case 1:
+              return splitName[0];
+            case 3:
+              return `${splitName[0]} ${splitName[1]} ${splitName[2]}`;
+            case 4:
+              return `${splitName[0]} ${splitName[2]}`;
+            default:
+              return `${splitName[0]} ${splitName[1]}`;
+          }
+        };
+
+        setName(headerName());
+        setRole(user.role.name);
+      }
+    }
+
+    getUser();
+  }, [token]);
 
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
 

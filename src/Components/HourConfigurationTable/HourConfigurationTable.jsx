@@ -91,19 +91,26 @@ const HourConfigurationTable = forwardRef(({ onTimeSlotsChange, initialTimeSlots
 
     return (
         <div className={classes.table}>
-            <CardBody className="flex flex-row bg-white px-2 py-1">
-                <table className="table-auto text-left w-max">
+            <CardBody className="flex flex-row bg-white px-2 py-1
+            Mobile-390*844:px-0 Mobile-280:px-0 Mobile-390*844:w-96 overflow-auto Mobile-280:w-96
+            ">
+                <table className="table-auto text-left w-max Mobile-390*844:overflow-auto Mobile-280:overflow-auto">
                     <thead>
                         <tr>
-                            <th className="p-4 bg-transparent">
-                                <div className="font-masferrer text-xl font-regular border-2 px-2 py-1 border-black">
+                            <th className="p-4 bg-transparent
+                            Mobile-390*844:w-36 Mobile-280:w-36 Mobile-390*844:p-0 Mobile-280:p-0">
+                                <div className="font-masferrer text-xl font-regular border-2 px-2 py-1 border-black
+                                Mobile-390*844:w-36 Mobile-280:w-36">
                                     <Typography className="font-masferrerTitle text-center text-xl font-bold">
                                         Inicio
                                     </Typography>
                                 </div>
                             </th>
-                            <th className="p-4 bg-transparent">
-                                <div className="font-masferrer text-xl font-regular border-2 px-2 py-1 border-black">
+                            <th className="p-4 bg-transparent
+                            Mobile-390*844:w-36 Mobile-280:w-36 Mobile-390*844:p-0 Mobile-280:p-0
+                            ">
+                                <div className="font-masferrer text-xl font-regular border-2 px-2 py-1 border-black
+                                Mobile-390*844:w-36 Mobile-280:w-36">
                                     <Typography className="font-masferrerTitle text-center text-xl font-bold">
                                         Fin
                                     </Typography>
@@ -114,7 +121,8 @@ const HourConfigurationTable = forwardRef(({ onTimeSlotsChange, initialTimeSlots
                     <tbody>
                         {subjects.sort((a, b) => a.inicio.localeCompare(b.inicio)).map((subject, index) => (
                             <tr key={index}>
-                                <td className="p-4 w-auto bg-transparent">
+                                <td className="p-4 w-auto bg-transparent
+                                Mobile-390*844:w-36 Mobile-280:w-36 Mobile-390*844:p-0 Mobile-280:p-0">
                                     <div className="flex font-masferrer px-2 py-2 mt-2">
                                         <Input
                                             type="time"
@@ -124,13 +132,15 @@ const HourConfigurationTable = forwardRef(({ onTimeSlotsChange, initialTimeSlots
                                         />
                                     </div>
                                 </td>
-                                <td className="p-4 w-auto bg-transparent">
+                                <td className="p-4 w-auto bg-transparent
+                                Mobile-390*844:w-36 Mobile-280:w-36 Mobile-390*844:p-0 Mobile-280:p-0">
                                     <div className="flex font-masferrer text-lg font-regular px-2 py-2">
                                         <Input
                                             type="time"
                                             value={subject.fin || "00:00"}
                                             onChange={(e) => handleHourChange(e, index, 'fin')}
-                                            className="text-center text-xl"
+                                            className="text-center text-xl font-bold 
+                                            "
                                         />
                                     </div>
                                 </td>

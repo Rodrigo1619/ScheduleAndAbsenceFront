@@ -113,15 +113,16 @@ const EnrollStudentsPage = () => {
             <div className={[classes["bodyContainer"]]}>
                 <div className={[classes["allContentContainer"]]}>
                     <div className={[classes["pageContentContainerCol"]]}>
-                    <div className="flex flex-row justify-between items-center">
+                    <div className="hidden Mobile-390*844:flex Mobile-280:flex Mobile-390*844:flex-col Mobile-280:flex-col ">
+                    <div className="flex flex-row">
                             <Typography className="font-masferrer text-2xl font-bold my-4
                             Mobile-390*844:text-sm
-                            Mobile-280:text-sm
+                            Mobile-280:text-sm text-center mx-auto
                             ">MATRICULAR ESTUDIANTES</Typography>
                         </div>
-                        <div className="flex flex-col justify-start items-start m-auto">    
-                            <div className="flex flex-row justify-center items-center mt-4">
-                                <Button color="white" className={`mx-2 hover:bg-blue-300 ${enrollButton ? 'bg-blue-300' : ''}`} onClick={handleEnrollForm}
+                        <div className="flex flex-col justify-center items-center mx-auto sticky top-0 z-10">   
+                            <div className="flex flex-row justify-center items-center mt-4 py-4 px-2 rounded-xl">
+                                <Button color="white" className={`mx-2 hover:bg-blue-300 ${enrollButton ? 'bg-blue-400' : ''}`} onClick={handleEnrollForm}
                                 disabled={enrollButton}>
                                     <Typography className='text-sm justify-center my-auto 
                                     font-masferrerTitle font-bold PC-1280*720:text-xs 
@@ -131,7 +132,7 @@ const EnrollStudentsPage = () => {
                                     Mobile-280:text-xs
                                     IpadAir:text-xs'>Registrar matricula</Typography>
                                 </Button>
-                                <Button color="white" className={`mx-2 hover:bg-blue-200 ${!enrollButton ? 'bg-blue-300' : ''}`} onClick={handleEditList}
+                                <Button color="white" className={`mx-2 hover:bg-blue-200 ${!enrollButton ? 'bg-blue-400' : ''}`} onClick={handleEditList}
                                 disabled={(!enrollButton || !classroom)} 
                                 >
                                     <Typography className='text-sm justify-center my-auto
@@ -143,9 +144,14 @@ const EnrollStudentsPage = () => {
                                     IpadAir:text-xs'> Editar listado del aula </Typography>
                                 </Button>
                             </div>
+                            <div className="flex flex-row justify-center items-center mt-4 sticky top-0 z-10">
                             <PopulateClassForm fromDialog={false} studentsList={selectedStudents} onSuccess={handleCreateSuccess} classroomInfo={classroom} buttonText={buttonText}/>
                             </div>
-                        <div className={[classes["TitleContainer"]]}>
+                            </div>
+                        </div>
+                    <div className={[classes["pageContentContainerRow"]]}>
+                            <div className={[classes["SubtitleContainer"]]}>
+                            <div className={[classes["TitleContainer"]]}>
                         <Button color="white" className="mx-2 hover:bg-blue-gray-300" onClick={handleOpenDialog}>
                             <Typography className='text-sm justify-center my-auto
                             font-masferrerTitle font-normal PC-1280*720:text-xs 
@@ -156,9 +162,7 @@ const EnrollStudentsPage = () => {
                             IpadAir:text-xs'>Buscar Alumnos por Aula</Typography>
                         </Button>
                         </div>
-                        <div className={[classes["pageContentContainerRow"]]}>
-                            <div className={[classes["SubtitleContainer"]]}>
-                            <StudentListEnrollment students={students} classroom={true} classroomName={classroom} updateSelectedStudents={updateSelectedStudents}/>
+                            <StudentListEnrollment students={students} classroom={true} classroomName={classroom} updateSelectedStudents={updateSelectedStudents} enroll={true}/>
                             </div>
                             <div className="flex flex-col justify-center items-center mx-auto">
                             <Dialog open={open} handler={handleOpenDialog} className="overflow-auto h-CarouselItemPC-1920*1080" >
@@ -173,6 +177,42 @@ const EnrollStudentsPage = () => {
                         </div>
                         </div>
                     </div>
+                    <div className="flex flex-col Mobile-390*844:hidden Mobile-280:hidden ">
+                    <div className="flex flex-row">
+                            <Typography className="font-masferrer text-2xl font-bold my-4
+                            Mobile-390*844:text-sm
+                            Mobile-280:text-sm text-center mx-auto
+                            ">MATRICULAR ESTUDIANTES</Typography>
+                        </div>
+                        <div className="flex flex-col justify-center items-center mx-auto sticky top-0 z-10">   
+                            <div className="flex flex-row justify-center items-center mt-4 py-4 px-2 rounded-xl">
+                                <Button color="white" className={`mx-2 hover:bg-blue-300 ${enrollButton ? 'bg-blue-400' : ''}`} onClick={handleEnrollForm}
+                                disabled={enrollButton}>
+                                    <Typography className='text-sm justify-center my-auto 
+                                    font-masferrerTitle font-bold PC-1280*720:text-xs 
+                                    PC-800*600:text-xs
+                                    PC-640*480:text-xs
+                                    Mobile-390*844:text-xs
+                                    Mobile-280:text-xs
+                                    IpadAir:text-xs'>Registrar matricula</Typography>
+                                </Button>
+                                <Button color="white" className={`mx-2 hover:bg-blue-200 ${!enrollButton ? 'bg-blue-400' : ''}`} onClick={handleEditList}
+                                disabled={(!enrollButton || !classroom)} 
+                                >
+                                    <Typography className='text-sm justify-center my-auto
+                                    font-masferrerTitle font-bold PC-1280*720:text-xs 
+                                    PC-800*600:text-xs
+                                    PC-640*480:text-xs
+                                    Mobile-390*844:text-xs
+                                    Mobile-280:text-xs
+                                    IpadAir:text-xs'> Editar listado del aula </Typography>
+                                </Button>
+                            </div>
+                            <div className="flex flex-row justify-center items-center mt-4 sticky top-0 z-10">
+                            <PopulateClassForm fromDialog={false} studentsList={selectedStudents} onSuccess={handleCreateSuccess} classroomInfo={classroom} buttonText={buttonText}/>
+                            </div>
+                            </div>
+                        </div>
                 </div>
             </div>
         </div>

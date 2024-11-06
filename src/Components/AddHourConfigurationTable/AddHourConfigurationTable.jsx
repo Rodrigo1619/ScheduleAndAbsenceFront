@@ -659,13 +659,18 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
     return (
         <div className={classes.generalCardContainer}>
             <Toaster />
+            <div className="flex-row justify-center items-center mx-auto hidden Mobile-390*844:flex Mobile-280:flex">
+            <HourConfigurationTable ref={hourConfigTableRef} onTimeSlotsChange={handleTimeSlotsChange} 
+            initialTimeSlots={timeSlots} updatedTimeSlots={timeSlots} shift={shiftSelected} />
+            </div>
             <CardBody className="flex flex-col bg-white border-2 border-black border-opacity-75 px-2 py-1">
+                
                 <div className="flex flex-row justify-center items-center mx-auto">
                     <table className="table-auto text-left w-full">
                         <thead>
                             <tr>
                                 {TABLE_HEAD.map((head, index) => (
-                                    <th key={index} className="p-4 bg-transparent">
+                                    <th key={index} className="p-4 bg-transparent Mobile-390*844:hidden Mobile-280:hidden">
                                         <div
                                             className="font-masferrerTitle text-center text-2xl font-bold 
                                             bg-black text-white px-2 py-1"
@@ -674,7 +679,7 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                                         </div>
                                     </th>
                                 ))}
-                                <th className="p-4 bg-transparent">
+                                <th className="p-4 bg-transparent Mobile-390*844:hidden Mobile-280:hidden">
                                     <div
                                         className="font-masferrerTitle text-center text-2xl font-bold 
                                         bg-black text-white px-2 py-1"
@@ -712,7 +717,9 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                             ))}
                         </tbody>
                     </table>
+                    <div className="Mobile-280:hidden Mobile-390*844:hidden">
                     <HourConfigurationTable ref={hourConfigTableRef} onTimeSlotsChange={handleTimeSlotsChange} initialTimeSlots={timeSlots} updatedTimeSlots={timeSlots} shift={shiftSelected} />
+                            </div>
                 </div>
                 <div className="flex flex-row justify-end items-center mx-auto">
                     <Button

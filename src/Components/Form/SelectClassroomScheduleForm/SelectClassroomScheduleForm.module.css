@@ -1,5 +1,7 @@
 .form-container {
+    
     @apply flex flex-row w-full items-center justify-center mx-auto 
+    PC-1920*1080:flex-col
     PC-1600*900:flex-col
     PC-1366*768:flex-col
     PC-1280*720:flex-col
@@ -12,19 +14,22 @@
 }
 
 
+
 .input-container {
-@apply flex flex-col justify-center mx-auto mb-12 w-40 Mobile-390*844:w-60;
+    
+    @apply flex flex-col justify-center items-center mx-auto mb-12 
+    w-40 Mobile-390*844:w-full Mobile-280:w-full;
 
 }
 
 .inputsContainer{
-@apply flex flex-col justify-center mx-auto mb-12 w-80 text-white  
-p-4 border-4 shadow-sm overflow-auto
- Mobile-390*844:w-60 ;
+    background-color: rgba(28, 11, 140, 0.2);
+    @apply flex flex-col justify-center mx-auto mb-12 w-80 text-white  
+    p-4 border-4 shadow-sm overflow-auto border-white
+     Mobile-390*844:w-60 ;
 
 }
 .label {
-@apply text-black text-center justify-center mx-auto;
+    @apply text-black text-center justify-center mx-auto;
 
 }
-

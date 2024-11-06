@@ -1,14 +1,18 @@
 .form {
     background-color: rgba(28, 11, 140, 0.2);
 
-    @apply flex flex-col justify-center px-14 py-20 ml-8 my-8
+    @apply flex flex-col justify-center px-14 py-20 ml-8 my-8 
     rounded-md items-center border-2 border-white shadow-md
-    Mobile-390*844:px-16 Mobile-390*844:py-5 Mobile-390*844:items-center;
+    Mobile-390*844:px-8 Mobile-390*844:py-5 Mobile-390*844:items-center
+    Mobile-280:px-6 Mobile-280:py-5 Mobile-280:items-center
+    ;
 
 }
 
 .input-container {
-    @apply flex flex-col justify-center mb-12 w-56 Mobile-390*844:w-60;
+    @apply flex flex-col justify-center mb-12 w-56 Mobile-390*844:w-60
+    items-center mx-auto
+    ;
 
 }
 
@@ -18,7 +22,7 @@
 }
 
 .input {
-    @apply bg-white text-black shadow-md h-10 p-2 rounded-md border border-gray-300;
+    @apply flex justify-center bg-white text-black shadow-md h-10 p-2 mx-auto rounded-md border border-gray-300 items-center;
 
 }
 

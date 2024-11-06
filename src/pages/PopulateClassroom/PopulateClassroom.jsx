@@ -92,23 +92,30 @@ const PopulateClassroom = () => {
             </header>
 
             <div className={[classes["bodyContainer"]]}>
-                <div className={[classes["allContentContainer"]]}>
-                    <div className={[classes["pageContentContainerCol"]]}>
-                    <div className={[classes["TitleContainer"]]}>
+                <div className={[classes["TitleContainer"]]}>
                             <Typography className="font-masferrer text-2xl font-bold my-4
                             Mobile-390*844:text-sm
                             Mobile-280:text-sm
                             ">AGREGAR ALUMNOS A UN SALÓN DE CLASES</Typography>
                         </div>
-                        <PopulateClassForm fromDialog={false} studentsList={selectedStudents} onSuccess={handleCreateSuccess} buttonText="Registrar" />
+                <div className={[classes["allContentContainer"]]}>
+                    <div className={[classes["pageContentContainerCol"]]}>
                         <div className={[classes["pageContentContainerRow"]]}>    
                             <div className={[classes["SubtitleContainer"]]}>
                             <StudentListEnrollment students={students} classroom={true} updateSelectedStudents={updateSelectedStudents} populate={true}/>
                             </div>
-                           
-                        </div>
+                            <div className="hidden Mobile-390*844:flex Mobile-280:flex">   
+                        <PopulateClassForm fromDialog={false} studentsList={selectedStudents} onSuccess={handleCreateSuccess} buttonText="Registrar" />   
                     </div>
-                </div>
+                        </div>
+                        
+                    </div>
+                    <div className="flex flex-col mx-auto sticky top-0 z-10 Mobile-390*844:hidden Mobile-280:hidden">   
+                    <div className="flex flex-row mx-auto sticky top-0 z-10">   
+                        <PopulateClassForm fromDialog={false} studentsList={selectedStudents} onSuccess={handleCreateSuccess} buttonText="Registrar" />   
+                    </div>
+                    </div>
+                </div>          
             </div>
         </div>
     );

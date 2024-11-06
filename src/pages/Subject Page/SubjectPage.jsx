@@ -86,7 +86,7 @@ const SubjectPage = () => {
                             <div className={[classes["TitleContainer"]]}>
                                 <Button color="white" className='m-4' onClick={handleOpenRegisterDialog}>
                                     <Typography className='text-sm justify-center my-auto
-                            font-masferrerTitle font-normal PC-1280*720:text-xs 
+                            font-masferrerTitle font-medium PC-1280*720:text-xs 
                             PC-800*600:text-xs
                             PC-640*480:text-xs
                             Mobile-390*844:text-xs

@@ -34,8 +34,11 @@
 
 .pageContentContainerRow {
     @apply flex flex-row w-full items-center justify-center mx-auto
-    Mobile-390*844:flex-col-reverse Mobile-390*844:w-full Mobile-390*844:mx-2 Mobile-390*844:justify-center Mobile-390*844:items-center Mobile-390*844:max-h-max Mobile-390*844:overflow-y-auto
-    Mobile-280:flex-col-reverse Mobile-280:w-full Mobile-280:mx-2 Mobile-280:justify-center Mobile-280:items-center
+    Mobile-390*844:flex-col-reverse Mobile-390*844:w-full 
+    Mobile-390*844:mx-2 Mobile-390*844:justify-center Mobile-390*844:items-center 
+    Mobile-390*844:max-h-max Mobile-390*844:overflow-y-auto 
+    Mobile-280:flex-col-reverse Mobile-280:w-full 
+    Mobile-280:mx-2 Mobile-280:justify-center Mobile-280:items-center
     ;
 
 }

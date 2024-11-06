@@ -1,4 +1,4 @@
-.generalContainer {
+generalContainer {
     background-color: #f2f2f2;
     @apply flex flex-col w-full h-screen
     Mobile-390*844:w-screen Mobile-390*844:h-screen Mobile-390*844:overflow-y-auto
@@ -7,7 +7,7 @@
 }
 
 .headerContainer{
-    @apply sticky top-0 z-10 w-screen bg-white bottom-2 stroke-black shadow-md;
+    @apply sticky z-10 w-screen bg-white bottom-2 stroke-black shadow-md;
 }
 
 
@@ -24,7 +24,7 @@
 }
 
 .pageContentContainerCol {
-    @apply flex flex-col items-center justify-center w-full mx-5
+    @apply flex flex-row items-center justify-center w-full mx-auto
     Mobile-390*844:flex-col
     Mobile-390*844:w-auto Mobile-390*844:mx-auto Mobile-390*844:justify-center Mobile-390*844:items-center Mobile-390*844:max-h-max Mobile-390*844:overflow-y-auto
     Mobile-280:w-auto Mobile-280:mx-auto Mobile-280:justify-center Mobile-280:items-center
@@ -34,6 +34,8 @@
 
 .pageContentContainerRow {
     @apply flex flex-row w-full items-center justify-center mx-auto
+    PC-640*480:flex-col PC-640*480:w-auto PC-640*480:mx-auto PC-640*480:justify-center PC-640*480:items-center PC-640*480:max-h-max PC-640*480:overflow-y-auto
+    IpadAir:flex-col IpadAir:w-full IpadAir:mx-2 IpadAir:justify-center IpadAir:items-center IpadAir:max-h-max IpadAir:overflow-y-auto
     Mobile-390*844:flex-col-reverse Mobile-390*844:w-full Mobile-390*844:mx-2 Mobile-390*844:justify-center Mobile-390*844:items-center Mobile-390*844:max-h-max Mobile-390*844:overflow-y-auto
     Mobile-280:flex-col-reverse Mobile-280:w-full Mobile-280:mx-2 Mobile-280:justify-center Mobile-280:items-center
     ;
@@ -45,7 +47,7 @@
 }
 
 .SubtitleContainer {
-    @apply flex w-full items-center justify-center mx-2
+    @apply flex flex-col w-full items-center justify-center mx-2
     Mobile-390*844:mx-0 Mobile-390*844:my-2
     Mobile-280:mx-0 Mobile-280:my-2;
 }

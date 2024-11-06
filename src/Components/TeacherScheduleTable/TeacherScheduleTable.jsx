@@ -233,6 +233,11 @@ const TeacherScheduleTable = ({ shiftList, year, updateShift }) => {
 
     const TABLE_HEAD = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
 
+    const [selectedDay, setSelectedDay] = useState(TABLE_HEAD[0]); // Día seleccionado por defecto: Lunes
+
+    const handleDayChange = (event) => {
+        setSelectedDay(event.target.value);
+    };
 
     return (
         <div className={classes["generalCardContainer"]}>
@@ -258,7 +263,22 @@ const TeacherScheduleTable = ({ shiftList, year, updateShift }) => {
                     </Button>
                 </div>
                 </div>
-                <div className="flex flex-row justify-center items-center mx-auto">
+                       {/* Selector de día solo visible en dispositivos móviles */}
+            <div className="block md:hidden mb-4 w-48 justify-center items-center mx-auto">
+                    <label htmlFor="day-select" className="block text-sm font-bold mb-2">Seleccione un día:</label>
+                    <select
+                        id="day-select"
+                        value={selectedDay}
+                        onChange={handleDayChange}
+                        className="w-full border border-gray-400 rounded px-2 py-1"
+                    >
+                        {TABLE_HEAD.map((day) => (
+                            <option key={day} value={day}>{day}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="flex flex-row justify-center items-center mx-auto Mobile-390*844:hidden Mobile-280:hidden">
+                {/* Tabla completa para dispositivos grandes */}
                     <table className="table-auto text-left w-max">
                         <thead>
                             <tr>
@@ -334,6 +354,69 @@ const TeacherScheduleTable = ({ shiftList, year, updateShift }) => {
                                     </tr>
                                 )
                             ))}
+                        </tbody>
+                    </table>
+                    <HoursTable />
+                </div>
+                {/* Tabla filtrada para dispositivos móviles */}
+
+                <div className="md:hidden flex flex-row overflow-auto">
+                <table className="table-auto text-left w-full overflow-auto">
+                <thead>
+                            <tr>
+                                <th className="p-4 bg-transparent">
+                                    <Typography className="font-masferrerTitle text-center text-xl font-bold">
+                                        {selectedDay}
+                                    </Typography>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {schedule.map((subject, index) => (
+                                subject.Recreo ? (
+                                    <tr key={`recreo-${index}`}>
+                                        <td className="p-4 bg-transparent">
+                                            <div className="font-masferrer text-2xl font-bold border-2 px-14 py-2 text-center border-black">
+                                                <Typography className="font-masferrerTitle text-base font-bold uppercase">
+                                                    {subject.Recreo}
+                                                </Typography>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    <tr key={index}>
+                                        <td key={index} className="p-4 bg-transparent mt-2">
+                                            {subject[selectedDay].grade ? (
+                                                <div className="font-masferrer font-regular border-2
+                                                px-4 py-2 border-black"
+                                                        style={{ backgroundColor: subjectColors[subject[selectedDay].grade] }}
+                                                    >
+                                                    <div className="flex flex-col justify-center items-center mx-auto">
+                                                        <Typography className="font-masferrerTitle font-bold text-center text-sm">
+                                                            {subject[selectedDay].grade}
+                                                        </Typography>
+                                                        <Typography className="font-masferrerTitle font-bold text-center text-xs">
+                                                            {subject[selectedDay].subject}
+                                                        </Typography>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="font-masferrer text-base font-regular border-2 
+                                                px-4 py-3 border-black bg-orange-400">
+                                                    <div className="flex justify-center items-center mx-auto">
+                                                        <Typography
+                                                            className="font-masferrerTitle text-center text-lg font-bold"
+                                                        >
+                                                            LIBRE
+                                                        </Typography>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </td>
+                                    </tr>
+                                )
+                            ))}
+
                         </tbody>
                     </table>
                     <HoursTable />
