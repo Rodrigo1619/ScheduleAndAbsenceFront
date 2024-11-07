@@ -327,9 +327,14 @@ const navListItemsCoordinator = [
 
 const navListItemsDefault = [
   {
-    label: "Revisar asistencia general",
-    icon: UsersIcon,
-    path: "/AttendanceGeneralView"
+    label: "Inicio",
+    icon: HomeIcon,
+    path: "/"
+  },
+  {
+    label: "Buscar maestro",
+    icon: FaSearch,
+    path: "/SearchTeacher"
   },
 ];
 

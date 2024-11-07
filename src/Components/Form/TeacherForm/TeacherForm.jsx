@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import classes from './TeacherForm.module.css';
+import AsyncSelect from '../../../Components/AsyncSelect/AsyncSelect.jsx';
 
 import { userService } from '../../../Services/userService.js';
 import { roleService } from '../../../Services/roleService.js';
@@ -9,7 +10,7 @@ import { Select, Option } from "@material-tailwind/react";
 import { Toaster, toast } from 'sonner';
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
-import { notification } from 'antd';
+
 
 let passwordRegex = {
     lowercase: /^(?=.*[a-z]).*$/,
@@ -27,6 +28,7 @@ const TeacherForm = ({ teacher, editStatus, onSuccess }) => {
     const [icon, setIcon] = useState(IoEyeOffOutline);
 
     const selectedRoleRef = useRef(null);
+    const [role, setRole] = useState();
 
     useEffect(() => {
         if (token) {
@@ -47,6 +49,7 @@ const TeacherForm = ({ teacher, editStatus, onSuccess }) => {
             setUsername(teacher.email);
             setFullName(teacher.name);
             selectedRoleRef.current = teacher.role;
+            setRole(teacher.role);
             setVerificationMail(teacher.verifiedEmail);
         }
 
@@ -73,6 +76,7 @@ const TeacherForm = ({ teacher, editStatus, onSuccess }) => {
     const handleSelectChange = (e) => {
         const selectedRole = rolesList.find(role => role.id === e);
         selectedRoleRef.current = selectedRole;
+        setRole(selectedRole);
 
         console.log("El rol seleccionado cambio a: " + selectedRoleRef.current.name);
     };
@@ -157,8 +161,9 @@ const TeacherForm = ({ teacher, editStatus, onSuccess }) => {
                     setPassword('');
                     setFullName('');
                     setVerificationMail('');
+                    setRole('');
 
-                    toast.success('Profesor Registrado con exito', { 
+                    toast.success('Usuario Registrado con exito', { 
                         duration: 2000,
                         icon: <CheckCircleIcon style={{color: "green"}} />,
                     });
@@ -225,8 +230,8 @@ const TeacherForm = ({ teacher, editStatus, onSuccess }) => {
                 <label className={[classes["label"]]}>
                     Rol:
                 </label>
-                <Select
-                    value={selectedRoleRef.current ? selectedRoleRef.current.name : ''}
+                <AsyncSelect
+                    value={role ? role.id : ''}
                     onChange={handleSelectChange}
                     className="bg-white Mobile-280:w-full">
                     {rolesList.map((role) => (
@@ -234,7 +239,7 @@ const TeacherForm = ({ teacher, editStatus, onSuccess }) => {
                             {role.name}
                         </Option>
                     ))}
-                </Select>
+                </AsyncSelect>
             </div>
             <div className={[classes["input-container"]]}>
                 <label className={[classes["label"]]}>
@@ -243,7 +248,7 @@ const TeacherForm = ({ teacher, editStatus, onSuccess }) => {
                 <input type="text" value={verificationMail} onChange={handleVerificationMailChange} className={[classes["input"]]} placeholder="reyes@cecam.uca.edu.sv" />
             </div>
             <div className="button-container">
-                <button type="submit" className={[classes["submit-button"]]}>Registrar</button>
+                <button type="submit" className={[classes["submit-button"]]}>{editStatus ? "Editar" : "Registrar"}</button>
             </div>
         </form>
     );

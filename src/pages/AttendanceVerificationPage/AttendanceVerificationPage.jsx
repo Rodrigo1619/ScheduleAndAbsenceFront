@@ -16,7 +16,7 @@ import { absenceRecordService } from "../../Services/absenceRecordService"
 import { classroomService } from "../../Services/classroomService";
 
 const tableHeaders = [
-    "", "Código", "ID Sección", "Fecha", "NIE", "Nombre", "Justificación", "Observación"
+    "", "Código", "ID Sección", "Fecha", "NIE", "Nombre", "Faltó", "Justificación", "Observación"
 ];
 
 const tableData = [
@@ -88,21 +88,22 @@ const AttendanceVerificationViewPage = () => {
 
         const fetchAbscentStudentList = async () => {
             try {
-                const data = await absenceRecordService.getByClassroomAndShift(classroomID, token, shiftID);
+                const data = await absenceRecordService.getByClassroomAndDate(classroomID, token, formatDateForInput(selectedDate));
                 
                 if (data.length === 0) {
                     return;
                 }
 
-                const formatedDate = selectedDate.toISOString().split('T')[0];
-                const filteredList = data.filter(record => record.date === formatedDate);
+                let absentStudents = data.absentStudents.map(student => ({
+                    ...student,
+                    absent: student.code ? "Si" : "No",
+                }));
 
-                console.log(`Lista filtrada del dia ${formatedDate}: `, filteredList[0].absentStudents);
-                setAbsenceRecord(filteredList[0]);
-                setAbscentStudentList(filteredList[0].absentStudents);
+                setAbsenceRecord(data);
+                setAbscentStudentList(absentStudents);
 
-                setTeacherValidation(filteredList[0].teacherValidation);
-                setCoordinationValidation(filteredList[0].coordinationValidation);
+                setTeacherValidation(data.teacherValidation);
+                setCoordinationValidation(data.coordinationValidation);
 
             } catch (error) {
                 console.log("Hubo un error al obtener la lista de estudiantes ausentes" + error);
@@ -126,7 +127,25 @@ const AttendanceVerificationViewPage = () => {
     };
 
     const formatDateForInput = (date) => {
-        return date.toISOString().split('T')[0]; // YYYY-MM-DD
+
+        const day = date.getDate();
+        const month = date.getUTCMonth() + 1;
+        const year = date.getUTCFullYear();
+
+        const formatedDate = `${year}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`;
+
+        return formatedDate;
+    };
+
+    const downloadDate = (date) => {
+
+        const day = date.getDate();
+        const month = date.getUTCMonth() + 1;
+        const year = date.getUTCFullYear().toString().substr(-2);
+
+        const formatedDate = `${day < 10 ? `0${day}` : day}/${month < 10 ? `0${month}` : month}/${year}`;
+
+        return formatedDate;
     };
 
     const handleDateChange = (e) => {
@@ -296,6 +315,7 @@ const AttendanceVerificationViewPage = () => {
                                     absenceRecordDetails={absenceRecord}
                                     rowsPerPageOptions={[5, 10, 15]} 
                                     isDownload={true}
+                                    localDate={downloadDate(selectedDate)}
                                 />
                             </div>
                         </div>

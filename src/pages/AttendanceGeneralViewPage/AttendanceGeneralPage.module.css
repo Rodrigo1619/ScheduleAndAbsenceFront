@@ -72,3 +72,7 @@
     Mobile-390*844:text-xs Mobile-280:text-xs IpadAir:text-xs
     bg-white border border-gray-300 rounded-lg px-12 py-2 hover:shadow-2xl;
 }
+
+.loaderContainer{
+    @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+}

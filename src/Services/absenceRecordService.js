@@ -25,6 +25,30 @@ export const absenceRecordService = {
             throw (error);
         }
     },
+    getByClassroomAndDate: async (classroomId, token, date) => {
+        try {
+            const response = await fetch(`${BASE_URL}/absence_record/by-classroom/${classroomId}?date=${date}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+            });
+    
+            if(response.status === 204){
+                return [];
+            }else if (!response.ok) {
+                throw new Error(response.status);
+            }
+    
+            const data = await response.json()
+    
+            return data
+            
+        } catch (error) {
+            throw (error);
+        }
+    },
     teacherValidation: async (token, absenceRecordID) => {
         try {
             const response = await fetch(`${BASE_URL}/absence_record/toggle-teacher-active/${absenceRecordID}`, {
@@ -85,7 +109,9 @@ export const absenceRecordService = {
                 })
             });
 
-            if (!response.ok) {
+            if(response.status === 404 ){
+                throw new Error(409);
+            }else if (!response.ok) {
                 throw new Error(response.status);
             }
 
@@ -105,12 +131,11 @@ export const absenceRecordService = {
                     Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    date: absenceRecord.date,
-                    id_classroom: absenceRecord.classroom.id,
+                    updateDate: absenceRecord.date,
                     maleAttendance: absenceRecord.maleAttendance,
                     femaleAttendance: absenceRecord.femaleAttendance,
-                    absentStudents: absenceRecord.absentStudents
-                
+                    absentStudents: absenceRecord.absentStudents,
+                    deleteAbsentStudents: absenceRecord.deleteAbsentStudents
                 })
             });
 
@@ -123,6 +148,28 @@ export const absenceRecordService = {
             return data;
         } catch (error) {
             throw (error);
+        }
+    },
+    deleteAbsentStudents: async (ids, token) => {
+        try {
+            const response = await fetch(`${BASE_URL}/absence_record/absent-students`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(ids)
+            });
+        
+            if (!response.ok) {
+                throw new Error(response.status);
+            }
+        
+            const data = await response.json();
+            
+        } catch (error) {
+            console.log(`Hubo un error al eliminar las inasistencias de estudiantes: ${error}`);
+            throw error;
         }
     },
 

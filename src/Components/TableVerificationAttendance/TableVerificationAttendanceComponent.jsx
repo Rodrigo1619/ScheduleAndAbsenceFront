@@ -35,8 +35,11 @@ const TableVerificationComponent = ({
     tableKeys,
     absenceRecordDetails,
     rowsPerPageOptions = [5, 10, 15],
-    isDownload = false
+    isDownload = false,
+    localDate,
 }) => {
+
+    const formatedHeaders = tableHeaders.slice(1).filter((header) => header !== "Nombre");
 
     const { token } = useUserContext();
     const [codeList, setCodeList] = useState([]);
@@ -50,15 +53,6 @@ const TableVerificationComponent = ({
 
     const [openDialog, setOpenDialog] = useState(false);
 
-    const formatedHeaders = tableHeaders.filter(header => 
-        header === "Código" ||
-        header === "ID Sección" ||
-        header === "Fecha" ||
-        header === "NIE" ||
-        header === "Justificación" ||
-        header === "Observación"
-    );
-    formatedHeaders.splice(4, 0, "Faltó")
     const currentDate = new Date().toISOString().split("T")[0];
 
     const handleOpenDialog = () => {
@@ -92,7 +86,7 @@ const TableVerificationComponent = ({
     }, [searchTerm, tableData]);
 
     const handleDownloadExcel = async () => {
-        if (selectedRows.length === 0 && tableHeaders.length > 1 && tableKeys.length > 0) {
+        if (selectedRows.length === 0 && formatedHeaders.length > 1 && tableKeys.length > 0) {
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet('Data');
 
@@ -113,8 +107,8 @@ const TableVerificationComponent = ({
                             return generalData.classroom.grade.idGoverment;
                         }
 
-                        if(key === "absent") {
-                            return "Sí";
+                        if(key === "date"){
+                            return localDate;
                         }
 
                         return row[key];
@@ -127,7 +121,7 @@ const TableVerificationComponent = ({
             saveAs(new Blob([buffer], { type: "application/octet-stream" }), `Inasistencia-${currentDate}.xlsx`);
         }
 
-        if (selectedRows.length > 0 && tableHeaders.length > 1 && tableKeys.length > 0) {
+        if (selectedRows.length > 0 && formatedHeaders.length > 1 && tableKeys.length > 0) {
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet('Data');
 
@@ -148,8 +142,8 @@ const TableVerificationComponent = ({
                             return generalData.classroom.grade.idGoverment;
                         }
 
-                        if(key === "absent") {
-                            return "Sí";
+                        if(key === "date"){
+                            return localDate;
                         }
 
                         return row[key];
@@ -165,16 +159,18 @@ const TableVerificationComponent = ({
 
     const handleDownloadCSV = () => {
 
-        if (selectedRows.length === 0 && tableHeaders.length > 1 && tableKeys.length > 0) {
+        if (selectedRows.length === 0 && formatedHeaders.length > 1 && tableKeys.length > 0) {
             const csvData = filteredData.map(row => {
                 const newRow = {};
                 tableKeys.forEach((key, index) => {
                     if (key === "absent") {
-                        newRow[formatedHeaders[index]] = "Sí";
+                        newRow[formatedHeaders[index]] = row[key];
                     } else if(key === "code") {
                         newRow[formatedHeaders[index]] = generalData.classroom.grade.section;
                     } else if (key === "idGoverment") {
                         newRow[formatedHeaders[index]] = generalData.classroom.grade.idGoverment;  
+                    } else if (key === "date") {
+                        newRow[formatedHeaders[index]] = localDate;
                     } else if (key.includes(".")) {
                         const keys = key.split(".");
                         let value = row;
@@ -194,16 +190,18 @@ const TableVerificationComponent = ({
             saveAs(blob, `Inasistencia-${currentDate}.csv`);
         }
 
-        if (selectedRows.length > 0 && tableHeaders.length > 1 && tableKeys.length > 0) {
+        if (selectedRows.length > 0 && formatedHeaders.length > 1 && tableKeys.length > 0) {
             const csvData = selectedRows.map(row => {
                 const newRow = {};
                 tableKeys.forEach((key, index) => {
                     if (key === "absent") {
-                        newRow[formatedHeaders[index]] = "Sí";
+                        newRow[formatedHeaders[index]] = row[key];
                     } else if(key === "code") {
                         newRow[formatedHeaders[index]] = generalData.classroom.grade.section;
                     } else if (key === "idGoverment") {
                         newRow[formatedHeaders[index]] = generalData.classroom.grade.idGoverment;  
+                    } else if (key === "date") {
+                        newRow[formatedHeaders[index]] = localDate;
                     } else if (key.includes(".")) {
                         const keys = key.split(".");
                         let value = row;
@@ -243,6 +241,15 @@ const TableVerificationComponent = ({
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
+    };
+
+    const handleAbsentBtn = (index, newStatus) => {
+        const updatedData = [...filteredData];
+    
+        const globalIndex = (currentPage - 1) * rowsPerPage + index;
+    
+        updatedData[globalIndex].absent = newStatus;
+        setFilteredData(updatedData);
     };
 
     const handleSelectCodeChange = (index, e) => {
@@ -402,7 +409,7 @@ const TableVerificationComponent = ({
                                         </td>
                                         <td className="p-4">
                                             <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {row.date}
+                                                {row.date || localDate}
                                             </Typography>
                                         </td>
                                         <td className="p-4">
@@ -415,19 +422,57 @@ const TableVerificationComponent = ({
                                                 {row.student.name}
                                             </Typography>
                                         </td>
+
+                                        <td className="p-4">
+                                            {
+                                                row.absent === "Si" ? (
+                                                    <button className='text-white font-masferrer font-normal bg-blueMasferrer py-1 px-3 rounded-md'
+                                                        onClick={() => handleAbsentBtn(index, row.absent === "Si" ? "No" : "Si")}>
+                                                        {row.absent}
+                                                    </button>
+                                                ) : (
+                                                    <button className='text-white font-masferrer font-normal bg-red-300 py-1 px-3 rounded-md'
+                                                        onClick={() => handleAbsentBtn(index, row.absent === "Si" ? "No" : "Si")}>
+                                                        {row.absent}
+                                                    </button>
+                                                )
+                                            }
+                                        </td>
+
                                         <td className="p-4">                                    
-                                            <select
-                                                onChange={(e) => handleSelectCodeChange(index, e.target)}>
-                                                    <option value={row.code.description}>{row.code.description}</option>
-                                                    {codeList.map((codes) => <option key={codes.id} value={codes.id}>{codes.description}</option>)}
-                                            </select>
+                                            {
+                                                row.absent === "Si" ? (
+                                                    <select
+                                                        onChange={(e) => handleSelectCodeChange(index, e.target)}>
+                                                            <option value={row.code?.description}>{row.code?.description}</option>
+                                                            {codeList.map((codes) => <option key={codes.id} value={codes.id}>{codes.description}</option>)}
+                                                    </select>
+                                                ) : (
+                                                    <select disabled className='bg-gray-200'>
+                                                        <option value={""}>{"N/A"}</option>
+                                                        {codeList.map((codes) => <option key={codes.id} value={codes.id}>{codes.description}</option>)}
+                                                    </select>
+                                                )
+                                            }
                                         </td>
                                         <td className="p-4">
-                                            <input
-                                                type="text"
-                                                value={row.comments || ""}
-                                                onChange={(e) => handleObservationChange(index, e.target.value)}
-                                            />
+                                            {
+                                                row.absent === "Si" ? (
+                                                    <input
+                                                        type="text"
+                                                        className='border-2 border-gray-400'
+                                                        value={row.comments || ""}
+                                                        onChange={(e) => handleObservationChange(index, e.target.value)}
+                                                    />
+                                                ) : (
+                                                    <input
+                                                        type="text"
+                                                        className='border-2 border-gray-400' disabled
+                                                        value={row.comments || ""}
+                                                        onChange={(e) => handleObservationChange(index, e.target.value)}
+                                                    />
+                                                )
+                                            }
                                         </td>
                                     </tr>
                                 ))

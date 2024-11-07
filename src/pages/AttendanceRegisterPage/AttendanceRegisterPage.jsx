@@ -22,7 +22,6 @@ const tableHeaders = [
 ];
 
 const AttendanceRegisterViewPage = () => {
-    const navigate = useNavigate();
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [loading, setLoading] = useState(true);
@@ -32,7 +31,14 @@ const AttendanceRegisterViewPage = () => {
     minDate.setDate(currentDate.getDate() - 3);
 
     const formatDateForInput = (date) => {
-        return date.toISOString().split('T')[0]; // YYYY-MM-DD
+
+        const day = date.getDate();
+        const month = date.getUTCMonth() + 1;
+        const year = date.getUTCFullYear();
+
+        const formatedDate = `${year}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`;
+
+        return formatedDate;
     };
 
     const handleDateChange = (e) => {
@@ -197,7 +203,7 @@ const AttendanceRegisterViewPage = () => {
     const handleRegisterAbsenceRecord = async () => {
 
         const absenceRecordJSON = {
-            date: selectedDate.toISOString().split('T')[0],
+            date: formatDateForInput(selectedDate),
             maleAttendance: boysCount,
             femaleAttendance: girlsCount,
             absentStudents: absentStudents.map(student => ({id_student: student.id}))
@@ -222,6 +228,16 @@ const AttendanceRegisterViewPage = () => {
 
         } catch (error) {
             console.log(`Hubo un error al registrar la inasistencia: ${error}`);
+
+            if (error.message === "409") {
+                toast.error('Error, asistencia ya registrada', {
+                    duration: 2000,
+                    icon: <XCircleIcon style={{color: "red"}} />,
+                });
+
+                return;
+            }
+
             toast.error('Ocurrio un error', {
                 duration: 2000,
                 icon: <XCircleIcon style={{color: "red"}} />,
@@ -283,7 +299,7 @@ const AttendanceRegisterViewPage = () => {
                             </Button>
                         </div>
                         <div className={classes["pageContentContainerRow"]}>
-                        <Dialog open={openResume} handler={handleOpenDialog}>
+                        <Dialog open={openResume} handler={handleOpenDialog} className="overflow-y-scroll h-5/6">
                             <DialogHeader> Confirmar Inasistencia </DialogHeader>
                             <DialogBody> 
                                 
@@ -325,20 +341,22 @@ const AttendanceRegisterViewPage = () => {
                                     isDownload={true}
                                 />
                             </div>
-                            <form onSubmit={() => (a)} className={[classes["form"]]}>
-                                <div className={[classes["input-container"]]}>            
-                                    <label className={[classes["label"]]}>
-                                        # de Niños presentes:
-                                    </label>
-                                    <input type="number" value={boysCount} onChange={handleBoyCountChange} className={[classes["input"]]} />
-                                </div>
-                                <div className={[classes["input-container"]]}>            
-                                    <label className={[classes["label"]]}>
-                                        # de Niñas presentes:
-                                    </label>
-                                    <input type="number" value={girlsCount} onChange={handleGirlCountChange} className={[classes["input"]]} />
-                                </div>
-                            </form>
+                            <div className="flex flex-row justify-center items-center sticky top-0 z-auto ml-7 pt-14 Mobile-390*844:py-2 Mobile-280:py  -2">
+                                <form onSubmit={() => (a)} className={[classes["form"]]}>
+                                    <div className={[classes["input-container"]]}>            
+                                        <label className={[classes["label"]]}>
+                                            # de Niños presentes:
+                                        </label>
+                                        <input type="number" value={boysCount} onChange={handleBoyCountChange} className={[classes["input"]]} />
+                                    </div>
+                                    <div className={[classes["input-container"]]}>            
+                                        <label className={[classes["label"]]}>
+                                            # de Niñas presentes:
+                                        </label>
+                                        <input type="number" value={girlsCount} onChange={handleGirlCountChange} className={[classes["input"]]} />
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

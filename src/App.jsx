@@ -59,7 +59,7 @@ function App() {
             <Route path="/SchedulePage" element={<PrivateElement admittedRoles={["Administrador", "Moderador"]}> <Shedule /> </PrivateElement>} />
             <Route path="/DBDashboard" element={<PrivateElement admittedRoles={["Administrador", "Moderador"]}> <DBDashboard /> </PrivateElement>} />
             <Route path="/AddSchedule" element={<PrivateElement admittedRoles={["Administrador", "Moderador"]}> <AddSchedulePage /> </PrivateElement>} />
-            <Route path='/SearchTeacher' element={<PrivateElement admittedRoles={["Administrador" , "Moderador", "Profesor", "Coordinador"]}> <TeacherSearch/> </PrivateElement>}/>
+            <Route path='/SearchTeacher' element={<PrivateElement admittedRoles={["Administrador" , "Moderador", "Profesor", "Coordinador", "Asistencia"]}> <TeacherSearch/> </PrivateElement>}/>
             <Route path='/PopulateClassroom' element={<PrivateElement admittedRoles={["Administrador", "Moderador"]}> <PopulateClassroom/> </PrivateElement>}/>
             <Route path='/ClassroomSchedule' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Coordinador"]}> <ClassroomSchedulePage/> </PrivateElement>}/>
             <Route path='/TeacherSchedule' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor", "Coordinador"]}> <TeacherSchedulePage/> </PrivateElement>}/>

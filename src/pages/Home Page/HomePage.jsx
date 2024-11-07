@@ -64,21 +64,24 @@ const HomePage = () => {
 
     const fetchAbsenceRecord = async () => {
         if(shift.name === "Matutino") {
-            if(classroom[0].grade.shift.name === "Matutino") {
-                const response = await absenceRecordService.getByClassroomAndShift(classroom[0].id, token, shift.id);
-                setAbsenceRecord(response);
-            }else if(classroom[1]?.grade.shift.name === "Matutino") {
-                const response = await absenceRecordService.getByClassroomAndShift(classroom[1]?.id, token, shift.id);
-                setAbsenceRecord(response);
-            }
+            let foundClassroom = classroom.forEach((classroom) => {
+                if(classroom.grade.shift.name === "Matutino") {
+                    return classroom;
+                }
+            })
+
+            const response = await absenceRecordService.getByClassroomAndShift(foundClassroom.id, token, shift.id);
+            setAbsenceRecord(response);
+
         } else if(shift.name === "Vespertino") {
-            if(classroom[0].grade.shift.name === "Vespertino") {
-                const response = await absenceRecordService.getByClassroomAndShift(classroom[0].id, token, shift.id);
-                setAbsenceRecord(response);
-            }else if(classroom[1]?.grade.shift.name === "Vespertino") {
-                const response = await absenceRecordService.getByClassroomAndShift(classroom[1]?.id, token, shift.id);
-                setAbsenceRecord(response);
-            }
+            let foundClassroom = classroom.forEach((classroom) => {
+                if(classroom.grade.shift.name === "Vespertino") {
+                    return classroom;
+                }
+            })
+
+            const response = await absenceRecordService.getByClassroomAndShift(foundClassroom.id, token, shift.id);
+            setAbsenceRecord(response);
         }
     };
 
@@ -97,63 +100,45 @@ const HomePage = () => {
     useEffect(() => {
         if (top2AbsencesStudents.length > 0) {
             if(shift.name === "Matutino") {
-                if(classroom[0].grade.shift.name === "Matutino") {
-                    setName1(top2AbsencesStudents[0].student.name);
-                    setAbsences1(top2AbsencesStudents[0].unjustifiedAbsences);
-                    setName2(top2AbsencesStudents[1]?.student.name);
-                    setAbsences2(top2AbsencesStudents[1]?.unjustifiedAbsences);
-                    setClassroomName(classroom[0].grade.name.slice(0, -1));
-                    setGradeSection(classroom[0].grade.section);
-                }else if(classroom[1]?.grade.shift.name === "Matutino") {
-                    setName1(top2AbsencesStudents[0].student.name);
-                    setAbsences1(top2AbsencesStudents[0].unjustifiedAbsences);
-                    setName2(top2AbsencesStudents[1]?.student.name);
-                    setAbsences2(top2AbsencesStudents[1]?.unjustifiedAbsences);
-                    setClassroomName(classroom[1].grade.name.slice(0, -1));
-                    setGradeSection(classroom[1].grade.section);
-                }
+        
+                classroom.forEach((classroom) => {
+                    if(classroom.grade.shift.name === "Matutino") {
+                        setName1(top2AbsencesStudents[0].student.name);
+                        setAbsences1(top2AbsencesStudents[0].unjustifiedAbsences);
+                        setName2(top2AbsencesStudents[1]?.student.name);
+                        setAbsences2(top2AbsencesStudents[1]?.unjustifiedAbsences);
+                        setClassroomName(classroom.grade.name.slice(0, -1));
+                        setGradeSection(classroom.grade.section);
+                    }
+                });
+
             } else if(shift.name === "Vespertino") {
-                if(classroom[0].grade.shift.name === "Vespertino") {
-                    setName1(top2AbsencesStudents[0].student.name);
-                    setAbsences1(top2AbsencesStudents[0].unjustifiedAbsences);
-                    setName2(top2AbsencesStudents[1]?.student.name);
-                    setAbsences2(top2AbsencesStudents[1]?.unjustifiedAbsences);
-                    setClassroomName(classroom[0].grade.name.slice(0, -1));
-                    setGradeSection(classroom[0].grade.section);
-                }else if(classroom[1]?.grade.shift.name === "Vespertino") {
-                    setName1(top2AbsencesStudents[0].student.name);
-                    setAbsences1(top2AbsencesStudents[0].unjustifiedAbsences);
-                    setName2(top2AbsencesStudents[1]?.student.name);
-                    setAbsences2(top2AbsencesStudents[1]?.unjustifiedAbsences);
-                    setClassroomName(classroom[1].grade.name.slice(0, -1));
-                    setGradeSection(classroom[1].grade.section);
-                }
+                
+                classroom.forEach((classroom) => {
+                    if(classroom.grade.shift.name === "Vespertino") {
+                        setName1(top2AbsencesStudents[0].student.name);
+                        setAbsences1(top2AbsencesStudents[0].unjustifiedAbsences);
+                        setName2(top2AbsencesStudents[1]?.student.name);
+                        setAbsences2(top2AbsencesStudents[1]?.unjustifiedAbsences);
+                        setClassroomName(classroom.grade.name.slice(0, -1));
+                        setGradeSection(classroom.grade.section);
+                    }
+                });
+
             }
-        } else if (absenceRecord.length === 0 && classroom.length > 0){
-            
-            if(classroom[0].grade.shift.name === "Matutino") {
-                setClassroomName(classroom[0].grade.name.slice(0, -1));
-                setGradeSection(classroom[0].grade.section);
-            }else if(classroom[1]?.grade.shift.name === "Matutino") {
-                setClassroomName(classroom[1]?.grade.name.slice(0, -1));
-                setGradeSection(classroom[1]?.grade.section);
-            }
-        } else if(shift.name === "Vespertino") {
-            if(classroom[0].grade.shift.name === "Vespertino") {
-                setClassroomName(classroom[0].grade.name.slice(0, -1));
-                setGradeSection(classroom[0].grade.section);
-            }else if(classroom[1]?.grade.shift.name === "Vespertino") {
-                setClassroomName(classroom[1]?.grade.name.slice(0, -1));
-                setGradeSection(classroom[1]?.grade.section);
-            }
-        }
+        } 
 
     }
 , [top2AbsencesStudents]);
 
     useEffect(() => {
-        if(classroom?.length > 0 && shift) {
+        if(classroom?.length > 0 && shift ) {
             const selectedClassroom = classroom.find(classroom => classroom.grade.shift.id === shift.id);
+
+            setName1("No hay estudiantes con inasistencias");
+            setName2("No hay estudiantes con inasistencias");
+            setAbsences1(0);
+            setAbsences2(0);
 
             setClassroomName(selectedClassroom ? selectedClassroom.grade.name.slice(0, -1) : "");
             setGradeSection(selectedClassroom ? selectedClassroom.grade.section : "");

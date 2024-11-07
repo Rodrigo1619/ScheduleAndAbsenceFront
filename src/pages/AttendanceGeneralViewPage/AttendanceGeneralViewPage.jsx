@@ -14,6 +14,7 @@ import TableAttendanceComponent from '../../Components/TableGeneralAttendance/Ta
 import { shiftService } from '../../Services/shiftService';
 import { classroomService } from '../../Services/classroomService';
 import { useUserContext } from '../../Context/userContext';
+import { Grid } from 'react-loader-spinner';
 
 const tableHeaders = ["", "ID", "Salón", "Turno", "Inasistencia Diaria", "Inasistencia Global"];
 const tableKeys = ["id", "grade.name", "grade.shift.name"];
@@ -25,6 +26,7 @@ const AttendanceGeneralViewPage = () => {
     const [shiftsList, setShiftsList] = useState([]);
     const [tableData, setTableData] = useState([]);
     const { token, user } = useUserContext();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchShifts = async () => {
@@ -40,6 +42,10 @@ const AttendanceGeneralViewPage = () => {
         };
 
         fetchShifts();
+
+        setTimeout(() => {
+            setLoading(false);
+        }, 2000);
     }, [token]);
 
     useEffect(() => {
@@ -112,6 +118,13 @@ const AttendanceGeneralViewPage = () => {
     };
 
     return (
+        loading ?
+        <div className={[classes["loaderContainer"]]}>
+            <Grid type="Grid" color="#170973" height={80} width={80} visible={loading} />
+        </div>
+
+        :
+
         <div className={[classes["generalContainer"]]}>
             <header className={[classes["headerContainer"]]}>
                 <Header name={user?.name} role={user?.role.name} />
