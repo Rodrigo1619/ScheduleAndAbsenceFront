@@ -2,6 +2,30 @@ const BASE_URL = import.meta.env.VITE_API_URL
 
 export const classroomService = {
 
+    getAllClassrooms: async (token) => {
+        try {
+            const response = await fetch(`${BASE_URL}/classroom/all`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+            });
+            
+            if(response.status === 204){
+                return [];
+            }else if (!response.ok) {
+                throw new Error(response.status);
+            }
+    
+            const data = await response.json()
+    
+            return data
+        } catch (error) {
+            throw error;
+        }
+    },
+
     getClassroomsByShiftAndYear: async (token, shift, year) => {
         try {
             const response = await fetch(`${BASE_URL}/classroom/all?shift=${shift}&year=${year}`, {

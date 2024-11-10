@@ -26,7 +26,7 @@ const ClassroomPage = () => {
 
     const fetchClassrooms = async () => {
         try {
-            const data = await classroomService.getClassrooms(token);
+            const data = await classroomService.getAllClassrooms(token);
             setClassrooms(data);
             console.log(data);
         }
