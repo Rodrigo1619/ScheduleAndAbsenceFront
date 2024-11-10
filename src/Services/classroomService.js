@@ -2,38 +2,6 @@ const BASE_URL = import.meta.env.VITE_API_URL
 
 export const classroomService = {
 
-    getClassrooms: async (token, year, shift) => {
-        // Construir la URL dinámicamente dependiendo de si existen los parámetros
-        let url = `${BASE_URL}/classroom/all`;
-
-        const params = [];
-        if (year) params.push(`year=${year}`);
-        if (shift) params.push(`shift=${shift}`);
-        console.log(params);
-
-        if (params.length > 0) {
-            url += `?${params.join('&')}`;
-        }
-
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error('Error: ' + response.status);
-        }
-
-        const data = await response.json();
-        console.log('Data del servicio');
-        console.log(data);
-
-        return data;
-    },
-
     getClassroomsByShiftAndYear: async (token, shift, year) => {
         try {
             const response = await fetch(`${BASE_URL}/classroom/all?shift=${shift}&year=${year}`, {
@@ -270,7 +238,7 @@ export const classroomService = {
             });
 
             if (!response.ok) {
-                throw new Error('Error getting classrooms: ' + response.status);
+                throw new Error(await response.text());
             }
 
             const data = await response.json();

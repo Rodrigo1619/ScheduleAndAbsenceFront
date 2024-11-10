@@ -6,12 +6,11 @@ import enrollIcon from "../../assets/icons/enroll-student.svg";
 import clockIcon from "../../assets/icons/clock-solid.svg";
 import searchIcon from "../../assets/icons/search-icon.svg";
 import schoolIcon from "../../assets/icons/school-icon.svg";
-
-
 import userPlusIcon from "../../assets/icons/user-plus-icon.svg";
 import filePlusIcon from "../../assets/icons/file-plus-icon.svg";
+import teacherIcon from "../../assets/icons/teacherchalkb.svg";
+
 import Header from "../../Components/Header/Header";
-import SideBarNav from "../../Components/SideBarNav/SideBarNav";
 import QuickAccessButtons from "../../Components/QuickAccessButtons/QuickAccessButtons";
 import classes from "./ModeratorPage.module.css";
 import { useUserContext } from "../../Context/userContext";
@@ -42,6 +41,7 @@ const ModeratorPage = () => {
                             <QuickAccessButtons 
                                 title="Acciones Profesores:"
                                 iconsvg1={userPlusIcon} description1="Registrar un nuevo usuario" link1="/TeacherPage"
+                                iconsvg2={teacherIcon} description2={"Ver horario de profesor"} link2="/TeacherSchedule"
                                 iconsvg3={filePlusIcon} description3="Asignar materia a un profesor" link3="/UserxSubjectPage"
                             />
                         </div>

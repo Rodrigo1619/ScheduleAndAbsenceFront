@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
-import {
-    Button,
-    Dialog,
-    DialogHeader,
-    DialogBody,
-    DialogFooter,
-    Typography
-} from "@material-tailwind/react";
+import { Typography } from "@material-tailwind/react";
+
 import classes from "./AttendanceGeneralPage.module.css";
 import Header from "../../Components/Header/Header";
-import SideBarNav from "../../Components/SideBarNav/SideBarNav";
 import TableAttendanceComponent from '../../Components/TableGeneralAttendance/TableGeneralAttendanceComponent';
+
 import { shiftService } from '../../Services/shiftService';
 import { classroomService } from '../../Services/classroomService';
 import { useUserContext } from '../../Context/userContext';
+
 import { Grid } from 'react-loader-spinner';
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import { AiOutlineLoading } from "react-icons/ai";
+import { Toaster, toast } from 'sonner';
 
 const tableHeaders = ["", "ID", "Salón", "Turno", "Inasistencia Diaria", "Inasistencia Global"];
 const tableKeys = ["id", "grade.name", "grade.shift.name"];
@@ -22,7 +20,7 @@ const tableKeys = ["id", "grade.name", "grade.shift.name"];
 const AttendanceGeneralViewPage = () => {
     const currentYear = new Date().getFullYear();
     const [selectedYear, setSelectedYear] = useState(currentYear);
-    const [selectedShift, setSelectedShift] = useState("Seleccionar turno");
+    const [selectedShift, setSelectedShift] = useState();
     const [shiftsList, setShiftsList] = useState([]);
     const [tableData, setTableData] = useState([]);
     const { token, user } = useUserContext();
@@ -45,27 +43,43 @@ const AttendanceGeneralViewPage = () => {
 
         setTimeout(() => {
             setLoading(false);
-        }, 2000);
+        }, 2500);
     }, [token]);
 
     useEffect(() => {
+        setSelectedShift(shiftsList[0]?.id);
+    }, [shiftsList, user]);
+
+    useEffect(() => {
         const fetchClassrooms = async () => {
+            console.log("Selected shift:", selectedShift);
             if (token && selectedYear && selectedShift !== "Seleccionar turno") {
+                const loadingToast = toast('Cargando...', {
+                    icon: <AiOutlineLoading className="animate-spin" />,
+                });
                 try {
-                    let classrooms;
                     if (user && user.role && user.role.name === 'Profesor') {
-                        classrooms = await classroomService.getClassroomsByUserYearAndShift(token, selectedYear, selectedShift);
+                        const response = await classroomService.getClassroomsByUserYearAndShift(token, selectedYear, selectedShift);
+
+                        setTableData(response);
 
                     } else {
-                        classrooms = await classroomService.getClassrooms(token, selectedYear, selectedShift);
+                        const response = await classroomService.getClassroomsByShiftAndYear(token, selectedShift, selectedYear);
+
+                        setTableData(response);
+
                     }
 
-                    const formatedData = classrooms.filter(classroom => { return classroom.grade.shift.id === selectedShift });
-
-                    setTableData(formatedData || []);
                 } catch (error) {
-                    console.error("Error fetching classrooms:", error);
+                    if(error.message === "No classrooms assigned to the user"){
+                        toast.error("No hay salones asignados al usuario", {
+                            duration: 3000,
+                            icon: <XCircleIcon style={{color: "red"}} />,
+                        });
+                    }
                     setTableData([]);
+                } finally {
+                    toast.dismiss(loadingToast);
                 }
             } else {
                 // Reiniciar datos de la tabla si no se ha seleccionado un turno y año válidos
@@ -74,7 +88,7 @@ const AttendanceGeneralViewPage = () => {
         };
 
         fetchClassrooms();
-    }, [token, selectedYear, selectedShift]);
+    }, [token, selectedYear, selectedShift, user]);
 
     const handleYearChange = (e) => {
         setSelectedYear(parseInt(e.target.value, 10));
@@ -131,6 +145,7 @@ const AttendanceGeneralViewPage = () => {
             </header>
 
             <div className={[classes["bodyContainer"]]}>
+                <Toaster />
                 <div className={[classes["allContentContainer"]]}>
                     <div className={[classes["pageContentContainerCol"]]}>
                         <div className={[classes["TitleContainer"]]}>
@@ -150,7 +165,6 @@ const AttendanceGeneralViewPage = () => {
                                 onChange={handleShiftChange}
                                 className={classes["yearSelect"]}
                             >
-                                <option value="Seleccionar turno">Seleccionar turno</option>
                                 {shiftsList.map((shift) => (
                                     <option key={shift.id} value={shift.id}>
                                         {shift.name}
@@ -160,7 +174,7 @@ const AttendanceGeneralViewPage = () => {
                         </div>
                         <div className={[classes["pageContentContainerRow"]]}>
                             <div className={[classes["SubtitleContainer"]]}>
-                                {selectedShift === "Seleccionar turno" || tableData.length === 0 ? (
+                                {selectedShift === "Seleccionar turno" ? (
                                     <Typography variant="h6" color="gray">
                                         Por favor, seleccione un año y un turno validos para mostrar los datos de asistencia.
                                     </Typography>
@@ -174,6 +188,7 @@ const AttendanceGeneralViewPage = () => {
                                         handleDelete={handleGlobalAttendance}
                                         handleStatus={handleStatus}
                                         isDownload={false}
+                                        noContent={tableData.length === 0 ? true : false}
                                     />
                                 )}
                             </div>

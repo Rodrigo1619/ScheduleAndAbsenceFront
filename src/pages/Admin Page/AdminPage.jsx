@@ -5,7 +5,6 @@ import {
 import classes from "./AdminPage.module.css";
 import tableIcon from "../../assets/icons/table-icon.svg";
 import usersIcon from "../../assets/icons/users-icon.svg";
-import studentIcon from "../../assets/icons/student-icon.svg";
 import userPlusIcon from "../../assets/icons/user-plus-icon.svg";
 import filePlusIcon from "../../assets/icons/file-plus-icon.svg";
 import calendarIcon from "../../assets/icons/calendar-icon.svg";
@@ -15,6 +14,7 @@ import searchIcon from "../../assets/icons/search-icon.svg";
 import clockIcon from "../../assets/icons/clock-solid.svg";
 import studentTeachersClasroomIcon from "../../assets/icons/studentTeachersClassroom-icon.svg";
 import enrollIcon from "../../assets/icons/enroll-student.svg";
+import teacherIcon from "../../assets/icons/teacherchalkb.svg"
 import QuickAccessButtons from "../../Components/QuickAccessButtons/QuickAccessButtons";
 import Header from "../../Components/Header/Header";
 
@@ -55,7 +55,7 @@ const AdminPage = () => {
                         <div className={[classes["SubtitleContainer"]]}>
                             <QuickAccessButtons title="Acciones Generales:"
                                 iconsvg1={tableIcon} description1="Administrar tablas de bases de datos" link1="/DBDashboard"
-                                iconsvg2={studentIcon} description2="Registrar un nuevo alumno" link2="/StudentPage"
+                                iconsvg2={teacherIcon} description2="Ver horario de profesor" link2="/TeacherSchedule"
                                 iconsvg3={usersIcon} description3="Revisar listado de asistencias" link3="/AttendanceGeneralView"/>
                         </div>
                         <div className={[classes["SubtitleContainer"]]}>

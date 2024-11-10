@@ -134,6 +134,30 @@ export const scheduleService = {
         }
     },
 
+    getScheduleByUserIdShiftYear: async (token, userId, shiftId, year) => {
+        try {
+            
+            const response = await fetch(`${BASE_URL}/schedule/user/${userId}?shift=${shiftId}&year=${year}`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if(response.status === 204){
+                return null;
+            } else if(!response.ok){
+                throw new Error('Error getting schedule: ' + response.status);
+            }
+
+            const data = await response.json();
+
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
     getScheduleByClassroomId: async (token, classroomID, year) => {
         try {
             
@@ -216,6 +240,30 @@ export const scheduleService = {
     getScheduleByTokenShiftYear: async (token, shift, year) => {
         try {
             const response = await fetch(`${BASE_URL}/schedule/user?shift=${shift}&year=${year}`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if(response.status === 204){
+                return null;
+            } else if (!response.ok) {
+                throw new Error('Error: ' + response.status);
+            }
+
+            const data = await response.json();
+
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    getScheduleBySearchParameters: async (token, classperiod, shift, weekday, year, user, classroom) => {
+        try {
+            const response = await fetch(`${BASE_URL}/schedule/search?classperiod=${classperiod}&shift=${shift}
+                &weekday=${weekday}&year=${year}&user=${user}&classroom=${classroom}`, {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${token}`

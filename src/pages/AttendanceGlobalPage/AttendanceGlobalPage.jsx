@@ -8,6 +8,8 @@ import { useUserContext } from '../../Context/userContext';
 import { classroomService } from '../../Services/classroomService';
 import { absenceRecordService } from '../../Services/absenceRecordService'; 
 
+import { Grid } from "react-loader-spinner";
+
 const tableHeaders = ["", "NIE", "Nombre", "Inasistencia Total", "No justificada", "Justificada"];
 const tableKeys = ["student.nie", "student.name", "totalAbsences", "unjustifiedAbsences", "justifiedAbsences"];
 
@@ -18,17 +20,16 @@ const AttendanceGlobalPage = () => {
     const yearId = searchParams.get('year');
     
     const currentYear = new Date().getFullYear();
-    const [selectedYear, setSelectedYear] = useState(yearId || currentYear);
-    const [selectedShift, setSelectedShift] = useState(shiftId || "Matutino");
     const [shiftName, setShiftName] = useState("");
     const [classroomGrade, setClassroomGrade] = useState("");
     const [tableData, setTableData] = useState([]); 
+    const [loading, setLoading] = useState(true);
     const { token, user } = useUserContext();
 
     useEffect(() => {
         const fetchClassrooms = async () => {
             try {
-                const classrooms = await classroomService.getClassroomsByShiftAndYear(token, selectedShift, selectedYear);
+                const classrooms = await classroomService.getClassroomsByShiftAndYear(token, shiftId, yearId);
                 if (classrooms && classrooms.length > 0) {
                     const classroom = classrooms.find(c => c.id === classroomId);
                     if (classroom) {
@@ -43,7 +44,7 @@ const AttendanceGlobalPage = () => {
 
         const fetchAbsentStudents = async () => {
             try {
-                const students = await absenceRecordService.getAllAbsentStudentsByYear(classroomId, token, selectedYear);
+                const students = await absenceRecordService.getAllAbsentStudentsByYear(classroomId, token, yearId);
                 setTableData(students || []);
             } catch (error) {
                 console.error("Error fetching absent students:", error);
@@ -52,23 +53,26 @@ const AttendanceGlobalPage = () => {
 
         fetchClassrooms();
         fetchAbsentStudents();
-    }, [selectedYear, selectedShift, classroomId, token]);
 
-    const handleYearChange = (e) => {
-        setSelectedYear(e.target.value);
-    };
+        setTimeout(() => {
+            setLoading(false);
+        }, 1500);
 
-    const handleShiftChange = (e) => {
-        setSelectedShift(e.target.value);
-    };
+    }, [yearId, shiftId, classroomId, token]);
 
-    // Genera un array de años desde el actual hasta el 2000
     const years = [];
     for (let year = currentYear; year >= 2020; year--) {
         years.push(year);
     }
 
     return (
+        loading ?
+            <div className={[classes["loaderContainer"]]}>
+                <Grid type="Grid" color="#170973" height={80} width={80} visible={loading} />
+            </div>
+
+            :
+        
         <div className={[classes["generalContainer"]]}>
             <header className={[classes["headerContainer"]]}>
                 <Header name={user?.name} role={user?.role.name} />
@@ -79,13 +83,13 @@ const AttendanceGlobalPage = () => {
                     <div className={[classes["pageContentContainerCol"]]}>
                         <div className={[classes["TitleContainer"]]}>
                             <div className={classes["yearSelect"]}>
-                                Año: {selectedYear}
+                                Año: {yearId}
                             </div>
                             <div className={classes["yearSelect"]}>
-                                Turno: {shiftName || selectedShift}
+                                Turno: {shiftName}
                             </div>
                             <div className={classes["gradeDisplay"]}>
-                                Grado: {classroomGrade || ""}
+                                Grado: {classroomGrade}
                             </div>
                         </div>
                         <div className={[classes["pageContentContainerRow"]]}>

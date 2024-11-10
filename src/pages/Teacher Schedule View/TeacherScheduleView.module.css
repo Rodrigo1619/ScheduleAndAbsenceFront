@@ -16,11 +16,11 @@
 
     background-color: #f2f2f2;
 
-    @apply flex flex-col w-screen mx-auto my-5 h-screen;
+    @apply flex flex-col w-screen mx-auto my-5 h-screen overflow-auto;
 }
 
 .allContentContainer {
-    @apply flex flex-row justify-normal mx-10 w-auto;
+    @apply flex flex-row justify-normal w-screen;
 /**/
 }
 
@@ -33,7 +33,7 @@
 }
 
 .pageContentContainerRow {
-    @apply flex flex-row w-full items-center justify-center mx-auto
+    @apply flex flex-row w-auto items-center justify-center mx-auto
     Mobile-390*844:flex-col-reverse Mobile-390*844:w-full Mobile-390*844:mx-2 Mobile-390*844:justify-center Mobile-390*844:items-center Mobile-390*844:max-h-max Mobile-390*844:overflow-y-auto
     Mobile-280:flex-col-reverse Mobile-280:w-full Mobile-280:mx-2 Mobile-280:justify-center Mobile-280:items-center
     ;
@@ -41,16 +41,9 @@
 }
 
 .TitleContainer {
-    @apply flex w-full items-center justify-center mx-2 my-2 space-x-4
-    Mobile-390*844:flex-col Mobile-390*844:space-x-0 Mobile-390*844:space-y-2
-    Mobile-280:flex-col Mobile-280:space-x-0 Mobile-280:space-y-2;
+    @apply flex w-full items-center justify-center mx-2 my-2;
 }
 
-.SubtitleContainer {
-    @apply flex w-full items-center justify-center mx-2
-    Mobile-390*844:mx-0 Mobile-390*844:my-2
-    Mobile-280:mx-0 Mobile-280:my-2;
-}
 
 /*--------------------*/
 
@@ -64,22 +57,4 @@
     Mobile-390*844:my-0 Mobile-390*844:mx-2 Mobile-390*844:px-20 Mobile-390*844:w-auto Mobile-390*844:h-auto
     Mobile-280:my-0 Mobile-280:mx-2 Mobile-280:px-20 Mobile-280:w-auto Mobile-280:h-auto
     IpadAir:my-0 IpadAir:mx-0 IpadAir:px-4 IpadAir:w-auto IpadAir:h-auto
-}
-
-.yearSelect {
-    @apply w-auto h-auto text-sm justify-center my-auto font-masferrerTitle font-normal
-    PC-1280*720:text-xs PC-800*600:text-xs PC-640*480:text-xs
-    Mobile-390*844:text-xs Mobile-280:text-xs IpadAir:text-xs
-    bg-white border border-gray-300 rounded-lg px-12 py-2 hover:shadow-2xl;
-}
-
-.gradeDisplay {
-    @apply text-sm justify-center my-auto font-masferrerTitle font-normal;
-    @apply PC-1280*720:text-xs PC-800*600:text-xs PC-640*480:text-xs;
-    @apply Mobile-390*844:text-xs Mobile-280:text-xs IpadAir:text-xs;
-    @apply bg-white border border-gray-300 rounded-lg px-12 py-2 hover:shadow-2xl;
-}
-
-.loaderContainer{
-    @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
 }

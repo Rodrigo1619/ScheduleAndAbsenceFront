@@ -21,36 +21,28 @@
 }
 
 .allContentContainer {
-    @apply flex flex-row justify-center items-center mx-auto w-screen h-full
+    @apply flex flex-row justify-center items-center m-auto w-full
     PC-Ultrawide-34inch:mx-auto  PC-Ultrawide-34inch:ml-0 PC-Ultrawide-34inch:justify-center
-    Mobile-390*844:flex-col Mobile-390*844:mx-0 Mobile-390*844:justify-start
-    ;
-
-}
-
-.sideBarContainer {
-    @apply flex flex-col h-full w-fit justify-center items-center mx-12
-    PC-Ultrawide-34inch:mx-0 PC-Ultrawide-34inch:justify-center
+    Mobile-390*844:mx-auto Mobile-390*844:justify-center Mobile-390*844:items-center
     ;
 
 }
 
 .pageContentContainer {
-    @apply flex flex-col items-center justify-center w-fit mx-auto h-full overflow-hidden
+    @apply flex flex-col justify-center w-full h-full overflow-hidden items-center self-center -m-2 
     PC-Ultrawide-34inch:justify-center PC-Ultrawide-34inch:mx-0 PC-Ultrawide-34inch:items-start
-    Mobile-390*844:mx-0 Mobile-390*844:justify-start Mobile-390*844:overflow-visible
-    Mobile-280:mx-0 Mobile-280:justify-start Mobile-280:overflow-visible
+    Mobile-390*844:mx-0 Mobile-390*844:justify-start Mobile-390*844:items-start Mobile-390*844:overflow-auto
     ;
 
 }
 
 
 .SubtitleContainer {
-    @apply flex flex-col items-center justify-center w-auto mx-auto content-evenly;
+    @apply flex flex-row items-center justify-center;
 }
 
 .dashboardContainer {
-    @apply flex flex-row overflow-auto mx-8 px-12 py-4
+    @apply flex flex-row mx-8 px-12 py-2 items-center self-center justify-center 
     PC-1920*1080:w-full
     PC-1600*900:w-full
     PC-1366*768:w-full
@@ -59,25 +51,8 @@
     PC-640*480:w-CarouselItemPC-640*480
     IpadAir:w-CarouselItemPC-800*600 IpadAir:mx-auto IpadAir:px-0
     Mobile-390*844:grid Mobile-390*844:grid-cols-1 Mobile-390*844:gap-4 Mobile-390*844:mx-auto
-     Mobile-390*844:p-4 Mobile-390*844:overflow-visible
+    Mobile-390*844:p-2 Mobile-390*844:overflow-auto Mobile-390*844:h-full
     Mobile-280:grid Mobile-280:grid-cols-1 Mobile-280:gap-4 Mobile-280:mx-auto
-    Mobile-280:p-4 Mobile-280:overflow-visible
+    Mobile-280:p-0 Mobile-280:overflow-auto Mobile-280:h-full
     ;
-}
-
-.moreQuickbtns{
-    @apply flex flex-row bg-gray-100 bg-opacity-80 rounded-2xl justify-center items-center
-    w-full shadow-2xl PC-1280*720:w-5/6 PC-1280*720:h-full PC-1280*720:mr-10 
-    PC-800*600:w-3/4 PC-800*600:h-full
-    PC-640*480:w-3/4 PC-640*480:h-full 
-    IpadAir:w-6/7 IpadAir:h-full IpadAir:ml-4 IpadAir:px-0
-    Mobile-390*844:w-3/4 Mobile-390*844:h-full
-    Mobile-390*844:rounded-none Mobile-390*844:shadow-none 
-    Mobile-390*844:flex-col;
-}
-
-.QuickAccessButtonContainer{
-    @apply flex flex-row items-center justify-center h-auto w-full mb-2 px-6
-    Mobile-390*844:flex-col Mobile-390*844:mx-auto Mobile-390*844:justify-center
-    Mobile-280:flex-col Mobile-280:mx-auto Mobile-280:justify-center Mobile-390*844:my-4
 }

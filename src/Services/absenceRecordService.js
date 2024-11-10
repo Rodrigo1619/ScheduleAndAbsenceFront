@@ -49,6 +49,52 @@ export const absenceRecordService = {
             throw (error);
         }
     },
+    getRecordsWithoutCoodinationValidation: async (token, date) => {
+        try {
+            const response = await fetch(`${BASE_URL}/absence_record/count-no-coordination-validation?date=${date}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+            });
+    
+            if (!response.ok) {
+                throw new Error(response.status);
+            }
+    
+            const data = response.text()
+    
+            return data
+            
+        } catch (error) {
+            throw (error);
+        }
+    },
+    getTopAbsentStudentByMonthBothShifts: async (token, date) => {
+        try {
+            const response = await fetch(`${BASE_URL}/absence_record/top-absent-students?date=${date}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+            });
+    
+            if(response.status === 204){
+                return [];
+            }else if (!response.ok) {
+                throw new Error(response.status);
+            }
+    
+            const data = await response.json()
+    
+            return data
+            
+        } catch (error) {
+            throw (error);
+        }
+    },
     teacherValidation: async (token, absenceRecordID) => {
         try {
             const response = await fetch(`${BASE_URL}/absence_record/toggle-teacher-active/${absenceRecordID}`, {
@@ -109,10 +155,8 @@ export const absenceRecordService = {
                 })
             });
 
-            if(response.status === 404 ){
-                throw new Error(409);
-            }else if (!response.ok) {
-                throw new Error(response.status);
+            if (!response.ok) {
+                throw new Error(await response.text());
             }
 
             const data = await response.json();

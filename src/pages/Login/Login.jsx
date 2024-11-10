@@ -38,7 +38,7 @@ const Login = () => {
                 navigate('/ModeratorPage');
                 break;
             case "Coordinador":
-                navigate('/AttendanceGeneralView');
+                navigate('/CoordinatorHomepage');
                 break;
             case "Asistencia":
                 navigate('/AttendanceRegisterView');

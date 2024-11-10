@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Dialog, DialogHeader, DialogBody, DialogFooter } from "@material-tailwind/react";
-import { useNavigate } from "react-router-dom";
+import dayjs from 'dayjs'
 
 import { Toaster, toast } from 'sonner';
 import { AiOutlineLoading } from "react-icons/ai";
@@ -15,6 +15,7 @@ import { useUserContext } from "../../Context/userContext";
 
 import { classroomService } from "../../Services/classroomService";
 import { absenceRecordService } from "../../Services/absenceRecordService";
+import { shiftService } from "../../Services/shiftService";
 import { userService } from "../../Services/userService";
 
 const tableHeaders = [
@@ -23,42 +24,29 @@ const tableHeaders = [
 
 const AttendanceRegisterViewPage = () => {
 
-    const [selectedDate, setSelectedDate] = useState(new Date());
     const [loading, setLoading] = useState(true);
 
-    const currentDate = new Date();
-    const minDate = new Date();
-    minDate.setDate(currentDate.getDate() - 3);
+    const currentDate = dayjs(new Date()).format('YYYY-MM-DD');
+    const minDate = dayjs(currentDate).subtract(2, 'day').format('YYYY-MM-DD');
 
-    const formatDateForInput = (date) => {
-
-        const day = date.getDate();
-        const month = date.getUTCMonth() + 1;
-        const year = date.getUTCFullYear();
-
-        const formatedDate = `${year}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`;
-
-        return formatedDate;
-    };
+    const [selectedDate, setSelectedDate] = useState(currentDate);
 
     const handleDateChange = (e) => {
-        const newDate = new Date(e.target.value);
-        if (newDate <= currentDate && newDate >= minDate) {
+        const newDate = dayjs(e.target.value).format('YYYY-MM-DD');
+        if (newDate <= currentDate) {
             setSelectedDate(newDate);
-        }
+        } 
     };
 
     const handlePreviousDay = () => {
-        const previousDay = new Date(selectedDate);
-        previousDay.setDate(previousDay.getDate() - 1);
+        const previousDay = dayjs(selectedDate).subtract(1, 'day').format('YYYY-MM-DD');
         if (previousDay >= minDate) {
             setSelectedDate(previousDay);
         }
     };
 
     const handleNextDay = () => {
-        const nextDay = new Date(selectedDate);
-        nextDay.setDate(nextDay.getDate() + 1);
+        const nextDay = dayjs(selectedDate).add(1, 'day').format('YYYY-MM-DD');
         if (nextDay <= currentDate) {
             setSelectedDate(nextDay);
         }
@@ -68,6 +56,9 @@ const AttendanceRegisterViewPage = () => {
     const [user, setUser] = useState();
 
     const [classroom, setClassroom] = useState();
+    const [selectedShift, setSelectedShift] = useState();
+    const [shiftsList, setShiftsList] = useState([]);
+
     const [studentList, setStudentList] = useState([]);
     const [absentStudents, setAbsentStudents] = useState([]);
 
@@ -98,6 +89,28 @@ const AttendanceRegisterViewPage = () => {
 
         fetchUser();
     },[token]);
+
+    useEffect(() => {
+        if(user?.role.name === "Profesor"){
+            const fetchShifts = async () => {
+                if (token) {
+                    try {
+                        const shifts = await shiftService.getAllShifts(token);
+                        setShiftsList(shifts || []);
+                    } catch (error) {
+                        console.error("Error fetching shifts:", error);
+                        setShiftsList([]);
+                    }
+                }
+            };
+    
+            fetchShifts();
+        }
+    }, [user]);
+
+    useEffect(() => {
+        setSelectedShift(shiftsList[0]?.id);
+    }, [shiftsList, user]);
 
     useEffect(() => {
         console.log("Usuario: ", user);
@@ -137,34 +150,48 @@ const AttendanceRegisterViewPage = () => {
         };
 
         if (user?.role.name === "Profesor"){
-            const fetchClassrooms = async () => {
-                try {
-                    const data = await classroomService.getByUserAndYear(token, year);
+            console.log(selectedShift);
+            if(selectedShift){
+                const fetchClassrooms = async () => {
+                    try {
+                        const data = await classroomService.getClassroomsByUserYearAndShift(token, year, selectedShift);
+    
+                        console.log("Data: ", data);
+                        setClassroom(data[0]);
+                    } catch (error) {
+                        if(error.message === "No classrooms assigned to the user"){
+                            toast.error("No tiene salon asignado en este horario", {
+                                duration: 3000,
+                                icon: <XCircleIcon style={{color: "red"}} />,
+                            });
+                        }
+                        setClassroom(null);
+                        setStudentList([]);
+                        console.log(`Hubo un error al obtener los datos del salon: ${error}`);
+                    }
+                };
 
-                    console.log("Data: ", data[0]);
-                    setClassroom(data[0]);
-                } catch (error) {
-                    console.log(`Hubo un error al obtener los datos del salon: ${error}`);
-                }
-            };
+                fetchClassrooms();
+            }
 
-            fetchClassrooms();
         };
 
         setTimeout(() => {
             setLoading(false);
         }, 1500);
 
-    }, [token, user]);
+    }, [token, user, selectedShift, shiftsList]);
 
     useEffect(() => {
-        
         if(user?.role.name === "Profesor" && classroom){
             const fetchStudentList = async () => {
                 try {
                     const data = await classroomService.getClassStudentsByClassroomID(token, classroom.id);
     
+                    console.log("Data student list: ", data);
+
                     if(data.length === 0){
+                        setStudentList([]);
                         return;
                     }
             
@@ -190,7 +217,11 @@ const AttendanceRegisterViewPage = () => {
                 setLoading(false);
             }, 1500);
         }
-    }, [classroom]);
+    }, [classroom, selectedShift]);
+
+    const handleShiftChange = (e) => {
+        setSelectedShift(e.target.value);
+    };
 
     const handleBoyCountChange = (e) => {
         setBoysCount(e.target.value);
@@ -203,7 +234,7 @@ const AttendanceRegisterViewPage = () => {
     const handleRegisterAbsenceRecord = async () => {
 
         const absenceRecordJSON = {
-            date: formatDateForInput(selectedDate),
+            date: selectedDate,
             maleAttendance: boysCount,
             femaleAttendance: girlsCount,
             absentStudents: absentStudents.map(student => ({id_student: student.id}))
@@ -229,7 +260,7 @@ const AttendanceRegisterViewPage = () => {
         } catch (error) {
             console.log(`Hubo un error al registrar la inasistencia: ${error}`);
 
-            if (error.message === "409") {
+            if (error.message === "Absence record already exists") {
                 toast.error('Error, asistencia ya registrada', {
                     duration: 2000,
                     icon: <XCircleIcon style={{color: "red"}} />,
@@ -266,8 +297,26 @@ const AttendanceRegisterViewPage = () => {
                     <div className={classes["pageContentContainerCol"]}>
                         <Toaster />
                         <div className={classes["TitleContainer"]}>
+                            {
+                                user?.role.name === "Profesor" ? (
+                                    <select
+                                        value={selectedShift}
+                                        onChange={handleShiftChange}
+                                        className={classes["yearSelect"]}
+                                    >
+                                        {shiftsList.map((shift) => (
+                                            <option key={shift.id} value={shift.id}>
+                                                {shift.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    <>
+                                    </>
+                                )
+                            }
                             <div className={classes["yearSelect"]}>
-                                <p>{classroom?.grade.name}</p>
+                                <p>{classroom ? classroom.grade.name : "Salon de clase"}</p>
                             </div>
                             {/* Contenedor para las flechas y el input de fecha */}
                             <div className={classes["dateNavigationContainer"]}>
@@ -280,12 +329,11 @@ const AttendanceRegisterViewPage = () => {
                                 </button>
                                 <input
                                     type="date"
-                                    value={formatDateForInput(selectedDate)}
+                                    value={selectedDate}
                                     onChange={handleDateChange}
                                     className={classes["dateInput"]}
-                                    max={formatDateForInput(currentDate)}
-                                    min={formatDateForInput(minDate)}
-                                />
+                                    max={currentDate}
+                                    min={minDate}/>
                                 <button
                                     className={classes["dateButton"]}
                                     onClick={handleNextDay}
@@ -304,7 +352,7 @@ const AttendanceRegisterViewPage = () => {
                             <DialogBody> 
                                 
                                 <p className={classes["dialogInfo"]}>
-                                    Fecha: &nbsp; <span className="font-bold">{selectedDate.toISOString().split('T')[0]}</span> <br/>
+                                    Fecha: &nbsp; <span className="font-bold">{selectedDate}</span> <br/>
                                     Grado: &nbsp; <span className="font-bold">{classroom?.grade.name}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turno: &nbsp; <span className="font-bold">{classroom?.grade.shift.name}</span> <br/>
                                     Orientador: &nbsp; <span className="font-bold">{classroom?.homeroomTeacher.name}</span> <br/> <br/>
                                     # de Niños presentes: &nbsp; <span className="font-bold">{boysCount}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # de Niñas presentes: &nbsp; <span className="font-bold">{girlsCount}</span> 

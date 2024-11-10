@@ -29,6 +29,7 @@ import teacherIcon from "../../assets/icons/classroom-icon.svg";
 import { FaCalendarPlus, FaChalkboardTeacher, FaSearch } from "react-icons/fa";
 import { PiChalkboardTeacher, PiChalkboardTeacherFill, PiStackPlusFill, PiStudentFill } from "react-icons/pi";
 import { SiGoogleclassroom } from "react-icons/si";
+import { GiTeacher } from "react-icons/gi";
 import { Link, useNavigate } from "react-router-dom";
 
 import { userService } from "../../Services/userService";
@@ -179,49 +180,24 @@ const navListItemsAdmin = [
     path: "/AttendanceGeneralView"
   },
   {
-    label: "Buscar maestro",
+    label: "Buscar profesor",
     icon: FaSearch,
     path: "/SearchTeacher"
   },
   {
-    label: "Registrar a un nuevo profesor",
+    label: "Ver horario de un profesor",
+    icon: GiTeacher,
+    path: "/TeacherSchedule"
+  },
+  {
+    label: "Registrar a un nuevo usuario",
     icon: PiChalkboardTeacher,
     path: "/TeacherPage"
-  },
-  {
-    label: "Asignar materia a profesor",
-    icon: FaChalkboardTeacher,
-    path: "/UserXSubjectPage"
-  },
-  {
-    label: "Asignar horario a salón de clase",
-    icon: FaCalendarPlus,
-    path: "/AddSchedule"
-  },
-  {
-    label: "Registrar un nuevo salón de clase",
-    icon: SiGoogleclassroom,
-    path: "/ClassroomPage"
-  },
-  {
-    label: "Configuración de horas para el salón de clases",
-    icon: IoTimeSharp,
-    path: "/HourConfiguration"
-  },
-  {
-    label: "Agregar alumnos a un aula",
-    icon: UserPlusIcon,
-    path: "/PopulateClassroom"
   },
   {
     label: "Ver horario de un salón de clases",
     icon: CalendarIcon,
     path: "/ClassroomSchedule"
-  },
-  {
-    label: "Matricular estudiantes",
-    icon: PiStudentFill,
-    path: "/EnrollStudents"
   },
 ];
 
@@ -260,16 +236,6 @@ const navListItemsModerator = [
     path: "/SearchTeacher"
   },
   {
-    label: "Registrar un nuevo profesor",
-    icon: UserPlusIcon,
-    path: "/TeacherPage"
-  },
-  {
-    label: "Asignar materia a profesor",
-    icon: FaChalkboardTeacher,
-    path: "/UserXSubjectPage"
-  },
-  {
     label: "Asignar orientador a salón de clase",
     icon: PiChalkboardTeacherFill,
     path: "/ClassroomPage"
@@ -285,15 +251,20 @@ const navListItemsModerator = [
     path: "/PopulateClassroom"
   },
   {
-    label: "Configuración de horas para el salón de clases",
-    icon: IoTimeSharp,
-    path: "/HourConfiguration"
-  },
-  {
     label: "Matricular estudiantes",
     icon: PiStudentFill,
     path: "/EnrollStudents"
-  }
+  },
+  {
+    label: "Ver horario de un salón de clases",
+    icon: CalendarIcon,
+    path: "/ClassroomSchedule"
+  },
+  {
+    label: "Ver horario de un profesor",
+    icon: GiTeacher,
+    path: "/TeacherSchedule"
+  },
 ];
 
 const navListItemsCoordinator = [
@@ -308,11 +279,6 @@ const navListItemsCoordinator = [
     path: "/AttendanceGeneralView"
   },
   {
-    label: "Revisar asistencia global",
-    icon: UsersIcon,
-    path: "/AttendanceGlobalView"
-  },
-  {
     label: "Buscar maestro",
     icon: FaSearch,
     path: "/SearchTeacher"
@@ -321,6 +287,11 @@ const navListItemsCoordinator = [
     label: "Ver horario de un salón de clases",
     icon: CalendarIcon,
     path: "/ClassroomSchedule"
+  },
+  {
+    label: "Ver horario de un profesor",
+    icon: GiTeacher,
+    path: "/TeacherSchedule"
   },
 ];
 

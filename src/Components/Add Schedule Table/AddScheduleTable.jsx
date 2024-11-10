@@ -783,13 +783,9 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                     <HourDynamicTable hourConfiguration={hourConfiguration} />
                 </div>
                 <div className="flex flex-row justify-end items-center mx-auto">
-                    <Button className="w-auto bg-red-500 hover:bg-red-700 text-white font-bold py-4 px-4 rounded-lg">
-                        Cancelar
-                    </Button>
                     <Button
                         className="w-auto mx-4 bg-blueMasferrer bg-opacity-85 hover:bg-opacity-100 text-white font-bold py-4 px-4 rounded-lg"
-                        onClick={handleSaveSchedule}
-                    >
+                        onClick={handleSaveSchedule}>
                         Guardar
                     </Button>
                 </div>

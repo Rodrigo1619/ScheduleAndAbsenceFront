@@ -34,6 +34,7 @@ import AttendanceGlobalPage from './pages/AttendanceGlobalPage/AttendanceGlobalP
 import AttendanceVerification from './pages/AttendanceVerificationPage/AttendanceVerificationPage';
 import AttendanceRegisterPage from './pages/AttendanceRegisterPage/AttendanceRegisterPage';
 import EnrollStudentsPage from './pages/Enroll Students Page/EnrollStudentsPage';
+import TeacherScheduleView from './pages/Teacher Schedule View/TeacherScheduleView';
 
 
 function App() {
@@ -62,7 +63,7 @@ function App() {
             <Route path='/SearchTeacher' element={<PrivateElement admittedRoles={["Administrador" , "Moderador", "Profesor", "Coordinador", "Asistencia"]}> <TeacherSearch/> </PrivateElement>}/>
             <Route path='/PopulateClassroom' element={<PrivateElement admittedRoles={["Administrador", "Moderador"]}> <PopulateClassroom/> </PrivateElement>}/>
             <Route path='/ClassroomSchedule' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Coordinador"]}> <ClassroomSchedulePage/> </PrivateElement>}/>
-            <Route path='/TeacherSchedule' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor", "Coordinador"]}> <TeacherSchedulePage/> </PrivateElement>}/>
+            <Route path='/TeacherSchedule' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor", "Coordinador"]}> <TeacherScheduleView/> </PrivateElement>}/>
             <Route path='/HourConfiguration' element={<PrivateElement admittedRoles={["Administrador", "Moderador"]}> <AddHourConfigurationPage/> </PrivateElement>}/>
             <Route path='/AttendanceGeneralView' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor", "Coordinador"]}> <AttendanceGeneralViewPage/> </PrivateElement>}/>
             <Route path='/AttendanceGlobalView' element={<PrivateElement admittedRoles={["Administrador", "Moderador", "Profesor", "Coordinador"]}> <AttendanceGlobalPage/> </PrivateElement>}/>

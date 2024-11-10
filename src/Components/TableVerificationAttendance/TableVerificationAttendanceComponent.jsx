@@ -37,6 +37,8 @@ const TableVerificationComponent = ({
     rowsPerPageOptions = [5, 10, 15],
     isDownload = false,
     localDate,
+    tableDate,
+    noContent,
 }) => {
 
     const formatedHeaders = tableHeaders.slice(1).filter((header) => header !== "Nombre");
@@ -96,7 +98,7 @@ const TableVerificationComponent = ({
 
                 const newRow = tableKeys.map((key) => {
                     if (key.includes(".")) {
-                        return key.split(".").reduce((acc, part) => acc ? acc[part] : "N/A", row);
+                        return key.split(".").reduce((acc, part) => acc ? acc[part] : "", row);
                     } else {
 
                         if(key === "code") {
@@ -118,7 +120,7 @@ const TableVerificationComponent = ({
             });
 
             const buffer = await workbook.xlsx.writeBuffer();
-            saveAs(new Blob([buffer], { type: "application/octet-stream" }), `Inasistencia-${currentDate}.xlsx`);
+            saveAs(new Blob([buffer], { type: "application/octet-stream" }), `Inasistencia ${generalData.classroom.grade.name}-${currentDate}.xlsx`);
         }
 
         if (selectedRows.length > 0 && formatedHeaders.length > 1 && tableKeys.length > 0) {
@@ -131,7 +133,7 @@ const TableVerificationComponent = ({
 
                 const newRow = tableKeys.map((key) => {
                     if (key.includes(".")) {
-                        return key.split(".").reduce((acc, part) => acc ? acc[part] : "N/A", row);
+                        return key.split(".").reduce((acc, part) => acc ? acc[part] : "", row);
                     } else {
 
                         if(key === "code") {
@@ -153,7 +155,7 @@ const TableVerificationComponent = ({
             });
 
             const buffer = await workbook.xlsx.writeBuffer();
-            saveAs(new Blob([buffer], { type: "application/octet-stream" }), `Inasistencia-${currentDate}.xlsx`);
+            saveAs(new Blob([buffer], { type: "application/octet-stream" }), `Inasistencia ${generalData.classroom.grade.name}-${currentDate}.xlsx`);
         }
     };
 
@@ -175,7 +177,7 @@ const TableVerificationComponent = ({
                         const keys = key.split(".");
                         let value = row;
                         keys.forEach(k => {
-                            value = value ? value[k] : "N/A";
+                            value = value ? value[k] : "";
                         });
                         newRow[formatedHeaders[index]] = value;
                     } else {
@@ -187,7 +189,7 @@ const TableVerificationComponent = ({
 
             const csvContent = Papa.unparse(csvData, { header: true });
             const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-            saveAs(blob, `Inasistencia-${currentDate}.csv`);
+            saveAs(blob, `Inasistencia ${generalData.classroom.grade.name}-${currentDate}.csv`);
         }
 
         if (selectedRows.length > 0 && formatedHeaders.length > 1 && tableKeys.length > 0) {
@@ -206,7 +208,7 @@ const TableVerificationComponent = ({
                         const keys = key.split(".");
                         let value = row;
                         keys.forEach(k => {
-                            value = value ? value[k] : "N/A";
+                            value = value ? value[k] : "";
                         });
                         newRow[formatedHeaders[index]] = value;
                     } else {
@@ -218,7 +220,7 @@ const TableVerificationComponent = ({
 
             const csvContent = Papa.unparse(csvData, { header: true });
             const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-            saveAs(blob, `Inasistencia-${currentDate}.csv`);
+            saveAs(blob, `Inasistencia ${generalData.classroom.grade.name}-${currentDate}.csv`);
         }
     };
 
@@ -281,11 +283,16 @@ const TableVerificationComponent = ({
 
     const handleSaveAbsenceChanges = async () => {
         
-        const formatedAbsentStudents = filteredData.map((absentstudent) => {
+        const editAbsentStudentsList = filteredData.filter((absentStudent) => absentStudent.absent === "Si");
+        const deleteAbsentStudentsList = filteredData
+                .filter(absentStudent => absentStudent.absent === "No" && absentStudent.id !== null)
+                .map(absentStudent => (absentStudent.id));
+
+        const formatedAbsentStudents = editAbsentStudentsList.map((absentstudent) => {
             return {
                 id_student: absentstudent.student.id,
-                comments: absentstudent.comments,
-                id_code: absentstudent.code.id,
+                id_code: absentstudent.code ? absentstudent.code.id : "",
+                comments: absentstudent.comments ? absentstudent.comments : "",
             }
         });
         
@@ -295,8 +302,19 @@ const TableVerificationComponent = ({
         updatedData.absentStudents = formatedAbsentStudents;
         console.log("Datos actualizados: ", updatedData);
 
+        const absenceRecordJSON = {
+            id: updatedData.id,
+            date: updatedData.date,
+            maleAttendance: updatedData.maleAttendance,
+            femaleAttendance: updatedData.femaleAttendance,
+            absentStudents: formatedAbsentStudents ? formatedAbsentStudents : [],
+            deleteAbsentStudents: deleteAbsentStudentsList ? deleteAbsentStudentsList : [],
+        }
+
+        console.log("Datos a enviar: ", absenceRecordJSON);
+
         try {
-            const response = await absenceRecordService.editAbsenceRecord(token, updatedData);
+            const response = await absenceRecordService.editAbsenceRecord(token, absenceRecordJSON);
 
             if(response) {
                 toast.success('Cambios guardados con exito', {
@@ -306,6 +324,7 @@ const TableVerificationComponent = ({
             }
 
         } catch (error) {
+            console.log("Hubo un error al guardar los cambios: ", error);
             toast.error('Ocurrio un error', {
                 duration: 2000,
                 icon: <XCircleIcon style={{color: "red"}} />,
@@ -343,14 +362,26 @@ const TableVerificationComponent = ({
                             className={styles.userHeaderInput}
                         />
                         {isDownload && (
-                            <Typography as="a" href="#" color="blue-gray" size="sm" onClick={handleOpenDialog}>
-                                <RiFileDownloadFill size={24} />
-                            </Typography>
+                            noContent ? (
+                                <Typography as="a" href="#" size="sm" className='hover:pointer-events-none text-gray-400'>
+                                    <RiFileDownloadFill size={24} />
+                                </Typography>
+                            ) : (
+                                <Typography as="a" href="#" size="sm" onClick={handleOpenDialog} className='text-gray-900'>
+                                    <RiFileDownloadFill size={24} />
+                                </Typography>
+                            )
                         )}
                         {isDownload && (
-                            <Typography as="a" href="#" className="bg-green-500 text-white font-masferrer font-medium rounded-md px-2 py-1" onClick={handleSaveAbsenceChanges}>
-                                Guardar cambios
-                            </Typography>
+                            noContent ? (
+                                <Typography className="bg-green-200 text-white font-masferrer font-medium rounded-md px-2 py-1 hover:pointer-events-none">
+                                    Guardar cambios
+                                </Typography>
+                            ) :(
+                                <Typography as="a" href="#" className="bg-green-500 text-white font-masferrer font-medium rounded-md px-2 py-1" onClick={handleSaveAbsenceChanges}>
+                                    Guardar cambios
+                                </Typography>
+                            )
                         )}
                     </div>
                 </div>
@@ -379,7 +410,7 @@ const TableVerificationComponent = ({
                     </thead>
                     <tbody>
                         {
-                            Array.isArray(paginatedData) && paginatedData.length === 0 ? (
+                            noContent ? (
                                 <tr>
                                     <td colSpan={tableHeaders.length} className="p-4 text-center">
                                         <Typography variant="small" color="blue-gray" className="font-normal">
@@ -409,7 +440,7 @@ const TableVerificationComponent = ({
                                         </td>
                                         <td className="p-4">
                                             <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {row.date || localDate}
+                                                {row.date || tableDate}
                                             </Typography>
                                         </td>
                                         <td className="p-4">
@@ -426,12 +457,12 @@ const TableVerificationComponent = ({
                                         <td className="p-4">
                                             {
                                                 row.absent === "Si" ? (
-                                                    <button className='text-white font-masferrer font-normal bg-blueMasferrer py-1 px-3 rounded-md'
+                                                    <button className='text-white font-masferrer font-normal bg-blueMasferrer py-1 px-4 rounded-md'
                                                         onClick={() => handleAbsentBtn(index, row.absent === "Si" ? "No" : "Si")}>
                                                         {row.absent}
                                                     </button>
                                                 ) : (
-                                                    <button className='text-white font-masferrer font-normal bg-red-300 py-1 px-3 rounded-md'
+                                                    <button className='text-gray-800 font-masferrer font-normal bg-gray-200 py-1 px-3 rounded-md'
                                                         onClick={() => handleAbsentBtn(index, row.absent === "Si" ? "No" : "Si")}>
                                                         {row.absent}
                                                     </button>
@@ -443,12 +474,15 @@ const TableVerificationComponent = ({
                                             {
                                                 row.absent === "Si" ? (
                                                     <select
-                                                        onChange={(e) => handleSelectCodeChange(index, e.target)}>
-                                                            <option value={row.code?.description}>{row.code?.description}</option>
+                                                        className='border-2 border-gray-400 rounded p-1'
+                                                        onChange={(e) => handleSelectCodeChange(index, e.target)}
+                                                        value={row.code ? row.code.id : ""}>
+                                                            <option value={row.code ? row.code.id : ""}>{row.code ? row.code.description : "Elija una opcion"}</option>
                                                             {codeList.map((codes) => <option key={codes.id} value={codes.id}>{codes.description}</option>)}
                                                     </select>
                                                 ) : (
-                                                    <select disabled className='bg-gray-200'>
+                                                    <select disabled className='bg-gray-200 rounded p-1'
+                                                        value={""}>
                                                         <option value={""}>{"N/A"}</option>
                                                         {codeList.map((codes) => <option key={codes.id} value={codes.id}>{codes.description}</option>)}
                                                     </select>
@@ -460,14 +494,14 @@ const TableVerificationComponent = ({
                                                 row.absent === "Si" ? (
                                                     <input
                                                         type="text"
-                                                        className='border-2 border-gray-400'
+                                                        className='border-2 border-gray-400 rounded'
                                                         value={row.comments || ""}
                                                         onChange={(e) => handleObservationChange(index, e.target.value)}
                                                     />
                                                 ) : (
                                                     <input
                                                         type="text"
-                                                        className='border-2 border-gray-400' disabled
+                                                        className='border-2 border-gray-300 rounded' disabled
                                                         value={row.comments || ""}
                                                         onChange={(e) => handleObservationChange(index, e.target.value)}
                                                     />

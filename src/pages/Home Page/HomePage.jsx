@@ -1,27 +1,22 @@
 import React, { useState, useEffect } from "react";
-import {
-    Navbar,
-    Button,
-    Typography,
-} from "@material-tailwind/react";
+
 import classes from "./HomePage.module.css";
-import { FcPhone, FcClock, FcHome } from "react-icons/fc";
+
 import usersIcon from "../../assets/icons/users-icon.svg";
 import searchIcon from "../../assets/icons/search-icon.svg";
 import clipboardListIcon from "../../assets/icons/clipboard-list-icon.svg";
+
 import Header from "../../Components/Header/Header";
 import QuickAccessButtons from "../../Components/QuickAccessButtons/QuickAccessButtons";
-import SideBarNav from "../../Components/SideBarNav/SideBarNav";
 import StudentAbsencesCard from "../../Components/StudentAbsencesCard/StudentAbsencesCard";
-import NextSubjectCard from "../../Components/NextClassCard/NextSubjectCard";
 import Calendar from "../../Components/Calendar/Calendar";
-import { shiftService } from "../../Services/shiftService";
 import TeacherScheduleTable from "../../Components/TeacherScheduleTable/TeacherScheduleTable";
+import AbsenceRecordReminderCard from "../../Components/AbsenceRecordReminderCard/AbsenceRecordReminderCard";
+
+import { shiftService } from "../../Services/shiftService";
 import { useUserContext } from "../../Context/userContext";
 import { absenceRecordService } from "../../Services/absenceRecordService";
 import { classroomService } from "../../Services/classroomService";
-import AbsenceRecordReminderCard from "../../Components/AbsenceRecordReminderCard/AbsenceRecordReminderCard";
-
 
 
 const HomePage = () => {
@@ -42,7 +37,6 @@ const HomePage = () => {
     const { token, user } = useUserContext();
     let date = new Date();
 
-    // Callback function to get the shift selected on the ScheduleTable
     const getShift = (shift) => {
         setShift(shift);   
     }

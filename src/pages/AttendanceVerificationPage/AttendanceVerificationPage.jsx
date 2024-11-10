@@ -3,10 +3,13 @@ import { Button, Dialog, DialogHeader, DialogBody, DialogFooter } from "@materia
 import { useSearchParams } from "react-router-dom";
 import { Grid } from 'react-loader-spinner';
 import { Toaster, toast } from 'sonner';
+import dayjs from 'dayjs'
 
 import classes from "./AttendanceVerificationPage.module.css";
 import { AiOutlineLoading } from "react-icons/ai";
 import { XCircleIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
+
 
 import Header from "../../Components/Header/Header";
 import TableAttendanceComponent from '../../Components/TableVerificationAttendance/TableVerificationAttendanceComponent';
@@ -26,7 +29,7 @@ const tableData = [
         nie: "123456", //student object
         nombre: "Juan Pérez", //student object
         falto: "No", //ya no va
-        justificacion: "Injustificado", // del objeto code
+        justificacion: "Otro, No justificado", // del objeto code
         observacion: "Llegó tarde" // del objeto general
     },
     {
@@ -57,25 +60,24 @@ const AttendanceVerificationViewPage = () => {
     const [ searchParams ] = useSearchParams();
     const [absenceRecord, setAbsenceRecord] = useState();
     const [abscentStudentList, setAbscentStudentList] = useState([]);
+    const [noContent, setNoContent] = useState(false);
 
     const [teacherValidation, setTeacherValidation] = useState();
     const [coordinationValidation, setCoordinationValidation] = useState();
     
     const classroomID = searchParams.get('id_classroom');
     const [classroom, setClassroom] = useState();
-    const shiftID = searchParams.get('id_shift');
 
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const currentDate = dayjs(new Date()).format('YYYY-MM-DD');
+    const minDate = dayjs(currentDate).subtract(4, 'day').format('YYYY-MM-DD');
 
-    const currentDate = new Date();
-    const minDate = new Date(currentDate);
-         minDate.setDate(currentDate.getDate() - 2)
+    const [selectedDate, setSelectedDate] = useState(currentDate);
+
 
     useEffect(() => {
-        console.log("Usuario: ", user);
         const fetchClassroom = async () => {
             try {
                 const data = await classroomService.getById(classroomID, token);
@@ -86,11 +88,31 @@ const AttendanceVerificationViewPage = () => {
             }
         };
 
+        fetchClassroom();
+    }, [token]);
+
+    useEffect(() => {
+
+        console.log("Fecha seleccionada: ", selectedDate);
+
         const fetchAbscentStudentList = async () => {
+            console.log("Obteniendo lista de estudiantes ausentes...");
             try {
-                const data = await absenceRecordService.getByClassroomAndDate(classroomID, token, formatDateForInput(selectedDate));
+                console.log("dentro del try");
+                const data = await absenceRecordService.getByClassroomAndDate(classroomID, token, selectedDate);
                 
                 if (data.length === 0) {
+                    console.log("No hay datos");
+
+                    toast.warning('Aún no se ha registrado la asistencia de este día', {
+                        duration: 2000,
+                        icon: <ExclamationTriangleIcon style={{color: "#fb8500"}}/>,
+                        
+                    });
+
+                    setAbsenceRecord(null);
+                    setAbscentStudentList([]);
+                    setNoContent(true);
                     return;
                 }
 
@@ -99,11 +121,15 @@ const AttendanceVerificationViewPage = () => {
                     absent: student.code ? "Si" : "No",
                 }));
 
+                console.log("Lista de estudiantes: ", data);
+                console.log("Lista de estudiantes ausentes: ", absentStudents);
+
                 setAbsenceRecord(data);
                 setAbscentStudentList(absentStudents);
 
                 setTeacherValidation(data.teacherValidation);
                 setCoordinationValidation(data.coordinationValidation);
+                setNoContent(false);
 
             } catch (error) {
                 console.log("Hubo un error al obtener la lista de estudiantes ausentes" + error);
@@ -111,12 +137,11 @@ const AttendanceVerificationViewPage = () => {
         };
 
         fetchAbscentStudentList();
-        fetchClassroom();
 
         setTimeout(() => {
             setLoading(false);
         }, 1500);
-    }, [selectedDate, token, user]);
+    }, [selectedDate]);
 
     const handleRole = () => {
         if ( user?.role.name === "Profesor" || user?.role.name === "Coordinador" ){
@@ -126,44 +151,24 @@ const AttendanceVerificationViewPage = () => {
         }
     };
 
-    const formatDateForInput = (date) => {
 
-        const day = date.getDate();
-        const month = date.getUTCMonth() + 1;
-        const year = date.getUTCFullYear();
-
-        const formatedDate = `${year}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`;
-
-        return formatedDate;
-    };
-
-    const downloadDate = (date) => {
-
-        const day = date.getDate();
-        const month = date.getUTCMonth() + 1;
-        const year = date.getUTCFullYear().toString().substr(-2);
-
-        const formatedDate = `${day < 10 ? `0${day}` : day}/${month < 10 ? `0${month}` : month}/${year}`;
-
-        return formatedDate;
-    };
 
     const handleDateChange = (e) => {
-        const newDate = new Date(e.target.value);
+        const newDate = dayjs(e.target.value).format('YYYY-MM-DD');
         if (newDate <= currentDate) {
             setSelectedDate(newDate);
-        }
+        } 
     };
 
     const handlePreviousDay = () => {
-        const previousDay = new Date(selectedDate);
-        previousDay.setDate(previousDay.getDate() - 1);
-        setSelectedDate(previousDay);
+        const previousDay = dayjs(selectedDate).subtract(1, 'day').format('YYYY-MM-DD');
+        if (previousDay >= minDate) {
+            setSelectedDate(previousDay);
+        }
     };
 
     const handleNextDay = () => {
-        const nextDay = new Date(selectedDate);
-        nextDay.setDate(nextDay.getDate() + 1);
+        const nextDay = dayjs(selectedDate).add(1, 'day').format('YYYY-MM-DD');
         if (nextDay <= currentDate) {
             setSelectedDate(nextDay);
         }
@@ -266,18 +271,15 @@ const AttendanceVerificationViewPage = () => {
                                 <button
                                     className={classes["dateButton"]}
                                     onClick={handlePreviousDay}
-                                    disabled={selectedDate <= minDate}
                                 >
                                     ←
                                 </button>
                                 <input
                                     type="date"
-                                    value={formatDateForInput(selectedDate)}
+                                    value={selectedDate}
                                     onChange={handleDateChange}
                                     className={classes["dateInput"]}
-                                    max={formatDateForInput(currentDate)}
-                                    min={formatDateForInput(minDate)}
-                                />
+                                    max={currentDate}/>
                                 <button
                                     className={classes["dateButton"]}
                                     onClick={handleNextDay}
@@ -294,7 +296,8 @@ const AttendanceVerificationViewPage = () => {
                                 handleRole() ? (
                                     <Button 
                                         onClick={handleOpenDialog} 
-                                        className={classes["yearSelect"]}>
+                                        className={classes["yearSelect"]}
+                                        disabled={noContent}>
                                         Verificar
                                     </Button>
                                 ) : (
@@ -315,7 +318,9 @@ const AttendanceVerificationViewPage = () => {
                                     absenceRecordDetails={absenceRecord}
                                     rowsPerPageOptions={[5, 10, 15]} 
                                     isDownload={true}
-                                    localDate={downloadDate(selectedDate)}
+                                    localDate={dayjs(selectedDate).format('DD/MM/YY')}
+                                    tableDate={selectedDate}
+                                    noContent={noContent}
                                 />
                             </div>
                         </div>

@@ -178,7 +178,7 @@ const TeacherSearch = () => {
         if(selectedTeacher){
             setTeacher(e);
 
-            console.log(`El profesor seleccionado es: ${e.label}`);
+            console.log(`El profesor seleccionado es: ${e.value}<->${e.label}`);
         }
         
     };
@@ -212,25 +212,13 @@ const TeacherSearch = () => {
         if(day && hour && teacher && shift){
 
             console.log("Buscando horario de clase por profesor...")
-            console.log(`Turno: ${shift.id} <-> ${shift.name} Profesor: ${teacher.label}, Año: ${year}, Hora: ${hour.name}`)
+            console.log(`Turno: ${shift.id} <-> ${shift.name} Profesor: ${teacher.label}<->${teacher.value}, Año: ${year}, Hora: ${hour.id}<->${hour.name}`)
             try {
-                const data = await scheduleService.getScheduleByUserId(token, teacher.value, year);
+                const data = await scheduleService.getScheduleBySearchParameters(token, hour.id, shift.id, day.value, year, teacher.value, "");
                 
-                let cardinfo = null;
-                data.forEach((teacherSchedule) => {
-                    const foundSchedule = teacherSchedule.schedules.find((schedule) => 
-                        schedule.weekday.id === day.value &&
-                        schedule.classroomConfiguration.classPeriod.id === hour.id &&
-                        teacherSchedule.classroom.grade.shift.id === shift.id);
-                    if (foundSchedule) {
-                        cardinfo = foundSchedule;
-                    }
-                });
+                if(data){
 
-                if(cardinfo){
-
-                    console.log("Horario de clase encontrado")
-                    console.log(cardinfo)
+                    console.log("Horario de clase encontrado", data);
 
                     notification.success({
                         message: 'Exito!',
@@ -239,10 +227,10 @@ const TeacherSearch = () => {
                         duration: 2,
                     });
 
-                    setCardTeacher(cardinfo.user_x_subject.teacher.name);
-                    setCardSubject(cardinfo.user_x_subject.subject.name);
-                    setCardClassroom(data[0].classroom.grade.name);
-                    setCardHour(`${cardinfo.classroomConfiguration.classPeriod.name} ${cardinfo.classroomConfiguration.hourStart.substring(0,5)} - ${cardinfo.classroomConfiguration.hourEnd.substring(0,5)}`);
+                    setCardTeacher(data.user_x_subject.teacher.name);
+                    setCardSubject(data.user_x_subject.subject.name);
+                    setCardClassroom(data.classroomConfiguration.classroom.grade.name);
+                    setCardHour(`${data.classroomConfiguration.classPeriod.name} ${data.classroomConfiguration.hourStart.substring(0,5)} - ${data.classroomConfiguration.hourEnd.substring(0,5)}`);
 
                     selectedHourRef.current = null;
                     setHour(null);
@@ -287,26 +275,11 @@ const TeacherSearch = () => {
                 const classroomFound = await classroomService.getByParameters(token, year, classroom.value, shift.id);
                 console.log(`Turno: ${shift.id}<->${shift.name} Salon: ${classroomFound.id} ${classroomFound.grade.name}, Año: ${year}, Hora: ${hour.id} <-> ${hour.name}, Dia: ${day.value} <-> ${day.label}`);
     
-                const data = await scheduleService.getScheduleByClassroomId(token, classroomFound.id, year);
-
-                console.log("Horarios de clase encontrados", data);
+                const data = await scheduleService.getScheduleBySearchParameters(token, hour.id, shift.id, day.value, year, "", classroomFound.id);
     
-                let cardinfo = null;
-
-                data.forEach((teacherSchedule) => {
-                    const foundSchedule = teacherSchedule.schedules.find((schedule) => 
-                        schedule.weekday.id === day.value &&
-                        schedule.classroomConfiguration.classPeriod.id === hour.id &&
-                        teacherSchedule.classroom.grade.shift.id === shift.id);
-                    if (foundSchedule) {
-                        cardinfo = foundSchedule;
-                    }
-                });
+                if(data){
     
-                if(cardinfo){
-    
-                    console.log("Horario de clase encontrado")
-                    console.log(cardinfo)
+                    console.log("Horario de clase encontrado", data);
 
                     notification.success({
                         message: 'Exito!',
@@ -315,10 +288,10 @@ const TeacherSearch = () => {
                         duration: 2,
                     });
     
-                    setCardTeacher(cardinfo.user_x_subject.teacher.name);
-                    setCardSubject(cardinfo.user_x_subject.subject.name);
-                    setCardClassroom(data[0].classroom.grade.name);
-                    setCardHour(`${cardinfo.classroomConfiguration.classPeriod.name} ${cardinfo.classroomConfiguration.hourStart.substring(0,5)} - ${cardinfo.classroomConfiguration.hourEnd.substring(0,5)}`);
+                    setCardTeacher(data.user_x_subject.teacher.name);
+                    setCardSubject(data.user_x_subject.subject.name);
+                    setCardClassroom(data.classroomConfiguration.classroom.grade.name);
+                    setCardHour(`${data.classroomConfiguration.classPeriod.name} ${data.classroomConfiguration.hourStart.substring(0,5)} - ${data.classroomConfiguration.hourEnd.substring(0,5)}`);
                     
                     selectedHourRef.current = null;
                     setHour(null);

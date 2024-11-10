@@ -17,7 +17,8 @@ const TableAttendanceComponent = ({
     isDownload = false,
     noChange = true,
     handleUpdate,
-    handleDelete
+    handleDelete,
+    noContent = false
 }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
@@ -154,36 +155,48 @@ const TableAttendanceComponent = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {paginatedData.map((row, index) => (
-                            <tr key={index} className={selectedRows.includes(row) ? styles["selected-row"] : ""}>
-                                <td className="p-4">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedRows.includes(row)}
-                                        onChange={() => handleCheckboxChange(row)}
-                                    />
-                                </td>
-                                {tableKeys.map((key, idx) => (
-                                    <td key={idx} className="p-4">
-                                        {key.split(".").reduce((acc, part) => acc ? acc[part] : "N/A", row)}
-                                    </td>
-                                ))}
-                                {showUpdateButton && noChange && (
-                                    <td className="p-4">
-                                        <Typography as="a" href="#" variant="small" onClick={() => handleUpdate(row)}>
-                                            <MdOutlineVisibility size={24} />
+                        {
+                            noContent ? (
+                                <tr>
+                                    <td colSpan={tableHeaders.length} className="p-4 text-center">
+                                        <Typography variant="small" color="blue-gray" className="font-normal">
+                                            No hay datos para mostrar
                                         </Typography>
                                     </td>
-                                )}
-                                {noChange && (
-                                    <td className="p-4 text-center align-middle">
-                                        <Typography as="a" href="#" variant="small" onClick={() => handleDelete(row)}>
-                                            <MdOutlineVisibility size={24} />
-                                        </Typography>
-                                    </td>
-                                )}
-                            </tr>
-                        ))}
+                                </tr>
+                            ) : (
+                                paginatedData.map((row, index) => (
+                                    <tr key={index} className={selectedRows.includes(row) ? styles["selected-row"] : ""}>
+                                        <td className="p-4">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedRows.includes(row)}
+                                                onChange={() => handleCheckboxChange(row)}
+                                            />
+                                        </td>
+                                        {tableKeys.map((key, idx) => (
+                                            <td key={idx} className="p-4">
+                                                {key.split(".").reduce((acc, part) => acc ? acc[part] : "N/A", row)}
+                                            </td>
+                                        ))}
+                                        {showUpdateButton && noChange && (
+                                            <td className="p-4">
+                                                <Typography as="a" href="#" variant="small" onClick={() => handleUpdate(row)}>
+                                                    <MdOutlineVisibility size={24} />
+                                                </Typography>
+                                            </td>
+                                        )}
+                                        {noChange && (
+                                            <td className="p-4 text-center align-middle">
+                                                <Typography as="a" href="#" variant="small" onClick={() => handleDelete(row)}>
+                                                    <MdOutlineVisibility size={24} />
+                                                </Typography>
+                                            </td>
+                                        )}
+                                    </tr>
+                                ))
+                            )
+                        }
                     </tbody>
                 </table>
             </CardBody>
