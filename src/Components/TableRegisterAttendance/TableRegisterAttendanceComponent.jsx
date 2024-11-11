@@ -41,7 +41,7 @@ const TableRegisterComponent = ({
     const paginatedData = filteredData.slice(startIndex, endIndex);
 
     return (
-        <Card className="h-full w-full mx-auto">
+        <Card className="h-full w-full mx-auto Mobile-390*844:p-0">
             <CardHeader floated={false} shadow={false}>
                 <div className={styles.userHeaderContainer}>
                     <Typography color="blue-gray" className="text-lg ml-2">
@@ -59,7 +59,7 @@ const TableRegisterComponent = ({
                 </div>
             </CardHeader>
 
-            <CardBody className={styles["table-container"] + " px-0 py-1 overflow-scroll"}>
+            <CardBody className={styles["table-container"] + " px-0 py-1 overflow-scroll Mobile-390*844:px-3"}>
                 <table className={styles.table + " text-left"}>
                     <thead>
                         <tr>
@@ -107,7 +107,7 @@ const TableRegisterComponent = ({
 
             <CardFooter className={styles.paginationFooterContainer}>
                 <div className="flex items-center gap-2">
-                    <Typography variant="small" color="blue-gray" className="font-normal">
+                    <Typography variant="small" color="blue-gray" className="font-normal Mobile-390*844:hidden">
                         Filas por página:
                     </Typography>
                     <select

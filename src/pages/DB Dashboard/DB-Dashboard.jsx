@@ -192,8 +192,8 @@ const DBDashboard = () => {
                     <div className={[classes["allContentContainer"]]}>
                         <div className={[classes["pageContentContainer"]]}>
                             <Typography className="font-masferrer text-2xl font-semibold my-4 text-darkblueMasferrer
-                                Mobile-390*844:text-sm
-                                Mobile-280:text-sm">
+                                Mobile-390*844:text-xl
+                                Mobile-280:text-xl">
                             ADMINISTRACIÓN DE TABLAS
                         </Typography>
                         <div className={classes["tablesContainer"]}>

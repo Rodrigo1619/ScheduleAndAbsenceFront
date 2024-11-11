@@ -1,12 +1,13 @@
 .form {
     background-color: rgba(28, 11, 140, 0.2);
 
-    @apply flex flex-col justify-center px-32 py-10 rounded-md;
+    @apply flex flex-col justify-center px-32 py-10 rounded-md
+    Mobile-390*844:px-16 Mobile-390*844:py-5 Mobile-390*844:items-center Mobile-390*844:overflow-visible Mobile-280:overflow-visible;
 
 }
 
 .input-container {
-    @apply flex flex-col justify-center mb-12;
+    @apply flex flex-col justify-center mb-12 Mobile-390*844:w-60 Mobile-280:w-60;
 
 }
 

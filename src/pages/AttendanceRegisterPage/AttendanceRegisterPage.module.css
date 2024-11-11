@@ -20,13 +20,13 @@
 }
 
 .allContentContainer {
-    @apply flex flex-row justify-normal mx-10 w-auto;
+    @apply flex flex-row justify-normal mx-10 w-auto Mobile-390*844:w-fit;
 /**/
 }
 
 .pageContentContainerCol {
     @apply flex flex-col items-center justify-center w-full mx-5
-    Mobile-390*844:w-auto Mobile-390*844:mx-auto Mobile-390*844:justify-center Mobile-390*844:items-center Mobile-390*844:max-h-max Mobile-390*844:overflow-y-auto
+    Mobile-390*844:w-auto Mobile-390*844:mx-auto Mobile-390*844:justify-center Mobile-390*844:items-center Mobile-390*844:max-h-max Mobile-390*844:overflow-y-auto 
     Mobile-280:w-auto Mobile-280:mx-auto Mobile-280:justify-center Mobile-280:items-center
     ;
 
@@ -96,7 +96,9 @@
 .form {
     background-color: rgba(28, 11, 140, 0.2);
 
-    @apply flex flex-col justify-center px-32 py-10 rounded-md border-white border-2;
+    @apply flex flex-col justify-center px-32 py-10 rounded-md border-white border-2
+    Mobile-390*844:w-auto Mobile-390*844:px-8 Mobile-390*844:py-5 Mobile-390*844:items-center 
+    Mobile-280:w-auto Mobile-280:px-7 Mobile-280:py-5 Mobile-280:items-center;
 
 }
 

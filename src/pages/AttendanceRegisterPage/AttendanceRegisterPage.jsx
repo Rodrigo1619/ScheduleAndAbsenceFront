@@ -389,7 +389,7 @@ const AttendanceRegisterViewPage = () => {
                                     isDownload={true}
                                 />
                             </div>
-                            <div className="flex flex-row justify-center items-center sticky top-0 z-auto ml-7 pt-14 Mobile-390*844:py-2 Mobile-280:py  -2">
+                            <div className="flex flex-row justify-center items-center sticky top-0 z-auto ml-7 pt-14 Mobile-390*844:mx-auto Mobile-390*844:py-2 Mobile-280:py  -2">
                                 <form onSubmit={() => (a)} className={[classes["form"]]}>
                                     <div className={[classes["input-container"]]}>            
                                         <label className={[classes["label"]]}>

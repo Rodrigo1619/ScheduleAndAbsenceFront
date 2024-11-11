@@ -21,7 +21,7 @@
     
     /* Estilos para el contenedor del pie de paginación */
     .paginationFooterContainer {
-        @apply flex justify-between items-center border-t-2 border-gray-300 p-4;
+        @apply flex justify-between items-center border-t-2 border-gray-300 p-4 Mobile-390*844:p-0;
     }
     
     /* Select dentro del pie de paginación */
@@ -36,7 +36,7 @@
     
     /* Botones dentro del pie de paginación */
     .paginationFooterContainer .paginationButtons {
-        @apply flex gap-2;
+        @apply flex gap-2 Mobile-390*844:flex-col Mobile-390*844:gap-2 Mobile-280:flex-col Mobile-280:gap-2 Mobile-390*844:w-auto;
     }
     
     /* Contenedor de la tabla */

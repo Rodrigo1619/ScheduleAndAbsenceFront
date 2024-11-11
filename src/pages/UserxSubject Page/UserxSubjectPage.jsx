@@ -78,7 +78,7 @@ const UserxSubjectPage = () => {
                             </div>
                             <Dialog open={open} handler={handleOpenDialog}>
                                 <DialogHeader> Asignar Materia a Profesor </DialogHeader>
-                                <DialogBody className="overflow-auto h-CarouselItemPC-1024*768">
+                                <DialogBody className="overflow-visible h-CarouselItemPC-1024*768">
                                     <UserxSubjectForm/>
                                 </DialogBody>
                                 <DialogFooter>
