@@ -7,11 +7,14 @@ import {
     DialogBody,
     DialogFooter,
 } from "@material-tailwind/react";
+
 import classes from "./UserxSubjectPage.module.css";
 import Header from "../../Components/Header/Header";
-import SideBarNav from "../../Components/SideBarNav/SideBarNav";
 import UserxSubjectForm from "../../Components/Form/UserxSubjectForm/UserxSubjectForm";
 import UserxSubjectList from "../../Components/List/UserxSubjectList/UserxSubjectList";
+
+import { Grid } from "react-loader-spinner";
+
 import { userxSubjectService } from "../../Services/userxSubjectService";
 import { useUserContext } from "../../Context/userContext";
 
@@ -19,6 +22,7 @@ const UserxSubjectPage = () => {
     const [userxSubjects, setUserxSubjects] = useState([]);
     const [open, setOpen] = useState(false);
     const { token, user } = useUserContext();
+    const [loading, setLoading] = useState(true);
 
     const fetchUserxSubjects = async () => {
         try {
@@ -34,6 +38,10 @@ const UserxSubjectPage = () => {
     useEffect(() => {
         document.title = "Sistema de Control de Asistencia - Escuela Masferrer";
         fetchUserxSubjects();
+
+        setTimeout(() => {
+            setLoading(false);
+        }, 1500);
     }, []);
 
     const handleOpenDialog = () => {
@@ -46,6 +54,12 @@ const UserxSubjectPage = () => {
     };
 
     return (
+        loading ?
+            <div className={[classes["loaderContainer"]]}>
+                <Grid type="Grid" color="#170973" height={80} width={80} visible={loading} />
+            </div>
+
+            :
         <div className={[classes["generalContainer"]]}>
             <header className={classes["headerContainer"]}>
                 <Header name={user?.name} role={user?.role.name} />

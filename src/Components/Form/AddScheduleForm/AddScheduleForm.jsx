@@ -170,7 +170,7 @@ const AddScheduleForm = () => {
                                         }))}
                                         onChange={handleSelectClassroomChange}
                                         placeholder="Seleccione un salon de clases"
-                                        className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20"
+                                        className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20 w-60 Mobile-390*844:w-full"
                                         menuPlacement='top'
                                         menuPortalTarget={document.body}
                                     />
@@ -185,7 +185,7 @@ const AddScheduleForm = () => {
                     }))}
                     onChange={handleSelectSubjectChange}
                     placeholder="Seleccione una materia"
-                    className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20"
+                    className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20 w-60 Mobile-390*844:w-full"
                     menuPlacement='top'
                     menuPortalTarget={document.body}
                     />
@@ -201,7 +201,7 @@ const AddScheduleForm = () => {
                     }))}
                     onChange={handleSelectTeacherChange}
                     placeholder="Seleccione un profesor"
-                    className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20"
+                    className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20 w-60 Mobile-390*844:w-full"
                     menuPlacement='top'
                     menuPortalTarget={document.body}
                     />

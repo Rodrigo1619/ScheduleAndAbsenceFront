@@ -63,3 +63,7 @@
     Mobile-280:my-0 Mobile-280:mx-2 Mobile-280:px-20 Mobile-280:w-auto Mobile-280:h-auto
     IpadAir:my-0 IpadAir:mx-0 IpadAir:px-4 IpadAir:w-auto IpadAir:h-auto
 }
+
+.loaderContainer{
+    @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+}

@@ -52,7 +52,7 @@ export const userService = {
     },
     getAllTeachersAdmin: async (token) => {
         try {
-            const response = await fetch(`${BASE_URL}/user/admin/all`,
+            const response = await fetch(`${BASE_URL}/user/all`,
                 {
                     method: 'GET',
                     headers: {
@@ -119,7 +119,7 @@ export const userService = {
     },
     updateTeacher: async (token, id, teacher) => {
         try {
-            const response = await fetch(`${BASE_URL}/user/edit/${id}`,
+            const response = await fetch(`${BASE_URL}/user/${id}`,
                 {
                     method: 'PATCH',
                     headers: {
@@ -183,28 +183,6 @@ export const userService = {
         const data = await response.json()
 
         return data
-    },
-
-    getAll: async (token) => {
-        try {
-            const response = await fetch(`${BASE_URL}/user/all`,{
-                method: 'GET',
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Error: ' + response.status);
-            }
-
-            const data = await response.json()
-
-            return data
-            
-        } catch (error) {
-            throw error;
-        }
     },
 
     toggleStatus: async (token, id) => {

@@ -12,7 +12,33 @@ export const userxSubjectService = {
                 },
             });
 
-            if (!response.ok) {
+            if(response.status === 204){
+                return [];
+            } else if (!response.ok) {
+                throw new Error('Error: ' + response.status);
+            }
+
+            const data = await response.json();
+
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    getPagedUserXSubjects: async (token, size, page) => {
+        try {
+            const response = await fetch(`${BASE_URL}/user_x_subject/all-paginated?page=${page}&size=${size}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+            });
+
+            if(response.status === 204){
+                return [];
+            } else if (!response.ok) {
                 throw new Error('Error: ' + response.status);
             }
 

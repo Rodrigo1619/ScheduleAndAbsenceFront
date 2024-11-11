@@ -118,7 +118,9 @@ export const subjectService = {
                 },
             });
 
-            if (!response.ok) {
+            if(response.status === 204){
+                return [];
+            } else if (!response.ok) {
                 throw new Error('Error: ' + response.status);
             }
     

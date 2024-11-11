@@ -35,25 +35,37 @@ const TableCard = ({ title, TABLE_HEAD, USERS }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {USERS?.map((user, index) => (
-                            <tr key={index}>
-                                {Object.entries(user).slice(1)?.map(([key, value]) => ( // slice(1) to skip the first entry
-                                    !['boolean'].includes(typeof value) &&
-                                    <td className="p-4" key={key}>
-                                        {typeof value === 'object' ? (
-                                            // Si el valor es un objeto, extrae sus propiedades
-                                            <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {value && value.name ? value.name : "N/A"}
-                                            </Typography>
-                                        ) : (
-                                            <Typography variant="small" color="blue-gray" className="font-normal">
-                                                {value}
-                                            </Typography>
-                                        )}
+                        {
+                            Array.isArray(USERS) && USERS.length > 0 ? (
+                                USERS?.map((user, index) => (
+                                    <tr key={index}>
+                                        {Object.entries(user).slice(1)?.map(([key, value]) => ( // slice(1) to skip the first entry
+                                            !['boolean'].includes(typeof value) &&
+                                            <td className="p-4" key={key}>
+                                                {typeof value === 'object' ? (
+                                                    // Si el valor es un objeto, extrae sus propiedades
+                                                    <Typography variant="small" color="blue-gray" className="font-normal">
+                                                        {value && value.name ? value.name : "N/A"}
+                                                    </Typography>
+                                                ) : (
+                                                    <Typography variant="small" color="blue-gray" className="font-normal">
+                                                        {value}
+                                                    </Typography>
+                                                )}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={TABLE_HEAD.length} className="p-4">
+                                        <Typography variant="small" color="blue-gray" className="font-normal">
+                                            No hay datos para mostrar
+                                        </Typography>
                                     </td>
-                                ))}
-                            </tr>
-                        ))}
+                                </tr>
+                            )
+                        }
                     </tbody>
                 </table>
             </CardBody>
