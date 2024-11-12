@@ -138,6 +138,8 @@ const HomePage = () => {
             setName2("No hay estudiantes con inasistencias");
             setAbsences1(0);
             setAbsences2(0);
+            setStudentClassroom1(null);
+            setStudentClassroom2(null);
 
             setClassroomName(selectedClassroom ? selectedClassroom.grade.name.slice(0, -1) : "");
             setGradeSection(selectedClassroom ? selectedClassroom.grade.section : "");
@@ -201,10 +203,10 @@ const HomePage = () => {
                         
                         <StudentAbsencesCard 
                         name1={name1 || "No hay estudiantes con inasistencias"} 
-                        classroom1={`${studentClassroom1?.grade.name}` || "No hay estudiantes con inasistencias"}
+                        classroom1={studentClassroom1?.grade.name}
                         absences1={absences1 + " inasistencias"} 
                         name2={name2 || "No hay estudiantes con inasistencias"}
-                        classroom2={`${studentClassroom2?.grade.name}` || "No hay estudiantes con inasistencias"}
+                        classroom2={studentClassroom2?.grade.name}
                         absences2={absences2 + " inasistencias"}
                         />
 

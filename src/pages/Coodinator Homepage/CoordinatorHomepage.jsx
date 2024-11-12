@@ -109,6 +109,7 @@ const CoordinatorHomepage = () => {
                             name2={name2 || "No hay estudiantes con inasistencias"}
                             classroom2={`${classroomName2} - ${gradeShift2}` || "No hay estudiantes con inasistencias"}
                             absences2={absences2 + " inasistencias"}
+                            fromCoordination={true}
                             />
 
                             <AbsenceRecordReminderCard

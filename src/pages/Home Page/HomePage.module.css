@@ -49,7 +49,7 @@
 }
 
 .dashboardContainer {
-    @apply flex flex-row overflow-auto mx-8 px-12 py-4
+    @apply flex flex-row overflow-auto mx-8 px-12 py-4 
     PC-1920*1080:w-full
     PC-1600*900:w-full
     PC-1366*768:w-full
