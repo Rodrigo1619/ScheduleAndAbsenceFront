@@ -141,7 +141,7 @@ const DBDashboard = () => {
     const fetchSubjects = async () => {
         try {
             const data = await subjectService.getPaginatedSubjects(token, 5, 0);
-            setSubjects(data);
+            setSubjects(data.content);
         }
         catch (error) {
             console.log("Hubo un error al obtener las materias" + error);
@@ -151,7 +151,7 @@ const DBDashboard = () => {
     const fetchUserxSubjects = async () => {
         try {
             const data = await userxSubjectService.getPagedUserXSubjects(token, 5, 0);
-            setUserxSubjects(data);
+            setUserxSubjects(data.content);
         }
         catch (error) {
             console.log("Hubo un error al obtener las asignaciones de profesor a materia" + error);
