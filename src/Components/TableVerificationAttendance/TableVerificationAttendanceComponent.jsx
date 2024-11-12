@@ -18,6 +18,7 @@ import {Card,
 } from "@material-tailwind/react";
 import { Toaster, toast } from 'sonner';
 
+import dayjs from 'dayjs';
 import ExcelJS from 'exceljs';
 import Papa from 'papaparse';
 import { saveAs } from 'file-saver';
@@ -55,7 +56,7 @@ const TableVerificationComponent = ({
 
     const [openDialog, setOpenDialog] = useState(false);
 
-    const currentDate = new Date().toISOString().split("T")[0];
+    const currentDate = dayjs(new Date()).format("DD-MM-YYYY");
 
     const handleOpenDialog = () => {
         setOpenDialog(true);

@@ -360,7 +360,20 @@ const TeacherScheduleComponent = ({ teacher, shift, year}) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {schedule.map((subject, index) => (
+                            {scheduleEmpty && (
+                                <tr>
+                                    <td colSpan={TABLE_HEAD.length} className="p-4 bg-transparent">
+                                        <div className="font-masferrer text-2xl font-bold border-2
+                                            px-14 py-2 text-center border-black">
+                                            <Typography
+                                                className="font-masferrerTitle text-lg font-bold uppercase">
+                                                        No hay horario
+                                            </Typography>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
+                            {!scheduleEmpty && schedule.map((subject, index) => (
                                 subject.Recreo ? (
                                     <tr key={`recreo-${index}`}>
                                         <td className="p-4 bg-transparent">
@@ -407,7 +420,14 @@ const TeacherScheduleComponent = ({ teacher, shift, year}) => {
 
                         </tbody>
                     </table>
-                    <HoursTable />
+                    {
+                        scheduleEmpty ? (
+                            <>
+                            </>
+                        ) : (
+                            <HoursTable />
+                        )
+                    }
                 </div>
             </CardBody>
         </div>

@@ -5,6 +5,7 @@ import classes from "./AttendanceGeneralPage.module.css";
 import Header from "../../Components/Header/Header";
 import TableAttendanceComponent from '../../Components/TableGeneralAttendance/TableGeneralAttendanceComponent';
 
+import { userService } from '../../Services/userService';
 import { shiftService } from '../../Services/shiftService';
 import { classroomService } from '../../Services/classroomService';
 import { useUserContext } from '../../Context/userContext';
@@ -52,18 +53,20 @@ const AttendanceGeneralViewPage = () => {
 
     useEffect(() => {
         const fetchClassrooms = async () => {
-            console.log("Selected shift:", selectedShift);
-            if (token && selectedYear && selectedShift !== "Seleccionar turno") {
+            if (token && selectedYear && selectedShift) {
                 const loadingToast = toast('Cargando...', {
                     icon: <AiOutlineLoading className="animate-spin" />,
                 });
                 try {
+
                     if (user && user.role && user.role.name === 'Profesor') {
                         const response = await classroomService.getClassroomsByUserYearAndShift(token, selectedYear, selectedShift);
 
                         setTableData(response);
 
-                    } else {
+                    } 
+                    
+                    if(user && user.role && user.role.name !== 'Profesor') {
                         const response = await classroomService.getClassroomsByShiftAndYear(token, selectedShift, selectedYear);
 
                         setTableData(response);

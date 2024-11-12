@@ -162,9 +162,7 @@ const AttendanceVerificationViewPage = () => {
 
     const handlePreviousDay = () => {
         const previousDay = dayjs(selectedDate).subtract(1, 'day').format('YYYY-MM-DD');
-        if (previousDay >= minDate) {
-            setSelectedDate(previousDay);
-        }
+        setSelectedDate(previousDay);
     };
 
     const handleNextDay = () => {

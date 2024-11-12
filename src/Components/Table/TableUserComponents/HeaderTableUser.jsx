@@ -7,9 +7,23 @@ import ExcelJS from 'exceljs';
 import Papa from 'papaparse';
 import styles from "./HeaderTableUser.module.css";
 
-const HeaderTableUser = ({ title, searchTerm, setSearchTerm, handleDelete, selectedRows = [], tableHeaders = [], tableKeys = [], isDownload = false, allRows = [], setSelectedRows }) => {
+const HeaderTableUser = ({ 
+    title, 
+    searchTerm, 
+    setSearchTerm, 
+    handleDelete, 
+    selectedRows = [], 
+    tableHeaders = [], 
+    tableKeys = [], 
+    isDownload = false, 
+    allRows = [], 
+    setSelectedRows,
+    AllData,
+ }) => {
     const [openDialog, setOpenDialog] = useState(false);
     const [isSelectAll, setIsSelectAll] = useState(false);
+
+    const formatedHeaders = tableHeaders.slice(1);
 
     const handleOpenDialog = () => {
         setOpenDialog(true);
@@ -20,12 +34,38 @@ const HeaderTableUser = ({ title, searchTerm, setSearchTerm, handleDelete, selec
     };
 
     const handleDownloadExcel = async () => {
+
+        if (selectedRows.length === 0 && tableHeaders.length > 1 && tableKeys.length > 0) {
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Data');
+
+            // Add header row
+            worksheet.addRow(formatedHeaders);
+
+            // Add data rows
+            AllData.forEach(row => {
+                const newRow = tableKeys.map((key) => {
+                    if (key.includes(".")) {
+                        return key.split(".").reduce((acc, part) => acc ? acc[part] : "N/A", row);
+                    } else {
+                        return row[key];
+                    }
+                });
+                worksheet.addRow(newRow);
+            });
+
+            // Export workbook to Excel
+            const buffer = await workbook.xlsx.writeBuffer();
+            saveAs(new Blob([buffer], { type: "application/octet-stream" }), `${title}.xlsx`);
+            handleCloseDialog();
+        }
+
         if (selectedRows.length > 0 && tableHeaders.length > 1 && tableKeys.length > 0) {
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet('Data');
 
             // Add header row
-            worksheet.addRow(tableHeaders.slice(1));
+            worksheet.addRow(formatedHeaders);
 
             // Add data rows
             selectedRows.forEach(row => {
@@ -41,7 +81,7 @@ const HeaderTableUser = ({ title, searchTerm, setSearchTerm, handleDelete, selec
 
             // Export workbook to Excel
             const buffer = await workbook.xlsx.writeBuffer();
-            saveAs(new Blob([buffer], { type: "application/octet-stream" }), "Data.xlsx");
+            saveAs(new Blob([buffer], { type: "application/octet-stream" }), `${title}.xlsx`);
             handleCloseDialog();
         } else {
             console.error("No rows selected, headers are empty, or keys are missing.");
@@ -49,6 +89,31 @@ const HeaderTableUser = ({ title, searchTerm, setSearchTerm, handleDelete, selec
     };
 
     const handleDownloadCSV = () => {
+
+        if (selectedRows.length === 0 && tableHeaders.length > 1 && tableKeys.length > 0) {
+            const csvData = AllData.map(row => {
+                const newRow = {};
+                tableKeys.forEach((key, index) => {
+                    if (key.includes(".")) {
+                        const keys = key.split(".");
+                        let value = row;
+                        keys.forEach(k => {
+                            value = value ? value[k] : "N/A";
+                        });
+                        newRow[formatedHeaders[index]] = value;
+                    } else {
+                        newRow[formatedHeaders[index]] = row[key];
+                    }
+                });
+                return newRow;
+            });
+
+            const csvContent = Papa.unparse(csvData, { header: true });
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            saveAs(blob, `${title}.csv`);
+            handleCloseDialog();
+        }
+
         if (selectedRows.length > 0 && tableHeaders.length > 1 && tableKeys.length > 0) {
             const csvData = selectedRows.map(row => {
                 const newRow = {};
@@ -59,9 +124,9 @@ const HeaderTableUser = ({ title, searchTerm, setSearchTerm, handleDelete, selec
                         keys.forEach(k => {
                             value = value ? value[k] : "N/A";
                         });
-                        newRow[tableHeaders[index + 1]] = value;
+                        newRow[formatedHeaders[index]] = value;
                     } else {
-                        newRow[tableHeaders[index + 1]] = row[key];
+                        newRow[formatedHeaders[index]] = row[key];
                     }
                 });
                 return newRow;
@@ -69,7 +134,7 @@ const HeaderTableUser = ({ title, searchTerm, setSearchTerm, handleDelete, selec
 
             const csvContent = Papa.unparse(csvData, { header: true });
             const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-            saveAs(blob, "Data.csv");
+            saveAs(blob, `${title}.csv`);
             handleCloseDialog();
         } else {
             console.error("No rows selected, headers are empty, or keys are missing.");

@@ -9,7 +9,7 @@ import { useUserContext } from '../../../Context/userContext.jsx';
 import TeacherForm from '../../Form/TeacherForm/TeacherForm.jsx';
 
 const TABLE_HEAD = ["", "ID", "Nombre Completo", "Correo", "Rol Asignado", "Estado","Correo de Verificación","", ""];
-const TABLE_KEYS = ["id", "name", "email", `role.name`, "active", "verified_email"]; // Mapea a las claves del objeto correspondiente
+const TABLE_KEYS = ["id", "name", "email", `role.name`, "active", "verifiedEmail"]; // Mapea a las claves del objeto correspondiente
 
 const TeacherList = ({teachers  = [], fetchTeachers}) => {
     const { token } = useUserContext();
@@ -139,7 +139,7 @@ const TeacherList = ({teachers  = [], fetchTeachers}) => {
     return (
         <Card className="h-full w-full mx-auto">
             <HeaderTableUser
-                title="Lista de usuarios"
+                title="Lista de Usuarios"
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
                 handleDelete={handleDelete}
@@ -149,6 +149,7 @@ const TeacherList = ({teachers  = [], fetchTeachers}) => {
                 isDownload={true}
                 allRows={teachers}
                 setSelectedRows={setSelectedRows}
+                AllData={filteredTeachers}
             />
             <BodyTableUser
                 TABLE_HEAD={TABLE_HEAD}

@@ -127,7 +127,7 @@ const SubjectList = ({ subjects = [], fetchSubjects }) => {
     return (
         <Card className="h-full w-full mx-auto">
             <UserHeader 
-                title="Lista de códigos" 
+                title="Lista de Materias" 
                 searchTerm={searchTerm} 
                 setSearchTerm={setSearchTerm} 
                 handleDelete={handleDeleteSubjects}
@@ -138,6 +138,7 @@ const SubjectList = ({ subjects = [], fetchSubjects }) => {
                 tableKeys={TABLE_KEYS}
                 allRows={visibleSubjects}
                 handleSelectAllChange={handleSelectAllChange}
+                AllData={filteredSubjects}
             />
             <UserTable 
                 TABLE_HEAD={TABLE_HEAD} 

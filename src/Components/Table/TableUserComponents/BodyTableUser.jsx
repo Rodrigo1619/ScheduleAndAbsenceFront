@@ -5,9 +5,18 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { IoMdCheckmarkCircleOutline, IoMdCloseCircleOutline } from "react-icons/io";
 import styles from "./BodyTableUser.module.css";
 
-const BodyTableUser = ({ TABLE_HEAD, USERS, selectedRows, handleCheckboxChange, handleUpdate, 
-    handleDelete, handleStatus, noChange = true, showUpdateButton = true, isFromClassroom = false,
-editStatus = true, enroll = false, populate = false }) => {
+const BodyTableUser = ({ TABLE_HEAD, USERS, 
+    selectedRows, 
+    handleCheckboxChange, 
+    handleUpdate, 
+    handleDelete, 
+    handleStatus, 
+    noChange = true, 
+    showUpdateButton = true, 
+    isFromClassroom = false,
+    editStatus = true, 
+    enroll = false, 
+    populate = false }) => {
     console.log("en la tabla", USERS);
     const tableHead = populate ? TABLE_HEAD.slice(1) : (enroll ? ["", ...TABLE_HEAD.slice(2)] : TABLE_HEAD);
     return (

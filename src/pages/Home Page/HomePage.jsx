@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 
 import classes from "./HomePage.module.css";
 
+import { Grid } from 'react-loader-spinner';
+
 import usersIcon from "../../assets/icons/users-icon.svg";
 import searchIcon from "../../assets/icons/search-icon.svg";
 import clipboardListIcon from "../../assets/icons/clipboard-list-icon.svg";
@@ -28,6 +30,8 @@ const HomePage = () => {
     const [name2, setName2] = useState("");
     const [absences1, setAbsences1] = useState(0);
     const [absences2, setAbsences2] = useState(0);
+    const [studentClassroom1, setStudentClassroom1] = useState();
+    const [studentClassroom2, setStudentClassroom2] = useState();
     const [classroom, setClassroom] = useState([]);
     const [classroomName, setClassroomName] = useState("");
     const [gradeSection, setGradeSection] = useState("");
@@ -36,6 +40,7 @@ const HomePage = () => {
     const [todayAbsences, setTodayAbsences] = useState([]);
     const { token, user } = useUserContext();
     let date = new Date();
+    const [loading, setLoading] = useState(true);
 
     const getShift = (shift) => {
         setShift(shift);   
@@ -63,7 +68,7 @@ const HomePage = () => {
                     return classroom;
                 }
             })
-
+            console.log("Found Classroom: ", foundClassroom);
             const response = await absenceRecordService.getByClassroomAndShift(foundClassroom.id, token, shift.id);
             setAbsenceRecord(response);
 
@@ -99,10 +104,10 @@ const HomePage = () => {
                     if(classroom.grade.shift.name === "Matutino") {
                         setName1(top2AbsencesStudents[0].student.name);
                         setAbsences1(top2AbsencesStudents[0].unjustifiedAbsences);
+                        setStudentClassroom1(top2AbsencesStudents[0].classroom);
                         setName2(top2AbsencesStudents[1]?.student.name);
                         setAbsences2(top2AbsencesStudents[1]?.unjustifiedAbsences);
-                        setClassroomName(classroom.grade.name.slice(0, -1));
-                        setGradeSection(classroom.grade.section);
+                        setStudentClassroom2(top2AbsencesStudents[1]?.classroom);
                     }
                 });
 
@@ -112,10 +117,10 @@ const HomePage = () => {
                     if(classroom.grade.shift.name === "Vespertino") {
                         setName1(top2AbsencesStudents[0].student.name);
                         setAbsences1(top2AbsencesStudents[0].unjustifiedAbsences);
+                        setStudentClassroom1(top2AbsencesStudents[0].classroom);
                         setName2(top2AbsencesStudents[1]?.student.name);
                         setAbsences2(top2AbsencesStudents[1]?.unjustifiedAbsences);
-                        setClassroomName(classroom.grade.name.slice(0, -1));
-                        setGradeSection(classroom.grade.section);
+                        setStudentClassroom2(top2AbsencesStudents[1]?.classroom);
                     }
                 });
 
@@ -157,9 +162,12 @@ const HomePage = () => {
     }, [absenceRecord, gradeSection, classroomName]);
 
     useEffect(() => {
-        console.log("Inasistencia de hoy: ", todayAbsences);
+        
+        setTimeout(() => {
+            setLoading(false);
+        }, 2500);
 
-    }, [todayAbsences]);
+    }, [studentClassroom1, studentClassroom2, name1, name2, absences1, absences2]);
 
     useEffect(() => {
         document.title = "Sistema de Control de Asistencia - Escuela Masferrer";
@@ -167,6 +175,13 @@ const HomePage = () => {
     
 
     return (
+        loading ?
+        <div className={[classes["loaderContainer"]]}>
+            <Grid type="Grid" color="#170973" height={80} width={80} visible={loading} />
+        </div>
+
+        :
+
         <div className={[classes["generalContainer"]]}>
             <header className={[classes["headerContainer"]]}>
                 <Header name={user?.name} role={user?.role.name} />
@@ -186,10 +201,10 @@ const HomePage = () => {
                         
                         <StudentAbsencesCard 
                         name1={name1 || "No hay estudiantes con inasistencias"} 
-                        classroom1={`${classroomName} ${gradeSection}` || "No hay estudiantes con inasistencias"}
+                        classroom1={`${studentClassroom1?.grade.name}` || "No hay estudiantes con inasistencias"}
                         absences1={absences1 + " inasistencias"} 
                         name2={name2 || "No hay estudiantes con inasistencias"}
-                        classroom2={`${classroomName} ${gradeSection}` || "No hay estudiantes con inasistencias"}
+                        classroom2={`${studentClassroom2?.grade.name}` || "No hay estudiantes con inasistencias"}
                         absences2={absences2 + " inasistencias"}
                         />
 

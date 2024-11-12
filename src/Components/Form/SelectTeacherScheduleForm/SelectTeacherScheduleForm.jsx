@@ -78,7 +78,7 @@ const SelectTeacherScheduleForm = () => {
                                 }))}
                                 onChange={handleSelectTeacherChange}
                                 placeholder="Seleccione un maestro"
-                                className="Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20 w-max"
+                                className="Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20 w-60 Mobile-390*844:w-full "
                                 menuPlacement='bottom'
                                 menuPortalTarget={document.body}
                             />

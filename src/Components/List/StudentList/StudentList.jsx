@@ -174,6 +174,7 @@ const StudentList = ({ students = [], classroom = false, fetchStudents }) => {
                 allRows={visibleStudents}
                 setSelectedRows={setSelectedRows}
                 handleSelectAllChange={handleSelectAllChange}
+                AllData={filteredStudents}
             />
             <UserTable 
                 TABLE_HEAD={classroom ? TABLEH_Class : TABLE_HEAD} 

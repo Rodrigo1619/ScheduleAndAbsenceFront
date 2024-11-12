@@ -6,6 +6,7 @@ import ExcelJS from 'exceljs';
 import Papa from 'papaparse';
 import { saveAs } from 'file-saver';
 import styles from "./TableGlobalAttendanceComponent.module.css";
+import dayjs from 'dayjs';
 
 const TableAttendanceComponent = ({
     title,
@@ -13,8 +14,13 @@ const TableAttendanceComponent = ({
     tableData,
     tableKeys,
     rowsPerPageOptions = [5, 10, 15],
-    isDownload = false
+    isDownload = false,
+    noContent,
+    classroomInfo
 }) => {
+    const formatedHeaders = tableHeaders.slice(1);
+    const currentDate = dayjs(new Date()).format("YYYY");
+
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
     const [isSelectAll, setIsSelectAll] = useState(false);
@@ -24,6 +30,7 @@ const TableAttendanceComponent = ({
     const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
+        console.log("TableData", tableData);
         const filtered = tableData.filter(row => 
             Object.values(row).some(val => 
                 String(val).toLowerCase().includes(searchTerm.toLowerCase())
@@ -36,12 +43,27 @@ const TableAttendanceComponent = ({
     const handleCloseDialog = () => setOpenDialog(false);
 
     const handleDownloadExcel = async () => {
+        if (selectedRows.length === 0 && formatedHeaders.length > 1 && tableKeys.length > 0) {
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Data');
+            
+            worksheet.addRow(formatedHeaders);
+            
+            filteredData.forEach(row => {
+                const newRow = tableKeys.map(key => key.split(".").reduce((acc, part) => acc ? acc[part] : "N/A", row));
+                worksheet.addRow(newRow);
+            });
+
+            const buffer = await workbook.xlsx.writeBuffer();
+            saveAs(new Blob([buffer], { type: "application/octet-stream" }), `Inasistencia Global ${classroomInfo.classroomGrade} (${classroomInfo.shiftName})-${currentDate}.xlsx`);
+            handleCloseDialog();
+        }
+
         if (selectedRows.length > 0) {
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet('Data');
             
-            // Add table headers starting from the second element
-            worksheet.addRow(tableHeaders.slice(1));
+            worksheet.addRow(formatedHeaders);
             
             selectedRows.forEach(row => {
                 const newRow = tableKeys.map(key => key.split(".").reduce((acc, part) => acc ? acc[part] : "N/A", row));
@@ -49,24 +71,40 @@ const TableAttendanceComponent = ({
             });
 
             const buffer = await workbook.xlsx.writeBuffer();
-            saveAs(new Blob([buffer], { type: "application/octet-stream" }), "Data.xlsx");
+            saveAs(new Blob([buffer], { type: "application/octet-stream" }), `Inasistencia Global ${classroomInfo.classroomGrade} (${classroomInfo.shiftName})-${currentDate}.xlsx`);
             handleCloseDialog();
         }
     };
 
     const handleDownloadCSV = () => {
-        if (selectedRows.length > 0) {
-            const csvData = selectedRows.map(row => {
+        if (selectedRows.length === 0 && formatedHeaders.length > 1 && tableKeys.length > 0) {
+            const csvData = filteredData.map(row => {
                 const newRow = {};
                 tableKeys.forEach((key, index) => {
-                    newRow[tableHeaders[index]] = key.split(".").reduce((acc, part) => acc ? acc[part] : "N/A", row);
+                    newRow[formatedHeaders[index]] = key.split(".").reduce((acc, part) => acc ? acc[part] : "N/A", row);
                 });
                 return newRow;
             });
 
             const csvContent = Papa.unparse(csvData, { header: true });
             const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-            saveAs(blob, "Data.csv");
+            saveAs(blob, `Inasistencia Global - ${classroomInfo.classroomGrade} (${classroomInfo.shiftName}) - ${currentDate}.csv`);
+            handleCloseDialog();
+        }
+
+
+        if (selectedRows.length > 0) {
+            const csvData = selectedRows.map(row => {
+                const newRow = {};
+                tableKeys.forEach((key, index) => {
+                    newRow[formatedHeaders[index]] = key.split(".").reduce((acc, part) => acc ? acc[part] : "N/A", row);
+                });
+                return newRow;
+            });
+
+            const csvContent = Papa.unparse(csvData, { header: true });
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            saveAs(blob, `Inasistencia Global - ${classroomInfo.classroomGrade} (${classroomInfo.shiftName}) - ${currentDate}.csv`);
             handleCloseDialog();
         }
     };
@@ -121,9 +159,15 @@ const TableAttendanceComponent = ({
                             className={styles.userHeaderInput}
                         />
                         {isDownload && (
-                            <Typography as="a" href="#" color="blue-gray" size="sm" onClick={handleOpenDialog}>
-                                <RiFileDownloadFill size={24} />
-                            </Typography>
+                            noContent ? (
+                                <Typography as="a" href="#" size="sm" className='hover:pointer-events-none text-gray-400'>
+                                    <RiFileDownloadFill size={24} />
+                                </Typography>
+                            ) : (
+                                <Typography as="a" href="#" size="sm" onClick={handleOpenDialog} className='text-gray-900'>
+                                    <RiFileDownloadFill size={24} />
+                                </Typography>
+                            )
                         )}
                     </div>
                 </div>
@@ -153,7 +197,7 @@ const TableAttendanceComponent = ({
                     </thead>
                     <tbody>
                         {
-                            Array.isArray(paginatedData) && paginatedData.length === 0 ? (
+                            noContent ? (
                                 <tr>
                                     <td colSpan={tableHeaders.length} className="p-4 text-center">
                                         <Typography variant="small" color="blue-gray" className="font-normal">

@@ -18,6 +18,7 @@ const AttendanceGlobalPage = () => {
     const classroomId = searchParams.get('id_classroom');
     const shiftId = searchParams.get('id_shift');
     const yearId = searchParams.get('year');
+    const [noContent, setNoContent] = useState(false);
     
     const currentYear = new Date().getFullYear();
     const [shiftName, setShiftName] = useState("");
@@ -29,14 +30,10 @@ const AttendanceGlobalPage = () => {
     useEffect(() => {
         const fetchClassrooms = async () => {
             try {
-                const classrooms = await classroomService.getClassroomsByShiftAndYear(token, shiftId, yearId);
-                if (classrooms && classrooms.length > 0) {
-                    const classroom = classrooms.find(c => c.id === classroomId);
-                    if (classroom) {
-                        setClassroomGrade(classroom.grade.name);
-                        setShiftName(classroom.grade.shift.name);
-                    }
-                }
+                const classroom = await classroomService.getOneById(token, classroomId);
+
+                setClassroomGrade(classroom.grade.name);
+                setShiftName(classroom.grade.shift.name);
             } catch (error) {
                 console.error("Error fetching classrooms:", error);
             }
@@ -45,7 +42,14 @@ const AttendanceGlobalPage = () => {
         const fetchAbsentStudents = async () => {
             try {
                 const students = await absenceRecordService.getAllAbsentStudentsByYear(classroomId, token, yearId);
-                setTableData(students || []);
+
+                if (students.length === 0) {
+                    setTableData([]);
+                    setNoContent(true);
+                    return;
+                }
+                setTableData(students);
+                setNoContent(false);
             } catch (error) {
                 console.error("Error fetching absent students:", error);
             }
@@ -95,11 +99,13 @@ const AttendanceGlobalPage = () => {
                         <div className={[classes["pageContentContainerRow"]]}>
                             <div className={[classes["SubtitleContainer"]]}>
                                 <TableAttendanceComponent
-                                    title="LISTADO TOTAL DE INASISTENCIA"
+                                    title="Listado total de Inasistencias"
                                     tableHeaders={tableHeaders}
                                     tableData={tableData}
                                     tableKeys={tableKeys}
                                     isDownload={true}
+                                    noContent={noContent}
+                                    classroomInfo={{ classroomGrade, shiftName, yearId }}
                                 />
                             </div>
                         </div>

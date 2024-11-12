@@ -145,7 +145,8 @@ const GradeList = ({ grades = [], fetchGrades }) => {
                 tableKeys={["id", "name", "section", "idGoverment", "shift.name"]}
                 isDownload={true}
                 allRows={visibleGrades}
-                handleSelectAllChange={handleSelectAllChange} // Pasar handleSelectAllChange aquí
+                handleSelectAllChange={handleSelectAllChange}
+                AllData={filteredGrades}
             />
             <UserTable 
                 TABLE_HEAD={TABLE_HEAD} 

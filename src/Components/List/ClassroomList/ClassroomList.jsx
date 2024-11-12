@@ -118,7 +118,7 @@ const ClassroomList = ({ classrooms = [], fetchClassrooms }) => {
     return (
         <Card className="h-full w-full mx-auto">
             <UserHeader 
-                title="Lista de salones" 
+                title="Lista de Salones" 
                 searchTerm={searchTerm} 
                 setSearchTerm={setSearchTerm} 
                 handleDelete={handleDeleteClassrooms}
@@ -129,6 +129,7 @@ const ClassroomList = ({ classrooms = [], fetchClassrooms }) => {
                 tableKeys={["id", "year", "grade", "shift", "teacher"]}
                 handleSelectAllChange={() => setSelectedRows(visibleClassrooms)}
                 allRows={visibleClassrooms}
+                AllData={filteredClassrooms}
             />
             <UserTable 
                 TABLE_HEAD={TABLE_HEAD} 

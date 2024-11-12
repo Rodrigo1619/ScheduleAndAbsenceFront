@@ -9,7 +9,7 @@ import UserxSubjectForm from '../../Form/UserxSubjectForm/UserxSubjectForm.jsx';
 import { useUserContext } from '../../../Context/userContext.jsx';
 
 const TABLE_HEAD = ["", "ID", "Profesor", "Materia", ""];
-const TABLE_KEYS = ["id", "user.name", "subject.name"];
+const TABLE_KEYS = ["id", "teacher.name", "subject.name"];
 
 const UserxSubjectList = ({ userxSubjects, fetchData }) => {
     const { token } = useUserContext();
@@ -114,7 +114,7 @@ const UserxSubjectList = ({ userxSubjects, fetchData }) => {
     return (
         <Card className="h-full w-full mx-auto">
             <UserHeader 
-                title="Asignación de materia a Profesor" 
+                title="Listado de asignación de materia a Profesor" 
                 searchTerm={searchTerm} 
                 setSearchTerm={setSearchTerm} 
                 handleDelete={handleCloseDeleteDialog}
@@ -125,6 +125,7 @@ const UserxSubjectList = ({ userxSubjects, fetchData }) => {
                 tableKeys={TABLE_KEYS}
                 handleSelectAllChange={handleSelectAllChange}
                 allRows={visibleUserxSubjects}
+                AllData={filteredUserxSubjects}
             />
             <UserTable 
                 TABLE_HEAD={TABLE_HEAD} 

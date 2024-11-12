@@ -26,6 +26,29 @@ export const classroomService = {
         }
     },
 
+    getOneById: async (token, id) => {
+        try {
+            const response = await fetch(`${BASE_URL}/classroom/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Error getting classroom: ' + response.status);
+            }
+    
+            const data = await response.json()
+    
+            return data
+        } catch (error) {
+            console.log(`Hubo un error al obtener el salon: ${error}`);
+            throw error;
+        }
+    },
+
     getClassroomsByShiftAndYear: async (token, shift, year) => {
         try {
             const response = await fetch(`${BASE_URL}/classroom/all?shift=${shift}&year=${year}`, {
