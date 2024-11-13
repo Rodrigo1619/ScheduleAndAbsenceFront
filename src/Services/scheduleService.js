@@ -122,7 +122,9 @@ export const scheduleService = {
                 }
             });
 
-            if(!response.ok){
+            if(response.status === 204){
+                return [];
+            } else if(!response.ok){
                 throw new Error('Error getting schedule: ' + response.status);
             }
 
