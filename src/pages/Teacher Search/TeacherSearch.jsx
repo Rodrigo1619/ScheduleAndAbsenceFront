@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import SelectSearch from "react-select";
+import { Toaster, toast } from "sonner";
 
 import { 
 
@@ -10,6 +11,7 @@ import {
 } from "@material-tailwind/react";
 
 import { IoSearchSharp } from "react-icons/io5";
+import { AiOutlineLoading } from "react-icons/ai";
 import { notification } from 'antd';
 
 import classes from "./TeacherSearch.module.css";
@@ -133,14 +135,9 @@ const TeacherSearch = () => {
     useEffect(() => {
         const fetchClassrooms = async () => {
             try {
-
-                console.log("Year ", year);
                 const data = await classroomService.getClassroomsByShiftAndYear(token, shift.id, year);
 
                 setClassroomsList(data);
-
-                console.log("salones", data);
-                console.log("Turno", shift);
             } catch (error) {
                 console.log("Hubo un error al obtener los salones " + error);
             }
@@ -148,6 +145,16 @@ const TeacherSearch = () => {
 
         fetchClassrooms();
     }, [shift, year, token]);
+
+    const toastNotify = () => {
+        const loadingToast = toast('Cargando...', {
+            icon: <AiOutlineLoading className="animate-spin" />,
+        });
+
+        if (classroomsList) {
+            toast.dismiss(loadingToast);
+        }
+    }
 
     const handleSelectHourChange = (e) => {
         const selectedHour = classPeriod.find(hour => hour.id === e);
@@ -346,6 +353,7 @@ const TeacherSearch = () => {
 
     return(
         <div className={[classes["generalContainer"]]}>
+            <Toaster />
             <header className={classes["headerContainer"]}>
                 <Header name={user?.name} role={user?.role.name} />
             </header>
@@ -430,6 +438,7 @@ const TeacherSearch = () => {
                                             label: classroom.grade.name,
                                         }))}
                                         onChange={handleSelectClassroomChange}
+                                        onFocus={toastNotify}
                                         placeholder="Seleccione un salon de clases"
                                         className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20 overflow-visible"
                                     />

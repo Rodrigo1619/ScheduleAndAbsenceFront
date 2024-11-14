@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Dialog, DialogHeader, DialogBody, DialogFooter } from "@material-tailwind/react";
+import { Button, Dialog, DialogHeader, DialogBody, DialogFooter} from "@material-tailwind/react";
 import dayjs from 'dayjs'
 
 import { Toaster, toast } from 'sonner';
@@ -56,6 +56,8 @@ const AttendanceRegisterViewPage = () => {
     const [user, setUser] = useState();
 
     const [classroom, setClassroom] = useState();
+    const [selectedClassroom, setSelectedClassroom] = useState();
+    const [classroomsList, setClassroomsList] = useState([]);
     const [selectedShift, setSelectedShift] = useState();
     const [shiftsList, setShiftsList] = useState([]);
 
@@ -157,7 +159,9 @@ const AttendanceRegisterViewPage = () => {
                         const data = await classroomService.getClassroomsByUserYearAndShift(token, year, selectedShift);
     
                         console.log("Data: ", data);
+                        setClassroomsList(data);
                         setClassroom(data[0]);
+                        setSelectedClassroom(data[0].id);
                     } catch (error) {
                         if(error.message === "No classrooms assigned to the user"){
                             toast.error("No tiene salon asignado en este horario", {
@@ -166,6 +170,7 @@ const AttendanceRegisterViewPage = () => {
                             });
                         }
                         setClassroom(null);
+                        setClassroomsList([]);
                         setStudentList([]);
                         console.log(`Hubo un error al obtener los datos del salon: ${error}`);
                     }
@@ -217,11 +222,20 @@ const AttendanceRegisterViewPage = () => {
                 setLoading(false);
             }, 1500);
         }
-    }, [classroom, selectedShift]);
+    }, [classroom]);
 
     const handleShiftChange = (e) => {
         setSelectedShift(e.target.value);
     };
+
+    const handleClassroomChange = (e) => {
+        const selectedClassroom = classroomsList.find(classroom => classroom.id === e.target.value);
+
+        if(selectedClassroom){
+            setClassroom(selectedClassroom);
+            setSelectedClassroom(e.target.value);
+        }
+    }
 
     const handleBoyCountChange = (e) => {
         setBoysCount(e.target.value);
@@ -255,6 +269,9 @@ const AttendanceRegisterViewPage = () => {
                     icon: <CheckCircleIcon style={{color: "green"}} />,
                 });
                 handleCloseDialog();
+
+                setBoysCount(0);
+                setGirlsCount(0);
             }
 
         } catch (error) {
@@ -315,9 +332,24 @@ const AttendanceRegisterViewPage = () => {
                                     </>
                                 )
                             }
-                            <div className={classes["yearSelect"]}>
-                                <p>{classroom ? classroom.grade.name : "Salon de clase"}</p>
-                            </div>
+                            {
+                                classroomsList.length > 1 ? (
+                                    <select
+                                        value={selectedClassroom}
+                                        onChange={handleClassroomChange}
+                                        className={classes["yearSelect"]}>
+                                        {classroomsList.map((classroom) => (
+                                            <option key={classroom.id} value={classroom.id}>
+                                                {classroom.grade.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    <div className={classes["yearSelect"]}>
+                                        <p>{classroom ? classroom.grade.name : "Salon de clase"}</p>
+                                    </div>
+                                )
+                            }
                             {/* Contenedor para las flechas y el input de fecha */}
                             <div className={classes["dateNavigationContainer"]}>
                                 <button
@@ -353,9 +385,10 @@ const AttendanceRegisterViewPage = () => {
                                 
                                 <p className={classes["dialogInfo"]}>
                                     Fecha: &nbsp; <span className="font-bold">{selectedDate}</span> <br/>
-                                    Grado: &nbsp; <span className="font-bold">{classroom?.grade.name}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turno: &nbsp; <span className="font-bold">{classroom?.grade.shift.name}</span> <br/>
-                                    Orientador: &nbsp; <span className="font-bold">{classroom?.homeroomTeacher.name}</span> <br/> <br/>
-                                    # de Niños presentes: &nbsp; <span className="font-bold">{boysCount}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # de Niñas presentes: &nbsp; <span className="font-bold">{girlsCount}</span> 
+                                    Grado: &nbsp; <span className="font-bold">{classroom?.grade?.name}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turno: &nbsp; <span className="font-bold">{classroom?.grade?.shift?.name}</span> <br/>
+                                    Orientador: &nbsp; <span className="font-bold">{classroom?.homeroomTeacher?.name}</span> <br/> <br/>
+                                    # de Niños presentes: &nbsp; <span className="font-bold">{boysCount}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # de Niñas presentes: &nbsp; <span className="font-bold">{girlsCount}</span> <br/>
+                                    Total de estudiantes presentes: &nbsp; <span className="font-bold">{Number(boysCount) + Number(girlsCount)}</span>
                                 </p>
                                 <br/>
                                 <p className={classes["dialogInfo"]}>
@@ -402,6 +435,11 @@ const AttendanceRegisterViewPage = () => {
                                             # de Niñas presentes:
                                         </label>
                                         <input type="number" value={girlsCount} onChange={handleGirlCountChange} className={[classes["input"]]} />
+                                    </div>
+                                    <div className="flex flex-col justify-center">            
+                                        <label className="text-black text-wrap text-center">
+                                            {`Total de estudiantes presentes: ${Number(boysCount) + Number(girlsCount)}`}
+                                        </label>
                                     </div>
                                 </form>
                             </div>

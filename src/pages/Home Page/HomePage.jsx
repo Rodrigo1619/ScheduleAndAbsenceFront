@@ -62,18 +62,20 @@ const HomePage = () => {
     }
 
     const fetchAbsenceRecord = async () => {
+        let foundClassroom;
         if(shift.name === "Matutino") {
-            let foundClassroom = classroom.forEach((classroom) => {
+            foundClassroom = classroom.find((classroom) => {
                 if(classroom.grade.shift.name === "Matutino") {
+                    console.log("Found Classroom in for each: ", classroom);
                     return classroom;
                 }
             })
-            console.log("Found Classroom: ", foundClassroom);
+            console.log("Founded Classroom: ", foundClassroom);
             const response = await absenceRecordService.getByClassroomAndShift(foundClassroom.id, token, shift.id);
             setAbsenceRecord(response);
 
         } else if(shift.name === "Vespertino") {
-            let foundClassroom = classroom.forEach((classroom) => {
+            foundClassroom = classroom.find((classroom) => {
                 if(classroom.grade.shift.name === "Vespertino") {
                     return classroom;
                 }

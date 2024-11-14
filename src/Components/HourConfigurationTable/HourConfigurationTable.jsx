@@ -56,6 +56,10 @@ const HourConfigurationTable = forwardRef(({ onTimeSlotsChange, initialTimeSlots
             const updatedSubjects = [...subjects, { id: subjects.length + 1, inicio: newSlotStartTime, fin: newSlotStartTime }];
             setSubjects(updatedSubjects);
             onTimeSlotsChange(updatedSubjects);
+        },
+
+        updateTimeSlots(newTimeSlots) {
+            onTimeSlotsChange(newTimeSlots);
         }
     }));
 

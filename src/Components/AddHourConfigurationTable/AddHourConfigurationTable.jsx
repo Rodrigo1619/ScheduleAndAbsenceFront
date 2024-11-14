@@ -272,7 +272,11 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
 
         if (hourConfigTableRef.current) {
             console.log("Updating time slots in HourConfigurationTable");
-            hourConfigTableRef.current.updateTimeSlots(updatedSchedule);
+            hourConfigTableRef.current.updateTimeSlots(updatedSchedule.map(block => ({
+                inicio: block.hourStart,
+                fin: block.hourEnd,
+                isHidden: block.isHidden || false
+            })));
         } else {
             console.error("hourConfigTableRef.current is null");
         }
@@ -347,6 +351,19 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
     }
 
 }   
+
+
+         // Si se tiene algún bloque sin tipo no permitir guardar la configuración o si el bloque no tiene el campo type
+        if (schedule.some(block => !block.type)) {
+            notification.warning({
+                message: 'Advertencia',
+                description: `Todos los bloques deben tener un tipo asignado.`,
+                placement: 'top',
+                duration: 4,
+            });
+            return;
+        }
+
         // Si no se tiene ningun recreo en la configuracion no permitir guardar
 
         if (!schedule.some(block => block.type === "Recreo")) {
@@ -354,6 +371,19 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                 message: 'Advertencia',
                 description: `Debe haber
                 al menos un bloque de tipo "Recreo" en la configuración.`,
+                placement: 'top',
+                duration: 4,
+            });
+            return;
+        }
+
+       
+
+        // Si se tienen más de 8 bloques de Clase no permitir guardar
+        if (schedule.filter(block => block.type === "Clase").length > 8) {
+            notification.warning({
+                message: 'Advertencia',
+                description: `No se puede tener más de 8 bloques de tipo "Clase" en la configuración.`,
                 placement: 'top',
                 duration: 4,
             });
@@ -486,7 +516,7 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
         const scheduleToSaveDelete = scheduleToDelete.map(block => block.id);
         console.log("Schedule to save delete: ", scheduleToSaveDelete);
     
-        if (scheduleToDelete.length === 1) {
+        if (scheduleToDelete.length === 1 && scheduleToDelete[0].id !== null && scheduleToDelete[0].id !== undefined) {
             const loadingToast = toast('Cargando...', {
                 icon: <AiOutlineLoading className="animate-spin" />,
             });
@@ -571,9 +601,13 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
             await delay(1000); 
 
         }
+
+            console.log("Period slots: ", periodSlots);
+
+            console.log("schedule", schedule);
            // Mandar los que tienen id null a los que se "actualizaran" pero en realidad se crearan en la api
            const scheduleToSaveUpdateCreate = schedule.map((block, index) => {
-            const idClassPeriod = block.type === "Recreo" ? periodSlots[8]?.id : periodSlots[realIndex]?.id;
+            const idClassPeriod = block.type === "Recreo" ? periodSlots.find(period => period.name === "RECREO")?.id : periodSlots[realIndex]?.id;
             if (block.type !== "Recreo") {
                 realIndex++; // Increment real index only for non-"Recreo" blocks
             }

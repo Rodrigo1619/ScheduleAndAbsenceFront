@@ -112,6 +112,8 @@ const AttendanceVerificationViewPage = () => {
 
                     setAbsenceRecord(null);
                     setAbscentStudentList([]);
+                    setTeacherValidation(false);
+                    setCoordinationValidation(false);
                     setNoContent(true);
                     return;
                 }

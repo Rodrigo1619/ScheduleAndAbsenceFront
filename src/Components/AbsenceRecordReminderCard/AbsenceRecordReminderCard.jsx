@@ -110,7 +110,7 @@ const AbsenceRecordReminderCard = ({ classroomName = "", classroomSection = "", 
                                             </Typography>
                                             <Typography className="text-green-600 font-masferrerTitle font-normal
                                             text-xl max-w-60 justify-center mx-auto ">
-                                                Sección "{classroomSection}""
+                                                Sección "{classroomSection}"
                                             </Typography>
                                            </>
                                         ) : (
@@ -121,7 +121,7 @@ const AbsenceRecordReminderCard = ({ classroomName = "", classroomSection = "", 
                                             </Typography>
                                             <Typography className="text-yellow-800 font-masferrerTitle font-normal
                                             text-xl max-w-60 justify-center mx-auto ">
-                                                Sección "{classroomSection}""
+                                                Sección "{classroomSection}"
                                             </Typography>
                                            </>
                                         )
