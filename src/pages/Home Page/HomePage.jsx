@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import dayjs from "dayjs";
 
 import classes from "./HomePage.module.css";
 
@@ -72,6 +73,7 @@ const HomePage = () => {
             })
             console.log("Founded Classroom: ", foundClassroom);
             const response = await absenceRecordService.getByClassroomAndShift(foundClassroom.id, token, shift.id);
+            console.log("Absence Record M: ", response);
             setAbsenceRecord(response);
 
         } else if(shift.name === "Vespertino") {
@@ -82,6 +84,7 @@ const HomePage = () => {
             })
 
             const response = await absenceRecordService.getByClassroomAndShift(foundClassroom.id, token, shift.id);
+            console.log("Absence Record T: ", response);
             setAbsenceRecord(response);
         }
     };
@@ -161,7 +164,7 @@ const HomePage = () => {
         console.log("Inasistencia: ", absenceRecord);
         console.log(`Salon: ${classroomName} Seccion: ${gradeSection}`);
 
-        setTodayAbsences(absenceRecord.filter(absence => absence.date === date.toISOString().split('T')[0]));
+        setTodayAbsences(absenceRecord.filter(absence => absence.date === dayjs(date).format("YYYY-MM-DD")));
 
     }, [absenceRecord, gradeSection, classroomName]);
 

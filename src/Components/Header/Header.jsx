@@ -167,7 +167,7 @@ const navListItemsAdmin = [
   {
     label: "Inicio",
     icon: HomeIcon,
-    path: "/"
+    path: "/AdminPage"
   },
   {
     label: "Tablas de bases de datos",
@@ -205,7 +205,7 @@ const navListItemsTeacher = [
   {
     label: "Inicio",
     icon: HomeIcon,
-    path: "/"
+    path: "/HomePage"
   },
   {
     label: "Buscar maestro",
@@ -228,7 +228,7 @@ const navListItemsModerator = [
   {
     label: "Inicio",
     icon: HomeIcon,
-    path: "/"
+    path: "/ModeratorPage"
   },
   {
     label: "Buscar maestro",
@@ -271,7 +271,7 @@ const navListItemsCoordinator = [
   {
     label: "Inicio",
     icon: HomeIcon,
-    path: "/"
+    path: "/CoordinatorHomepage"
   },
   {
     label: "Revisar asistencia general",

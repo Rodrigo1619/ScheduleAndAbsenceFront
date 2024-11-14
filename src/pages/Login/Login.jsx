@@ -7,6 +7,7 @@ import { Toaster, toast } from 'sonner';
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { AiOutlineLoading } from "react-icons/ai";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
+import { Grid } from 'react-loader-spinner';
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -23,6 +24,7 @@ const Login = () => {
 
     const [type, setType] = useState("password");
     const [icon, setIcon] = useState(IoEyeOffOutline);
+    const [loading, setLoading] = useState(true);
 
     const { login, token } = useUserContext();
 
@@ -68,6 +70,11 @@ const Login = () => {
 
             navigate();
         }
+
+        setTimeout(() => {
+            setLoading(false);
+        },2000);
+
     }, [token]);
     
 
@@ -122,6 +129,12 @@ const Login = () => {
     }
 
     return (
+        loading ?
+            <div className={[classes["loaderContainer"]]}>
+                <Grid type="Grid" color="#170973" height={80} width={80} visible={loading} />
+            </div>
+
+            :
         <div className={classes["generalContainer"]}>
             
             <div className={classes["infoContainer"]}>
