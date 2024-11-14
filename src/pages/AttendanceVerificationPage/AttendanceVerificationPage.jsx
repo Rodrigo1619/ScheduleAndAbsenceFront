@@ -69,6 +69,7 @@ const AttendanceVerificationViewPage = () => {
     const [classroom, setClassroom] = useState();
 
     const [open, setOpen] = useState(false);
+    const [open2, setOpen2] = useState(false);
     const [loading, setLoading] = useState(true);
     
     const currentDate = dayjs(new Date()).format('YYYY-MM-DD');
@@ -178,8 +179,17 @@ const AttendanceVerificationViewPage = () => {
         setOpen(true);
     };
 
+    const handleOpenDialog2 = () => {
+        setOpen2(true);
+    };
+
+
     const handleCloseDialog = () => {
         setOpen(false);
+    };
+
+    const handleCloseDialog2 = () => {
+        setOpen2(false);
     };
 
     const handleValidation = async () => {
@@ -263,6 +273,16 @@ const AttendanceVerificationViewPage = () => {
                     <div className={classes["pageContentContainerCol"]}>
                         <Toaster />
                         <div className={classes["TitleContainer"]}>
+                            <div className="w-auto h-auto text-sm justify-center my-auto font-masferrerTitle font-normal
+                                    PC-1280*720:text-xs PC-800*600:text-xs PC-640*480:text-xs
+                                    Mobile-390*844:text-xs Mobile-280:text-xs IpadAir:text-xs
+                                    bg-blue-gray-200 border border-gray-300 rounded-lg px-6 py-2 hover:shadow-2xl hover:pointer-events-auto">
+                                <button
+                                    onClick={handleOpenDialog2}
+                                    disabled={noContent}>
+                                        Detalle Estudiantes
+                                </button>
+                            </div>
                             <div className={classes["yearSelect"]}>
                                 <p>{classroom.grade.name}</p>
                             </div>
@@ -330,6 +350,19 @@ const AttendanceVerificationViewPage = () => {
                                 <DialogFooter>
                                     <Button color="green" className="m-4" onClick={handleValidation}> Aceptar </Button>
                                     <Button color="red" className="m-4" onClick={handleCloseDialog}> Cancelar </Button>
+                                </DialogFooter>
+                        </Dialog>
+
+                        <Dialog open={open2} handler={handleOpenDialog2}>
+                                <DialogHeader> Detalle Estudiantes </DialogHeader>
+                                <DialogBody> 
+                                    <p>
+                                        # de Niños presentes: &nbsp; <span className="font-bold">{absenceRecord?.maleAttendance}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # de Niñas presentes: &nbsp; <span className="font-bold">{absenceRecord?.femaleAttendance}</span> <br/>
+                                        Total de estudiantes presentes: &nbsp; <span className="font-bold">{Number(absenceRecord ? absenceRecord?.maleAttendance : 0) + Number(absenceRecord ? absenceRecord?.femaleAttendance : 0)} </span>
+                                    </p> 
+                                    </DialogBody>
+                                <DialogFooter>
+                                    <Button color="red" className="m-4" onClick={handleCloseDialog2}> Cerrar </Button>
                                 </DialogFooter>
                         </Dialog>
                     </div>
