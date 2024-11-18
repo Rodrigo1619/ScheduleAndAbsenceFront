@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardFooter, Typography, Button, Input, Dialog, DialogHeader, DialogBody, DialogFooter } from "@material-tailwind/react";
 import UserTable from '../../Table/TableUserComponents/BodyTableUser.jsx'; 
 import PaginationFooter from '../../Table/TableUserComponents/FooterTableUser.jsx';
@@ -29,6 +29,9 @@ const ClassroomList = ({ classrooms = [], fetchClassrooms }) => {
         teacher: classroom.homeroomTeacher?.name ?? "N/A"
     })) : [];
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm]);
 
     // Filter rows based on search term
     const filteredClassrooms = CLASSROOMS.filter((classroom) =>
@@ -111,7 +114,6 @@ const ClassroomList = ({ classrooms = [], fetchClassrooms }) => {
             fetchClassrooms();
         }
         catch (error) {
-            console.log(`Hubo un error al eliminar el salón de clases: ${error}`);
         }
     }
 

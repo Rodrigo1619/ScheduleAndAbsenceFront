@@ -16,7 +16,7 @@ export const gradeService = {
             return data;
 
         } catch (error) {
-            console.log(error);
+            throw error;
         }
     },
     getAllPaginated: async (token, size, page) => {
@@ -92,7 +92,6 @@ export const gradeService = {
             return response.text();
 
         } catch (error) {
-            console.log(error);
             throw error;
         }
     },
@@ -119,7 +118,6 @@ export const gradeService = {
             return response.text();
 
         } catch (error) {
-            console.log(error);
             throw error;
         }
     },
@@ -141,7 +139,6 @@ export const gradeService = {
     
             return data
         } catch (error) {
-            console.log(`Hubo un error al obtener los grados: ${error}`);
             throw error;
         }
     },

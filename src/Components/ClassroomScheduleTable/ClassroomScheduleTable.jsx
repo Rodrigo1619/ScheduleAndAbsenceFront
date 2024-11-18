@@ -69,18 +69,15 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
                 try {
                     const response = await classroomConfigurationService.getClassroomConfigurationById(token, grade.id);
                     if(response){
-                        console.log("Hour configuration: ", response[0].classroomConfigurations);
                         setHourConfiguration(response[0].classroomConfigurations);
                         setScheduleEmpty(false);
                     } else if ( response === null) {
-                        console.log("No hour configuration found for the classroom");
                         notification.warning({ message: "No se ha configurado las horas para el aula seleccionada" });
                         setHourConfiguration([]);
                         setSchedule([]);
                         setScheduleEmpty(true);
                     }
                 } catch (error) {
-                    console.log("Error fetching hour configuration: ", error);
                     notification.warning({ message: "Error al obtener configuracion de horas del salon seleccionado" });
                     setHourConfiguration([]);
                     setSchedule([]);
@@ -97,10 +94,8 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
         const fetchClassPeriod = async () => {
             try {
                 const response = await classPeriodService.getClassPeriods(token);
-                console.log("Class periods: ", response);
                 setClassPeriod(response);
             } catch (error) {
-                console.log("Error fetching class periods: ", error);
             }
         };
 
@@ -114,7 +109,6 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
                 const response = await weekdayService.getWeekdays(token);
                 setWeekdays(response);
             } catch (error) {
-                console.log("Error fetching weekdays: ", error);
             }
         };
     
@@ -135,9 +129,6 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
     
         if (hourConfiguration.length > 0 && classPeriod.length > 0) {
             initializeSchedule(token, hourConfiguration, classPeriod);
-        } else {
-            console.log("classPeriod: ", classPeriod);
-            console.log("Condition not met");
         }
     }, [grade, hourConfiguration, classPeriod]);
 
@@ -152,9 +143,7 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
         });
 
         const recreoId = classPeriod.find(period => period.name === "RECREO").id;
-    
-        console.log("Recreo id: ", recreoId);
-    
+        
         // Sort hourConfiguration by hourStart to ensure correct order
         const sortedHourConfiguration = [...hourConfiguration].sort((a, b) => a.hourStart.localeCompare(b.hourStart));
     
@@ -181,28 +170,21 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
             return acc;
         }, {});
 
-        console.log("Schedule mapping: ", scheduleMapping);
-
-
         const getClassroomSchedule = async () => {
             try {
-                console.log("Getting classroom schedule...");
                 const response = await scheduleService.getScheduleByClassroomId(token, grade.id);
                 if (response) {
-                    console.log("Teacher schedule: ", response);
                     notification.success({ message: "Horario de clases encontrado"
                         , placement: 'top', duration: 2
                      });
                     updateSchedule(response, initialSchedule);
                 } else {
-                    console.log("No schedule found for the teacher");
                     notification.info({ message: "No se encontró el horario de clases", 
                     placement: 'top', duration: 2
                      });
                     setSchedule(initialSchedule);
                 }
             } catch (error) {
-                console.log("Error getting teacher schedule: ", error);
                 notification.error({
                     message: 'Error',
                     description: 'Hubo un error al obtener el horario del profesor',
@@ -219,11 +201,8 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
                 if (entry && entry.schedules) {
                     entry.schedules.forEach(schedule => {
                         const day = schedule.weekday.day; // "Lunes", "Martes", etc.
-                        console.log("Day: ", day);
                         const timeSlot = `${schedule.classroomConfiguration.hourStart?.slice(0, 5)}-${schedule.classroomConfiguration.hourEnd?.slice(0, 5)}`;
-                        console.log("Time slot: ", timeSlot);
                         const slotIndex = scheduleMapping[timeSlot];
-                        console.log("Slot index: ", slotIndex);
                         if (slotIndex !== undefined) {
                             initialSchedule[slotIndex][day] = {
                                 ...initialSchedule[slotIndex][day],
@@ -239,11 +218,8 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
                             };
                         }
                     });
-                } else {
-                    console.error("Invalid entry structure: ", entry);
                 }
             });
-            console.log("Initial schedule: ", initialSchedule);
             setSchedule([...initialSchedule]);
         };
         if (hourConfiguration.length > 0) {
@@ -256,9 +232,6 @@ const ClassroomScheduleTable = ({ grade, shift, year }) => {
         console.log(grade);
     };
 
-    useEffect(() => {
-        console.log("Schedule: ", schedule);
-    }, [schedule]);
 
     const TABLE_HEAD = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
 

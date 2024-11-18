@@ -212,7 +212,6 @@ export const absenceRecordService = {
             const data = await response.json();
             
         } catch (error) {
-            console.log(`Hubo un error al eliminar las inasistencias de estudiantes: ${error}`);
             throw error;
         }
     },

@@ -33,7 +33,6 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
                 const classrooms = await classroomService.getClassroomsByShiftAndYear(token, shift.id, year);
                 setClassroomsList(classrooms || []);
             } catch (error) {
-                console.log("Error fetching data: ", error);
             }
         }
     };
@@ -52,17 +51,10 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
     }, [shift, year]);
 
     useEffect(() => {
-        console.log(classroomsList);
         if (classroomInfo && shift && year && classroomsList.length > 0) {
             setSelectedClassroom(classroomInfo);
         }
     }, [shift, year, classroomsList]);
-
-    useEffect(() => {
-        console.log(selectedClassroom);
-        console.log(classroomInfo);
-    }, [selectedClassroom]);
-
 
     useEffect(() => {
         const fetchShifts = async () => {
@@ -72,19 +64,12 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
                     setShiftsList(shifts || []);
 
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };
 
         fetchShifts();
-        console.log(classroomsList);
     }, [token]);
-
-    useEffect(() => {
-        console.log(shiftsList);
-    }, [shiftsList]);
-
 
     useEffect(() => {
         if (!classroomInfo) {
@@ -93,7 +78,6 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
             fetchClassrooms();
         }
     }, [shift, year, token]);
-
 
     useEffect(() => {
 
@@ -113,10 +97,8 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
     }, [year]);
 
 
-
     const handleSelectClassroomChange = (e) => {
         const classroom = classroomsList.find(classroom => classroom.id === e.value);
-        console.log(classroom);
         setSelectedClassroom(classroom);
     }
 
@@ -136,9 +118,6 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
     const addStudentsToClassroom = async (studentsList) => {
         setLoading(true);
         const idStudents = studentsList.map(student => student.id);
-        console.log(idStudents);
-        console.log(selectedClassroom?.id);
-        console.log(studentsList);
 
         if (!selectedClassroom) {
             notification.error({
@@ -175,7 +154,6 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
                 onSuccess();
             }
         } catch (error) {
-            console.log(`Hubo un error al registrar los estudiantes: ${error}`);
         }
 
         setLoading(false);
@@ -219,7 +197,6 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
                 onSuccess();
             }
         } catch (error) {
-            console.log(`Hubo un error al matricular los estudiantes: ${error}`);
             notification.error({
                 message: 'Error',
                 description: 'Hubo un error al matricular los estudiantes',
@@ -270,7 +247,6 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
 
             }
         } catch (error) {
-            console.log(`Hubo un error al editar los estudiantes: ${error}`);
             notification.error({
                 message: 'Error',
                 description: 'Hubo un error al editar los estudiantes',
@@ -288,8 +264,6 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
             switch (true) {
                 case buttonText === "Registrar":
                     e.preventDefault();
-                    console.log("Registrando...");
-                    console.log(studentsList);
                     if (studentsList) {
                         addStudentsToClassroom(studentsList);
                     }
@@ -300,14 +274,12 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
                             placement: 'top',
                             duration: 2,
                         });
-                        console.log(studentsList);
                     }
 
                     break;
 
                 case buttonText === "Matricular":
                     e.preventDefault();
-                    console.log("Matriculando...");
                     if (studentsList && selectedClassroom.year > classroomInfo.year) {
                         enrollStudents(studentsList);
                     }
@@ -323,7 +295,6 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
 
                 case buttonText === "Editar":
                     e.preventDefault();
-                    console.log("Editando...");
                     if (studentsList) {
                         editClassroomList(studentsList);
                     }
@@ -336,17 +307,11 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
         }
         else {
             e.preventDefault();
-            console.log("Buscando...");
             setClassroom(selectedClassroom);
             onSuccess();
         }
 
     }
-
-    useEffect(() => {
-        console.log(studentsList);
-    }
-        , [studentsList]);
 
     return (
         loading ?

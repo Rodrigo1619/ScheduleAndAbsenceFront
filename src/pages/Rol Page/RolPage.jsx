@@ -22,11 +22,9 @@ const RolPage = () => {
             {
                 const data = await roleService.getAllRoles(token);
                 setRoles(data);
-                console.log(data);
             }
             catch (error)
             {
-                console.log("Hubo un error al obtener los roles" + error);
             }
         }
         fetchRoles();

@@ -35,7 +35,6 @@ export default function SideBarNav({ role }) {
    const logOutHandler = () => {
       logout(); 
       
-      console.log("Borrando token...");
       navigate('/');
       
    };

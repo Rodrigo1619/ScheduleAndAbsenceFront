@@ -85,7 +85,6 @@ const AttendanceVerificationViewPage = () => {
 
                 setClassroom(data);
             } catch (error) {
-                console.log("Hubo un error al obtener el salón" + error);
             }
         };
 
@@ -94,17 +93,11 @@ const AttendanceVerificationViewPage = () => {
 
     useEffect(() => {
 
-        console.log("Fecha seleccionada: ", selectedDate);
-
         const fetchAbscentStudentList = async () => {
-            console.log("Obteniendo lista de estudiantes ausentes...");
             try {
-                console.log("dentro del try");
                 const data = await absenceRecordService.getByClassroomAndDate(classroomID, token, selectedDate);
                 
                 if (data.length === 0) {
-                    console.log("No hay datos");
-
                     toast.warning('Aún no se ha registrado la asistencia de este día', {
                         duration: 2000,
                         icon: <ExclamationTriangleIcon style={{color: "#fb8500"}}/>,
@@ -124,9 +117,6 @@ const AttendanceVerificationViewPage = () => {
                     absent: student.code ? "Si" : "No",
                 }));
 
-                console.log("Lista de estudiantes: ", data);
-                console.log("Lista de estudiantes ausentes: ", absentStudents);
-
                 setAbsenceRecord(data);
                 setAbscentStudentList(absentStudents);
 
@@ -135,7 +125,6 @@ const AttendanceVerificationViewPage = () => {
                 setNoContent(false);
 
             } catch (error) {
-                console.log("Hubo un error al obtener la lista de estudiantes ausentes" + error);
             }
         };
 
@@ -199,9 +188,6 @@ const AttendanceVerificationViewPage = () => {
 
         if ( user.role.name === "Profesor"){
 
-            console.log("Validando como Profesor...");
-
-
             try {
                 const response = await absenceRecordService.teacherValidation(token, absenceRecord.id);
     
@@ -226,8 +212,6 @@ const AttendanceVerificationViewPage = () => {
                 toast.dismiss(loadingToast);
             }
         } else if ( user.role.name === "Coordinador" ){
-
-            console.log("Validando como coordinador...");
 
             try {
                 const response = await absenceRecordService.coordinatorValidation(token, absenceRecord.id);

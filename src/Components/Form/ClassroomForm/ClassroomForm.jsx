@@ -33,7 +33,6 @@ const ClassroomForm = ({ classroom, editStatus = false, onSuccess }) => {
         const teacher = teachersList.find((teacher) => teacher.id === e.value);
 
         if(teacher){
-            console.log("Teacher", teacher);
             setTeacher(teacher);
         }
     };
@@ -69,7 +68,6 @@ const ClassroomForm = ({ classroom, editStatus = false, onSuccess }) => {
                         setSelectedYear(classroom.year);
                     }
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };
@@ -83,7 +81,6 @@ const ClassroomForm = ({ classroom, editStatus = false, onSuccess }) => {
                 const grades = await gradeService.getGradesByShift(token, shift?.id);
                 setGradesList(grades);
             } catch (error) {
-                console.log("Error fetching grades: ", error);
             }
         };
 
@@ -118,7 +115,6 @@ const ClassroomForm = ({ classroom, editStatus = false, onSuccess }) => {
                 onSuccess();
 
             } catch (error) {
-                console.log(error);
 
                 toast.error('Error al editar, posible duplicado de datos', {
                     duration: 2000,

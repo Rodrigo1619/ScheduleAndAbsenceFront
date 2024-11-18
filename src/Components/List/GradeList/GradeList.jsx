@@ -20,10 +20,15 @@ const GradeList = ({ grades = [], fetchGrades }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm]);
+
     // Filtra las filas según el término de búsqueda
     const filteredGrades = grades?.filter((grade) =>
         grade.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        grade.id.toLowerCase().includes(searchTerm.toLowerCase())
+        grade.idGoverment.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        grade.shift.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     // Calcula el índice inicial y final de las filas a mostrar
@@ -61,12 +66,7 @@ const GradeList = ({ grades = [], fetchGrades }) => {
         }
     };
 
-    useEffect(() => {
-        setSelectedRows([]);
-    }, [currentPage, rowsPerPage, searchTerm]);
-
     const handleDelete = () => {
-        console.log(selectedRows);
         setSelectedRows([]);
         // Aquí puedes agregar el código para eliminar las filas seleccionadas de la lista de GRADES
     };
@@ -86,7 +86,6 @@ const GradeList = ({ grades = [], fetchGrades }) => {
 
     const handleUpdateGrade = (grade) => {
         setSelectedGrade(grade);
-        console.log(grade);
         handleOpenDialog();
     };
 
@@ -102,7 +101,6 @@ const GradeList = ({ grades = [], fetchGrades }) => {
 
     const handleOpenDeleteDialog = (grade) => {
         setSelectedGrade(grade);
-        console.log(grade);
         setOpenDelete(true);
     };
 
@@ -128,7 +126,6 @@ const GradeList = ({ grades = [], fetchGrades }) => {
             }
         }
         catch (error) {
-            console.log(`Hubo un error al eliminar el grado: ${error}`);
         }
     };
 

@@ -35,12 +35,10 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
 
 
     useEffect(() => {
-        console.log("Classroom desde studentlist: ", classroomName);
         setLoading(true);
         const fetchEnrolledStudents = async () => {
             try {
                 const data = await classroomService.getEnrollmentsByClassroom(token, classroomName.id);
-                console.log("Students: ", data);
                 setEnrolledStudents(data.map((student) => ({
                     id: student.student.id,
                     enrolledId: student.id,
@@ -63,7 +61,6 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
             });
 
             } catch (error) {
-                console.log(`Hubo un error al obtener los estudiantes matriculados: ${error}`);
                 if (classroomName == undefined && !populate) {
                     notification.info({
                         message: 'Información',
@@ -134,10 +131,6 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
     // Calcula el total de páginas
     const totalPages = Math.ceil(filteredStudents.length / rowsPerPage);
 
-    useEffect(() => {
-        console.log("students: ", filteredStudents);
-    }, [filteredStudents]);
-
     // Actualiza la página actual
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -154,7 +147,6 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
             setSelectedRows([...selectedRows, row]);
         }
 
-        
     };  
 
     const handleSelectAllChange = () => {
@@ -226,12 +218,11 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
             }
         }
         catch (error) {
-            console.log(`Hubo un error al eliminar el estudiante: ${error}`);
         }
     }
 
     const handleChangeStatus = async () => {
-        console.log("nel");
+        console.log(" ");
     };
 
     useEffect(() => {

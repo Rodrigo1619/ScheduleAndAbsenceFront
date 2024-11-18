@@ -14,7 +14,7 @@ let passwordRegex = {
     lowercase: /^(?=.*[a-z]).*$/,
     uppercase: /^(?=.*[A-Z]).*$/,
     number: /^(?=.*[0-9]).*$/,
-    special: /^(?=.*[@#$%\^&+=!\-+*;:\'\/?¡¿_]).*$/,
+    special: /^(?=.*[@#$%\^&+=!{}.,<>\-+*;:\'\/?¡¿_]).*$/,
 }
 
 const ResetPassword = () => {

@@ -28,6 +28,10 @@ const SubjectList = ({ subjects = [], fetchSubjects }) => {
         name: subject.name
     })) : [];
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm]);
+
     // Filtra las filas según el término de búsqueda
     const filteredSubjects = SUBJECTS.filter((subject) =>
         subject.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -67,10 +71,6 @@ const SubjectList = ({ subjects = [], fetchSubjects }) => {
             setSelectedRows(visibleSubjects);
         }
     };
-
-    useEffect(() => {
-        setSelectedRows([]);
-    }, [currentPage, rowsPerPage, searchTerm]);
 
     const handleOpenDialog = () => {
         setOpen(true);
@@ -120,7 +120,6 @@ const SubjectList = ({ subjects = [], fetchSubjects }) => {
             }
         }
         catch (error) {
-            console.log(`Hubo un error al eliminar el codigo: ${error}`);
         }
     };
 

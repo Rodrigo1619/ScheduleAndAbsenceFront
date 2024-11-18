@@ -98,45 +98,40 @@ export const classroomConfigurationService = {
 
     deleteClassroomConfiguration: async (token, id) => {
         try {
-        const response = await fetch(`${BASE_URL}/classroom-configuration/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
-            },
-        });
-    
-        const data = await response.json();
-
-            console.log("Dentro de la peticion: " + data);
+            const response = await fetch(`${BASE_URL}/classroom-configuration/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+            });
+        
+            const data = await response.json();
 
             return data;
 
         } catch (error) {
-            console.log(error);
+            throw new Error(response.status);
         }
     },
 
     deleteClassroomConfigurations: async (token, ids) => {
         try {
-        const response = await fetch(`${BASE_URL}/classroom-configuration/list`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(ids)
-        });
-    
-        const data = await response.json();
-
-            console.log("Dentro de la peticion: " + data);
+            const response = await fetch(`${BASE_URL}/classroom-configuration/list`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(ids)
+            });
+        
+            const data = await response.json();
 
             return data;
 
         } catch (error) {
-            console.log(error);
         }
-}
-    
     }
+    
+}

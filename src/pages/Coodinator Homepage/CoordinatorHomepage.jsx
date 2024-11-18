@@ -44,15 +44,12 @@ const CoordinatorHomepage = () => {
                 const response = await absenceRecordService.getRecordsWithoutCoodinationValidation(token, currentDate);
                 setRemainingAbsenceRecords(response);
             } catch (error) {
-                console.error(error);
                 setRemainingAbsenceRecords(0);
             }
         };
 
         const fetchTop2Absences = async () => {
             const response = await absenceRecordService.getTopAbsentStudentByMonthBothShifts(token, currentDate);
-
-            console.log("Top 2 absences:", response.morningShiftTopStudent);
 
             if (response.morningShiftTopStudent) {
                 setName1(response.morningShiftTopStudent.student.name);

@@ -32,11 +32,6 @@ const AdminPage = () => {
         document.title = "Sistema de Control de Asistencia - Escuela Masferrer";
     }, []);
 
-    useEffect(() => {
-        console.log("User: ", user);
-    }
-        , [user]);
-
     return (
         <div className={[classes["generalContainer"]]}>
             <header className={[classes["headerContainer"]]}>

@@ -86,7 +86,6 @@ function ProfileMenu() {
   const closeMenu = () => {
     setIsMenuOpen(false);
     logout();
-    console.log("Borrando token...");
     navigate('/');
   };
 

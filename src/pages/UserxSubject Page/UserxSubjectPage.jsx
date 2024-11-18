@@ -28,9 +28,7 @@ const UserxSubjectPage = () => {
         try {
             const data = await userxSubjectService.getUserxSubjects(token);
             setUserxSubjects(data);
-            console.log(data);
         } catch (error) {
-            console.log("Hubo un error al obtener los usuarios y materias" + error);
             setUserxSubjects([]);
         }
     };

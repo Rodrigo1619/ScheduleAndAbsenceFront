@@ -67,13 +67,10 @@ const HomePage = () => {
         if(shift.name === "Matutino") {
             foundClassroom = classroom.find((classroom) => {
                 if(classroom.grade.shift.name === "Matutino") {
-                    console.log("Found Classroom in for each: ", classroom);
                     return classroom;
                 }
             })
-            console.log("Founded Classroom: ", foundClassroom);
             const response = await absenceRecordService.getByClassroomAndShift(foundClassroom.id, token, shift.id);
-            console.log("Absence Record M: ", response);
             setAbsenceRecord(response);
 
         } else if(shift.name === "Vespertino") {
@@ -84,7 +81,6 @@ const HomePage = () => {
             })
 
             const response = await absenceRecordService.getByClassroomAndShift(foundClassroom.id, token, shift.id);
-            console.log("Absence Record T: ", response);
             setAbsenceRecord(response);
         }
     };
@@ -151,19 +147,8 @@ const HomePage = () => {
         }
     }, [classroom, shift]);
 
-    useEffect(() => {
-        console.log("Shift:");
-        console.log(shift);
-        console.log("Top 2 Absences:");
-        console.log(top2AbsencesStudents);
-        console.log("Classroom:");
-        console.log(classroom);
-    }, [top2AbsencesStudents]);
 
     useEffect(() => {
-        console.log("Inasistencia: ", absenceRecord);
-        console.log(`Salon: ${classroomName} Seccion: ${gradeSection}`);
-
         setTodayAbsences(absenceRecord.filter(absence => absence.date === dayjs(date).format("YYYY-MM-DD")));
 
     }, [absenceRecord, gradeSection, classroomName]);

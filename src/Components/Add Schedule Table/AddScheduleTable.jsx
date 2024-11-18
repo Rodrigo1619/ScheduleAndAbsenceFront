@@ -45,16 +45,13 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                 try {
                     const response = await classroomConfigurationService.getClassroomConfigurationById(token, grade.id);
                     if(response){
-                        console.log("Hour configuration: ", response[0].classroomConfigurations);
                         setHourConfiguration(response[0].classroomConfigurations);
                     } else if ( response === null) {
-                        console.log("No hour configuration found for the classroom");
                         notification.warning({ message: "No se ha configurado las horas para el aula seleccionada" });
                         setHourConfiguration([]);
                         setSchedule([]);
                     }
                 } catch (error) {
-                    console.log("Error fetching hour configuration: ", error);
                     notification.warning({ message: "Error al obtener configuracion de horas del salon seleccionado" });
                     setHourConfiguration([]);
                     setSchedule([]);
@@ -71,10 +68,8 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
         const fetchClassPeriod = async () => {
             try {
                 const response = await classPeriodService.getClassPeriods(token);
-                console.log("Class periods: ", response);
                 setClassPeriod(response);
             } catch (error) {
-                console.log("Error fetching class periods: ", error);
             }
         };
 
@@ -88,7 +83,6 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                 const response = await weekdayService.getWeekdays(token);
                 setWeekdays(response);
             } catch (error) {
-                console.log("Error fetching weekdays: ", error);
             }
         };
 
@@ -113,9 +107,6 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
 
         if (hourConfiguration.length > 0 && classPeriod.length > 0) {
             initializeSchedule(token, hourConfiguration, classPeriod);
-        } else {
-            console.log("classPeriod: ", classPeriod);
-            console.log("Condition not met");
         }
     }, [grade, hourConfiguration, classPeriod]);
 
@@ -148,10 +139,8 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                     }
                 });
             } else {
-                console.error("Invalid entry structure: ", entry);
             }
         });
-        console.log("Updated schedule: ", initialSchedule);
         setSchedule([...initialSchedule]);
     };
 
@@ -165,8 +154,6 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
         });
 
         const recreoId = classPeriod.find(period => period.name === "RECREO").id;
-
-        console.log("Recreo id: ", recreoId);
 
         // Sort hourConfiguration by hourStart to ensure correct order
         const sortedHourConfiguration = [...hourConfiguration].sort((a, b) => a.hourStart.localeCompare(b.hourStart));
@@ -194,31 +181,24 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
             return acc;
         }, {});
 
-        console.log("Schedule mapping: ", scheduleMappingRef.current);
-
         setScheduleMapping(scheduleMapping);
-        console.log("Schedule mapping: ", scheduleMapping);
 
         const getClassroomSchedule = async () => {
             const loadingToast = toast('Cargando...', {
                 icon: <AiOutlineLoading className="animate-spin" />,
             });
             try {
-                console.log("Getting classroom schedule...");
                 const response = await scheduleService.getScheduleByClassroomId(token, grade.id);
                 if (response === null) {
-                    console.log("No schedule found for the classroom");
                     notification.warning({ message: "No hay un horario de clases creado para el aula seleccionada" });
                     setIsScheduleCreated(false);
                 }
                 else if (response) {
-                    console.log("Teacher schedule: ", response);
                     notification.success({ message: "Horario de clases encontrado" });
                     setIsScheduleCreated(true);
                     updateSchedule(response, initialSchedule);
 
                 } else {
-                    console.log("No schedule found for the teacher");
                     notification.info({ message: "No se encontró el horario de clases" });
                     setIsScheduleCreated(false);
                     setSchedule(initialSchedule);
@@ -229,7 +209,6 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                     setIsScheduleCreated(false);
                     setSchedule(initialSchedule);
                 } else {
-                    console.log("Error getting teacher schedule: ", error);
                     notification.error({
                         message: 'Error',
                         description: 'Hubo un error al obtener el horario del profesor',
@@ -251,8 +230,6 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
               // Obtener los horarios del profesor
 
             const schedule = await scheduleService.getScheduleByUserId(token, teacherId, yearSelected);
-
-             console.log("Teacher schedule: ", schedule);
 
               const conflict = schedule.some((entry) =>
 
@@ -286,8 +263,6 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
 
     const handleAddGradeSubjectToSchedule = async (e, day, index, hourStart, hourEnd) => {
         e.preventDefault();
-        console.log("Schedule to delete: ", scheduleToDelete);
-        console.log("hourConfiguration: ", hourConfiguration);
         e.preventDefault();
         const weekdayId = weekdays.find(weekday => weekday.day === day).id;
         const teacherId = teacherSelected.id;
@@ -337,8 +312,6 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                     classroomConfigurationId: hourConfiguration.find(block => block.hourStart === hourStart && block.hourEnd === hourEnd).id
                 }
             ]);
-
-            console.log("Schedule updated: ", updatedSchedule);
         }
     };
 
@@ -402,21 +375,15 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                 }
             ]);
         }
-
-        console.log("Schedule updated: ", updatedSchedule);
-        console.log("schedule to create", scheduleToCreate);
-    };
+};
 
     const deleteSchedule = async (scheduleToDelete) => {
         const loadingToast = toast('Cargando...', {
             icon: <AiOutlineLoading className="animate-spin" />,
         });
         try {
-            console.log("Deleting schedule...");
-
             const schedulesIdsDelete = scheduleToDelete.map(schedule => schedule.id);
             const response = await scheduleService.deleteSchedule(schedulesIdsDelete, token);
-            console.log("Schedule deleted: ", response);
             setScheduleToDelete([]);
             notification.success({
                 message: 'Éxito',
@@ -425,7 +392,6 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                 duration: 4,
             });
         } catch (error) {
-            console.log("Error creating schedule: ", error);
             notification.error({
                 message: 'Error',
                 description: 'Hubo un error al borrar el horario',
@@ -442,7 +408,6 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
             icon: <AiOutlineLoading className="animate-spin" />,
         });
         try {
-            console.log("Creating schedule...");
             const schedulesCreate = {
                 "schedules": scheduleToCreate.map(schedule => ({
                     id_user: schedule.teacher,
@@ -452,10 +417,7 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                 }))
             };
 
-            console.log("Schedules to create: ", schedulesCreate);
-
             const response = await scheduleService.createSchedule(token, schedulesCreate);
-            console.log("Schedule created: ", response);
             setScheduleToCreate([]);
             notification.success({
                 message: 'Éxito',
@@ -469,7 +431,6 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
             updateSchedule(updatedSchedule, schedule);
         } catch (error) {
             if(error.message === "Error: 409"){
-                console.log("Error creating schedule: ", error);
                 setScheduleToCreate([]);
                 notification.error({
                     message: 'Error',
@@ -478,7 +439,6 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                     duration: 4,
                 });
             } else {
-                console.log("Error creating schedule: ", error);
                 setScheduleToCreate([]);
                 notification.error({
                     message: 'Error',
@@ -497,7 +457,6 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
             icon: <AiOutlineLoading className="animate-spin" />,
         });
         try {
-            console.log("Updating schedule...");
             const schedulesUpdate = {
                 deleteList: scheduleTodelete.map(schedule => schedule.id),
                 newSchedules: scheduleToCreate.map(schedule => ({
@@ -508,10 +467,7 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                 }))
             };
 
-            console.log("Schedules to update: ", schedulesUpdate);
-
             const response = await scheduleService.updateSchedule(token, schedulesUpdate);
-            console.log("Schedule updated: ", response);
             setScheduleToCreate([]);
             setScheduleToDelete([]);
             notification.success({
@@ -526,7 +482,6 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
             updateSchedule(updatedSchedule, schedule);
         } catch (error) {
             if(error.message === "Error: 409"){
-                console.log("Error updating schedule: ", error);
                 setScheduleToCreate([]);
                 setScheduleToDelete([]);
                 notification.error({
@@ -536,7 +491,6 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                     duration: 4,
                 });
             } else {
-                console.log("Error updating schedule: ", error);
                 setScheduleToCreate([]);
                 setScheduleToDelete([]);
                 notification.error({
@@ -565,7 +519,6 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
             initializeSchedule(token, hourConfiguration, classPeriod);
         }
         catch (error) {
-            console.log("Error saving schedule: ", error);
             notification.error({
                 message: 'Error',
                 description: 'Hubo un error al guardar el horario',
@@ -573,25 +526,21 @@ const AddScheduleTable = ({ teacher, subject, grade, shift, year }) => {
                 duration: 4,
             });
         } 
-    };
+};
 
 
+const handleSaveSchedule = async () => {
+    saveSchedule(scheduleToCreate, scheduleToDelete);    
+};
 
-    const handleSaveSchedule = async () => {
-        console.log("Schedule to create: ", scheduleToCreate);
-        console.log("Schedule to delete: ", scheduleToDelete);
-            saveSchedule(scheduleToCreate, scheduleToDelete);    
-    };
+const TABLE_HEAD = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
 
-    const TABLE_HEAD = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+const [selectedDay, setSelectedDay] = useState(TABLE_HEAD[0]); // Día seleccionado por defecto: Lunes
 
-    const [selectedDay, setSelectedDay] = useState(TABLE_HEAD[0]); // Día seleccionado por defecto: Lunes
+const handleDayChange = (event) => {
+    setSelectedDay(event.target.value);
+};
 
-    const handleDayChange = (event) => {
-        setSelectedDay(event.target.value);
-    };
-
-    
 
     return (
         <div className={classes["generalCardContainer"]}>

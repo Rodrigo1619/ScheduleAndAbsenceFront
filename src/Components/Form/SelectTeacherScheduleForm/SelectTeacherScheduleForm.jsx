@@ -31,7 +31,6 @@ const SelectTeacherScheduleForm = () => {
                     setShiftsList(shifts || []);
                     setTeachersList(teachers.filter((user) => user.role.name === "Profesor") || []);
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };
@@ -39,26 +38,17 @@ const SelectTeacherScheduleForm = () => {
         fetchData();
     }, [token]);
 
-    useEffect(() => {
-        console.log(`Profe seleccionado: ${teacher?.id}<->${teacher?.name}`);
-    }, [teacher]);
-
     const handleSelectTeacherChange = (e) => {
 
         const selectedTeacher = teachersList.find((teacher) => teacher.id === e.value);
 
-        
         if(selectedTeacher){
             setTeacher(selectedTeacher);
-
-            console.log(`El profesor seleccionado es: ${e.value}<->${e.label}`);
         }
     }
 
     const handleSelectShiftChange = (value) => {
         const shift = shiftsList.find((shift) => shift.id === value);
-
-        console.log("shift", shift);
         setShift(shift);
     };
 

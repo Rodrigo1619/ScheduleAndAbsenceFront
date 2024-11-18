@@ -23,10 +23,8 @@ const SubjectPage = () => {
         try {
             const data = await subjectService.getAllSubjects(token);
             setSubjects(data);
-            console.log(data);
         }
         catch (error) {
-            console.log("Hubo un error al obtener los codigos" + error);
         }
     }
 

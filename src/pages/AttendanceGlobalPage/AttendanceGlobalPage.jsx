@@ -35,7 +35,6 @@ const AttendanceGlobalPage = () => {
                 setClassroomGrade(classroom.grade.name);
                 setShiftName(classroom.grade.shift.name);
             } catch (error) {
-                console.error("Error fetching classrooms:", error);
             }
         };
 
@@ -51,7 +50,6 @@ const AttendanceGlobalPage = () => {
                 setTableData(students);
                 setNoContent(false);
             } catch (error) {
-                console.error("Error fetching absent students:", error);
             }
         };
 

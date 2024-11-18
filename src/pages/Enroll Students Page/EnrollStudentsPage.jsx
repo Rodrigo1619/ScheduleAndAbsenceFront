@@ -45,7 +45,6 @@ const EnrollStudentsPage = () => {
     const fetchEnrolledStudents = async () => {
         try {
             const data = await classroomService.getEnrollmentsByClassroom(token, classroom.id);
-            console.log("Data: ", data);
             setStudents(data.map((student) => ({
                 id: student.student.id,
                 enrolledId: student.id,
@@ -59,7 +58,6 @@ const EnrollStudentsPage = () => {
             })));
 
         } catch (error) {
-            console.log(`Hubo un error al obtener los estudiantes matriculados: ${error}`);
         }
     };
 
@@ -67,15 +65,6 @@ const EnrollStudentsPage = () => {
         document.title = "Sistema de Control de Asistencia - Escuela Masferrer";
 
     }, []);
-
-    useEffect(() => {
-        console.log("Selected students: ", selectedStudents);
-    }, [selectedStudents]);
-
-    useEffect(() => {
-        console.log("Classroom: ", classroom);
-    }, [classroom]);
-
 
     const handleEditList = () => {
         setButtonText("Editar");

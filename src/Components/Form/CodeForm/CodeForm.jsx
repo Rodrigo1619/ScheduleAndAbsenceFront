@@ -41,7 +41,6 @@ const CodeForm = ({code, editStatus, onSuccess}) => {
             }
             }
             catch (error) {
-            console.log(error);
             }
         } else {
             try {
@@ -60,7 +59,6 @@ const CodeForm = ({code, editStatus, onSuccess}) => {
             }
             }
             catch (error) {
-                console.log(`Hubo un error al crear el codigo: ${error}`);
             }
         }
     }

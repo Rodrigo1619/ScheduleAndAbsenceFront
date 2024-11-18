@@ -33,7 +33,6 @@ const SelectClassroomScheduleForm = () => {
                     setShiftsList(shifts || []);
 
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };
@@ -48,7 +47,6 @@ const SelectClassroomScheduleForm = () => {
                     const classrooms = await classroomService.getClassroomsByShiftAndYear(token, shift.id, year);
                     setClassroomsList(classrooms || []);
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };

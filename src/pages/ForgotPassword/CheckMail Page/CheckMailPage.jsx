@@ -67,8 +67,6 @@ const CheckMail = () => {
             const response = await userService.verifyCode(username, verificationCode);
 
             if (response) {
-
-                console.log("Se valido el codigo correctamente! ", response);
                 
                 toast.success('Código verificado', {
                     duration: 2000,

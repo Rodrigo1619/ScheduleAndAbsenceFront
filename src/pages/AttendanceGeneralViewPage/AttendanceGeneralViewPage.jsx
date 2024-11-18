@@ -34,7 +34,6 @@ const AttendanceGeneralViewPage = () => {
                     const shifts = await shiftService.getAllShifts(token);
                     setShiftsList(shifts || []);
                 } catch (error) {
-                    console.error("Error fetching shifts:", error);
                     setShiftsList([]);
                 }
             }
@@ -110,8 +109,6 @@ const AttendanceGeneralViewPage = () => {
             const encodedClassroomId = encodeURIComponent(classroomId);
             const encodedShiftId = encodeURIComponent(shiftId);
             window.location.href = `/AttendanceVerificationView?id_classroom=${encodedClassroomId}&id_shift=${encodedShiftId}`;
-        } else {
-            console.log("Salón no seleccionado");
         }
     };
 
@@ -125,8 +122,6 @@ const AttendanceGeneralViewPage = () => {
             const encodedShiftId = encodeURIComponent(shiftId);
             const encodedYear = encodeURIComponent(year);
             window.location.href = `/AttendanceGlobalView?id_classroom=${encodedClassroomId}&id_shift=${encodedShiftId}&year=${encodedYear}`;
-        } else {
-            console.log("Salón no seleccionado");
         }
     };
 

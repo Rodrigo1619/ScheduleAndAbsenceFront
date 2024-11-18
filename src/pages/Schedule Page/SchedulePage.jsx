@@ -24,9 +24,7 @@ const SchedulePage = () => {
         try {
             const data = await scheduleService.getSchedules(token);
             setSchedules(data);
-            console.log(data);
         } catch (error) {
-            console.log("Hubo un error al obtener los horarios" + error);
         }
     };
 

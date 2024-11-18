@@ -69,9 +69,7 @@ const StudentPage = () => {
         try {
             const data = await studentService.getStudents(token);
             setStudents(data);
-            console.log(data);
         } catch (error) {
-            console.log("Hubo un error al obtener los estudiantes" + error);
         }
     };
 

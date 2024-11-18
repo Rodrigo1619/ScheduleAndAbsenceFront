@@ -47,7 +47,6 @@ const TeacherList = ({teachers  = [], fetchTeachers}) => {
         if (isSelected) {
             // Si la fila ya está seleccionada, la removemos
             setSelectedRows(selectedRows.filter(selected => selected.id !== row.id));
-            console.log(selectedRows);
         } else {
             // Si la fila no está seleccionada, la agregamos
             setSelectedRows([...selectedRows, row]);
@@ -114,7 +113,6 @@ const TeacherList = ({teachers  = [], fetchTeachers}) => {
                 fetchTeachers();
             }
         } catch (error) {
-            console.log(`Hubo un error al eliminar el profesor: ${error}`);
         }
     }
 
@@ -132,7 +130,6 @@ const TeacherList = ({teachers  = [], fetchTeachers}) => {
                 fetchTeachers();
             }
         } catch (error) {
-            console.log(`Hubo un error al cambiar el estado del profesor: ${error}`);
         }
     };
 

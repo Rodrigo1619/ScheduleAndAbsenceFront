@@ -18,11 +18,9 @@ const CodePage = () => {
         {   
             const data = await codeService.getAllCodes(token);
             setCodes(data);
-            console.log(data);
         }
         catch (error) 
         {
-            console.log("Hubo un error al obtener los codigos" + error);
         }
     }
 

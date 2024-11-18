@@ -36,26 +36,21 @@ const AddScheduleForm = () => {
                     setShiftsList(shifts || []);
 
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };
 
         fetchData();
-        console.log(classroomsList);
     }, [token]);
 
     useEffect(() => {
         const fetchTeachers = async () => {
-            console.log("Fetching teachers");
-            console.log("Subject: ", subject);
             if (token && subject) {
                 try {
                     const teachers = await userService.getUsersBySubjectId(token, subject.id);
                     setTeachersList(teachers || []);
 
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };
@@ -70,7 +65,6 @@ const AddScheduleForm = () => {
                     const classrooms = await classroomService.getClassroomsByShiftAndYear(token, shift.id, year);
                     setClassroomsList(classrooms || []);
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };
@@ -88,7 +82,6 @@ const AddScheduleForm = () => {
                     const classrooms = await classroomService.getClassroomsByShiftAndYear(token, shift.id, year);
                     setClassroomsList(classrooms || []);
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };
@@ -105,7 +98,6 @@ const AddScheduleForm = () => {
                     const classrooms = await classroomService.getClassroomsByShiftAndYear(token, shift.id, year);
                     setClassroomsList(classrooms || []);
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };

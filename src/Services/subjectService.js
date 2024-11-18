@@ -12,12 +12,10 @@ export const subjectService = {
 
             const data = await response.json();
 
-            console.log("Dentro de la peticion: " + data);
-
             return data;
 
         } catch (error) {
-            console.log(error);
+            throw error;
         }
     },
     deleteSubject: async (id, token) => {
@@ -33,7 +31,7 @@ export const subjectService = {
             return response.text();
     
         } catch (error) {
-            console.log(`Hubo un error al eliminar el código: ${error}`);
+            throw error;
         }
         
     },
@@ -58,7 +56,6 @@ export const subjectService = {
             return response.text();
     
         } catch (error) {
-            console.log(`Hubo un error al crear el código: ${error}`);
             throw error; 
         }
         
@@ -83,8 +80,7 @@ export const subjectService = {
             return response.text();
             
         } catch (error) {
-            console.log(`Hubo un error al actualizar el código: ${error}`);
-            throw error; // Esto permite que los componentes que llaman a esta función capturen y manejen el error
+            throw error; 
         }
     },
 
@@ -99,12 +95,10 @@ export const subjectService = {
 
             const data = await response.json();
 
-            console.log("Dentro de la peticion: " + data);
-
             return data;
 
         } catch (error) {
-            console.log(error);
+            throw error;
         }
     },
 
@@ -128,7 +122,6 @@ export const subjectService = {
     
             return data;
         } catch (error) {
-            console.log("Hubo un error obteniendo las materias", error);
             throw error;
         }
     }

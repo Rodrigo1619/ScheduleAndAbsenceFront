@@ -53,7 +53,6 @@ const ScheduleeForm = ({schedule, editStatus, onSuccess}) => {
                 }
             }
             catch (error) {
-                console.log(error);
                 toast.error('Revise que los datos sean correctos', { 
                     duration: 2000,
                     icon: <XCircleIcon style={{color: "red"}} />,
@@ -80,7 +79,6 @@ const ScheduleeForm = ({schedule, editStatus, onSuccess}) => {
                 }
             }
             catch (error) {
-                console.log(error);
                 toast.error('Revise que los datos sean correctos', { 
                     duration: 2000,
                     icon: <XCircleIcon style={{color: "red"}} />,

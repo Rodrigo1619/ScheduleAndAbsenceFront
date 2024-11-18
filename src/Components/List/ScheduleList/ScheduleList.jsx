@@ -28,7 +28,6 @@ const ScheduleList = ({ schedules = [], fetchSchedules }) => {
                 const data = await scheduleService.getAllSchedule(token);
                 setProSchedules(data);
             } catch (error) {
-                console.error('Error fetching schedules:', error);
             }
         };
 
@@ -96,7 +95,6 @@ const ScheduleList = ({ schedules = [], fetchSchedules }) => {
             }
         }
         catch (error) {
-            console.log(`Hubo un error al eliminar el horario: ${error}`);
         }
     };
 

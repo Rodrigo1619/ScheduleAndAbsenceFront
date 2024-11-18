@@ -34,7 +34,6 @@ const AddHourConfigurationNewForm = () => {
                     setTeachersList(teachers.filter(teacher => teacher.role.name === "Profesor") || []);
                     setShiftsList(shifts || []);
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };
@@ -49,7 +48,6 @@ const AddHourConfigurationNewForm = () => {
                     const classrooms = await classroomService.getClassroomsByShiftAndYear(token, shift.id, year);
                     setClassroomsList(classrooms || []);
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };
@@ -62,7 +60,6 @@ const AddHourConfigurationNewForm = () => {
         if (selectedClassroom && !selectedClassrooms.some(c => c.id === selectedClassroom.id)) {
             setSelectedClassrooms([...selectedClassrooms, selectedClassroom]);
         }
-        console.log("selectedClassrooms", selectedClassrooms);
     };
 
     const handleRemoveClassroom = (id) => {

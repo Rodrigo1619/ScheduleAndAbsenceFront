@@ -20,8 +20,6 @@ export const UserProvider = (props) => {
                 if(email && role && name) {
                     setUser({ email, role, name });
                     setTokenAll(lsToken);
-                    console.log(`Rol del Correo ${email} - ${role.name}`);
-                    console.log(`Rol del Usuario ${name} - ${role.name}`);
                 }
                 setTokenVerified(true);
             }
@@ -54,7 +52,6 @@ export const UserProvider = (props) => {
 
                 return status;
             } catch (error) {
-                console.error("En el try catch del context", error);
                 throw error;
             } 
         };
@@ -73,8 +70,6 @@ export const UserProvider = (props) => {
                 }
             
             } catch (error) {
-                console.error(error);
-                console.error("Error in login");
             } finally {
             
                 return status;

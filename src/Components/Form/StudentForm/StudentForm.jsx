@@ -70,7 +70,6 @@ const StudentForm = ({student, editStatus, onSuccess}) => {
                 }
             }
             catch (error) {
-                console.log(error);
                 toast.error('Error al actualizar, posible duplicado de datos', { 
                     duration: 2000,
                     icon: <XCircleIcon style={{color: "red"}} />,
@@ -94,7 +93,6 @@ const StudentForm = ({student, editStatus, onSuccess}) => {
                 }
             }
             catch (error) {
-                console.log(error);
                 toast.error('Error al registrar estudiante', { 
                     duration: 2000,
                     icon: <XCircleIcon style={{color: "red"}} />,

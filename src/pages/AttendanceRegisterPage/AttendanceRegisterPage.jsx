@@ -100,7 +100,6 @@ const AttendanceRegisterViewPage = () => {
                         const shifts = await shiftService.getAllShifts(token);
                         setShiftsList(shifts || []);
                     } catch (error) {
-                        console.error("Error fetching shifts:", error);
                         setShiftsList([]);
                     }
                 }
@@ -115,8 +114,6 @@ const AttendanceRegisterViewPage = () => {
     }, [shiftsList, user]);
 
     useEffect(() => {
-        console.log("Usuario: ", user);
-
         const year = new Date().getFullYear();
 
         if(user?.role.name === "Asistencia"){
@@ -128,7 +125,6 @@ const AttendanceRegisterViewPage = () => {
                     const data = await classroomService.getClassStudentsByNieAndYear(token, nie, year);
 
                     if(data.students.length === 0){
-                        console.log("No hay estudiantes en el salon");
                         return;
                     }
 
@@ -138,13 +134,10 @@ const AttendanceRegisterViewPage = () => {
                             absent: "No",
                         }
                     });
-    
-                    console.log("Formated Data: ", formatedData);
-    
+        
                     setStudentList(formatedData);
                     setClassroom(data.classroom);
                 } catch (error) {
-                    console.log(`Hubo un error al obtener la lista de estudiantes: ${error}`);
                 }
             };
 
@@ -152,13 +145,11 @@ const AttendanceRegisterViewPage = () => {
         };
 
         if (user?.role.name === "Profesor"){
-            console.log(selectedShift);
             if(selectedShift){
                 const fetchClassrooms = async () => {
                     try {
                         const data = await classroomService.getClassroomsByUserYearAndShift(token, year, selectedShift);
     
-                        console.log("Data: ", data);
                         setClassroomsList(data);
                         setClassroom(data[0]);
                         setSelectedClassroom(data[0].id);
@@ -172,7 +163,6 @@ const AttendanceRegisterViewPage = () => {
                         setClassroom(null);
                         setClassroomsList([]);
                         setStudentList([]);
-                        console.log(`Hubo un error al obtener los datos del salon: ${error}`);
                     }
                 };
 
@@ -193,8 +183,6 @@ const AttendanceRegisterViewPage = () => {
                 try {
                     const data = await classroomService.getClassStudentsByClassroomID(token, classroom.id);
     
-                    console.log("Data student list: ", data);
-
                     if(data.length === 0){
                         setStudentList([]);
                         return;
@@ -206,13 +194,10 @@ const AttendanceRegisterViewPage = () => {
                             absent: "No",
                         }
                     });
-    
-                    console.log("Formated Data: ", formatedData);
-    
+        
                     setStudentList(formatedData);
     
                 } catch (error) {
-                    console.log(`Hubo un error al obtener la lista de estudiantes: ${error}`);
                 }
             };
     
@@ -254,8 +239,6 @@ const AttendanceRegisterViewPage = () => {
             absentStudents: absentStudents.map(student => ({id_student: student.id}))
         };
 
-        console.log("Registro de inasistencia: ", absenceRecordJSON); 
-
         const loadingToast = toast('Cargando...', {
             icon: <AiOutlineLoading className="animate-spin" />,
         });
@@ -275,8 +258,6 @@ const AttendanceRegisterViewPage = () => {
             }
 
         } catch (error) {
-            console.log(`Hubo un error al registrar la inasistencia: ${error}`);
-
             if (error.message === "Absence record already exists") {
                 toast.error('Error, asistencia ya registrada', {
                     duration: 2000,

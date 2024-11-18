@@ -44,7 +44,6 @@ export const classroomService = {
     
             return data
         } catch (error) {
-            console.log(`Hubo un error al obtener el salon: ${error}`);
             throw error;
         }
     },
@@ -67,7 +66,6 @@ export const classroomService = {
     
             return data
         } catch (error) {
-            console.log(`Hubo un error al obtener los salones: ${error}`);
             throw error;
         }
     },
@@ -190,7 +188,7 @@ export const classroomService = {
             return response.text();
 
         } catch (error) {
-            console.log(`Hubo un error al eliminar el estudiante: ${error}`);
+            throw error;
         }
         
     },
@@ -218,7 +216,6 @@ export const classroomService = {
             return response.text();
 
         } catch (error) {
-            console.log(`Hubo un error al crear el salon: ${error}`);
             throw error;
         }
         
@@ -246,8 +243,7 @@ export const classroomService = {
             return response.text();
             
         } catch (error) {
-            console.log(`Hubo un error al actualizar el estudiante: ${error}`);
-            throw error; // Esto permite que los componentes que llaman a esta función capturen y manejen el error
+            throw error;
         }
     },
 
@@ -269,7 +265,6 @@ export const classroomService = {
             const data = await response.json();
             return data;
         } catch (error) {
-            console.log(`Error getting classrooms: ${error}`);
             throw error;
         }
     },
@@ -291,7 +286,6 @@ export const classroomService = {
             const data = await response.json();
             return data;
         } catch (error) {
-            console.log(`Error getting classrooms: ${error}`);
             throw error;
         }
     },
@@ -336,7 +330,6 @@ export const classroomService = {
     
             return data
         } catch (error) {
-            console.log(`Hubo un error al agregar estudiantes: ${error}`);
             throw error;
         }
     },
@@ -387,7 +380,6 @@ export const classroomService = {
     
             return data
         } catch (error) {
-            console.log(`Hubo un error al editar la matrícula: ${error}`);
             throw error;
         }
     },

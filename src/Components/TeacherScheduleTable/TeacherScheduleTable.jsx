@@ -48,7 +48,6 @@ const TeacherScheduleTable = ({ shiftList, year, updateShift }) => {
                 const response = await weekdayService.getWeekdays(token);
                 setWeekdays(response);
             } catch (error) {
-                console.log("Error fetching weekdays: ", error);
             }
         };
 
@@ -57,7 +56,6 @@ const TeacherScheduleTable = ({ shiftList, year, updateShift }) => {
                 const response = await gradeService.getAllGrades(token);
                 setGrades(response);
             } catch (error) {
-                console.log("Error fetching grades: ", error);
             }
         };
         fetchWeekdays();
@@ -159,20 +157,15 @@ const TeacherScheduleTable = ({ shiftList, year, updateShift }) => {
         };
 
         const getTeacherSchedule = async () => {
-            console.log("token: ", token);
-            console.log("shiftselected: ", shiftSelected);
-            console.log("year: ", year);
             try {
                 if (!shiftSelected) {
                     return;
                 }
                 const response = await scheduleService.getScheduleByTokenShiftYear(token, shiftSelected.id, year);
-                console.log("Response: ", response);
                 if (response && Array.isArray(response)){
                     
                     // Toma los schedules que corresponden al shift y año seleccionado, necesito mapear ya que vienen varios dentro del objeto
                     const teacherSchedule = response
-                    console.log("teacherSchedule: ", teacherSchedule);
                     updateSchedule(teacherSchedule, initialSchedule);
                 } else if (response === null) {
                     notification.info({ message: "No se puede obtener el horario. No tiene ninguna clase asignada en el turno: " + shiftSelected.name });
@@ -190,11 +183,8 @@ const TeacherScheduleTable = ({ shiftList, year, updateShift }) => {
                 if (entry && entry.schedules) {
                     entry.schedules.forEach(schedule => {
                         const day = schedule.weekday.day; // "Lunes", "Martes", etc.
-                        console.log("Day: ", day);
                         const timeSlot = schedule.classroomConfiguration.classPeriod.name; // "1° hora", "2° hora", etc.
-                        console.log("Time slot: ", timeSlot);
                         const slotIndex = scheduleMapping[timeSlot];
-                        console.log("Slot index: ", slotIndex);
                         if (slotIndex !== undefined) {
                             initialSchedule[slotIndex][day] = {
                                 ...initialSchedule[slotIndex][day],
@@ -211,10 +201,8 @@ const TeacherScheduleTable = ({ shiftList, year, updateShift }) => {
                         }
                     });
                 } else {
-                    console.error("Invalid entry structure: ", entry);
                 }
             });
-            console.log("Initial schedule: ", initialSchedule);
             setSchedule([...initialSchedule]);
         };
 

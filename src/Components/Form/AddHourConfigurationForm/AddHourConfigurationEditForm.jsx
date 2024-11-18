@@ -36,13 +36,11 @@ const AddHourConfigurationEditForm = () => {
                     setShiftsList(shifts || []);
 
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };
 
         fetchData();
-        console.log(classroomsList);
     }, [token]);
 
     useEffect(() => {
@@ -53,7 +51,6 @@ const AddHourConfigurationEditForm = () => {
                     const subjects = await subjectService.getSubjectByUserId(teacher.id, token);
                     setSubjectsList(subjects || []);
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };
@@ -70,7 +67,6 @@ const AddHourConfigurationEditForm = () => {
                     const classrooms = await classroomService.getClassroomsByShiftAndYear(token, shift.id, year);
                     setClassroomsList(classrooms || []);
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };
@@ -88,7 +84,6 @@ const AddHourConfigurationEditForm = () => {
                     const classrooms = await classroomService.getClassroomsByShiftAndYear(token, shift.id, year);
                     setClassroomsList(classrooms || []);
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };
@@ -105,7 +100,6 @@ const AddHourConfigurationEditForm = () => {
                     const classrooms = await classroomService.getClassroomsByShiftAndYear(token, shift.id, year);
                     setClassroomsList(classrooms || []);
                 } catch (error) {
-                    console.log("Error fetching data: ", error);
                 }
             }
         };
@@ -126,13 +120,11 @@ const AddHourConfigurationEditForm = () => {
     const handleSelectClassroomChange = (e) => {
         const classroom = classroomsList.find(classroom => classroom.id === e.value);
         setClassroom(classroom);
-        console.log("classroom", classroom);
     }
 
     const handleSelectShiftChange = (value) => {
         const shift = shiftsList.find(shift => shift.id === value);
         setShift(shift);
-        console.log("shift", shift.name);
     }
 
     return (

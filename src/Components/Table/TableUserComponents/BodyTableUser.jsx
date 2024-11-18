@@ -17,7 +17,6 @@ const BodyTableUser = ({ TABLE_HEAD, USERS,
     editStatus = true, 
     enroll = false, 
     populate = false }) => {
-    console.log("en la tabla", USERS);
     const tableHead = populate ? TABLE_HEAD.slice(1) : (enroll ? ["", ...TABLE_HEAD.slice(2)] : TABLE_HEAD);
     return (
         <CardBody className={`${styles["table-container"]} px-0 py-1 overflow-scroll`}>

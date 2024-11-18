@@ -72,7 +72,6 @@ const TableVerificationComponent = ({
                 const data = await codeService.getAllCodes(token);
                 setCodeList(data);
             } catch (error) {
-                console.log("Hubo un error al obtener los códigos" + error);
             }
         };
 
@@ -257,20 +256,15 @@ const TableVerificationComponent = ({
 
     const handleSelectCodeChange = (index, e) => {
 
-        console.log("Codigo elegido: ", e.value)
-
         const newCode = codeList.find(code => code.id === e.value);
 
         const updatedData = [...filteredData];
-
-        console.log("Codigo actual: ", updatedData[index].code);
 
         const globalIndex = (currentPage - 1) * rowsPerPage + index;
 
         updatedData[globalIndex].code = newCode;
         setFilteredData(updatedData);
 
-        console.log("Codigo nuevo: ", updatedData[index].code);
     };
 
     const handleObservationChange = (index, newObservation) => {
@@ -297,11 +291,8 @@ const TableVerificationComponent = ({
             }
         });
         
-        console.log("Estudiantes formateados: ", formatedAbsentStudents);
-
         const updatedData = absenceRecordDetails;
         updatedData.absentStudents = formatedAbsentStudents;
-        console.log("Datos actualizados: ", updatedData);
 
         const absenceRecordJSON = {
             id: updatedData.id,
@@ -311,8 +302,6 @@ const TableVerificationComponent = ({
             absentStudents: formatedAbsentStudents ? formatedAbsentStudents : [],
             deleteAbsentStudents: deleteAbsentStudentsList ? deleteAbsentStudentsList : [],
         }
-
-        console.log("Datos a enviar: ", absenceRecordJSON);
 
         try {
             const response = await absenceRecordService.editAbsenceRecord(token, absenceRecordJSON);
@@ -325,7 +314,6 @@ const TableVerificationComponent = ({
             }
 
         } catch (error) {
-            console.log("Hubo un error al guardar los cambios: ", error);
             toast.error('Ocurrio un error', {
                 duration: 2000,
                 icon: <XCircleIcon style={{color: "red"}} />,

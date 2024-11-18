@@ -50,7 +50,7 @@ export const studentService = {
             return response.text();
 
         } catch (error) {
-            console.log(`Hubo un error al eliminar el estudiante: ${error}`);
+            throw error;
         }
         
     },
@@ -103,7 +103,6 @@ export const studentService = {
             return response.text();
             
         } catch (error) {
-            console.log(`Hubo un error al actualizar el estudiante: ${error}`);
             throw error; // Esto permite que los componentes que llaman a esta función capturen y manejen el error
         }
     },

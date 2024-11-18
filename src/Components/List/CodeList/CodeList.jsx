@@ -120,7 +120,6 @@ const CodeList = ({ codes = [], fetchCodes }) => {
             }
         }
         catch (error) {
-            console.log(`Hubo un error al eliminar el código: ${error}`);
         }
     };
 

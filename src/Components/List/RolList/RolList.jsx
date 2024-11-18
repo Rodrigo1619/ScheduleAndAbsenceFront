@@ -102,7 +102,6 @@ const RolList = ({roles = []}) => {
             }
         }
         catch (error) {
-            console.log(`Hubo un error al eliminar el estudiante: ${error}`);
         }
     }
 

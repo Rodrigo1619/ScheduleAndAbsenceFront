@@ -16,7 +16,7 @@ let passwordRegex = {
     lowercase: /^(?=.*[a-z]).*$/,
     uppercase: /^(?=.*[A-Z]).*$/,
     number: /^(?=.*[0-9]).*$/,
-    special: /^(?=.*[@#$%\^&+=!\-+*;:\'\/?¡¿_]).*$/,
+    special: /^(?=.*[@#$%\^&+=!{}.,<>\-+*;:\'\/?¡¿_]).*$/,
 }
 
 const TeacherForm = ({ teacher, editStatus, onSuccess }) => {
@@ -53,8 +53,6 @@ const TeacherForm = ({ teacher, editStatus, onSuccess }) => {
             setVerificationMail(teacher.verifiedEmail);
         }
 
-        console.log(teacher)
-
         return () => {
             selectedRoleRef.current = null;
         };
@@ -78,7 +76,6 @@ const TeacherForm = ({ teacher, editStatus, onSuccess }) => {
         selectedRoleRef.current = selectedRole;
         setRole(selectedRole);
 
-        console.log("El rol seleccionado cambio a: " + selectedRoleRef.current.name);
     };
 
     const handleVerificationMailChange = (e) => {
@@ -169,7 +166,6 @@ const TeacherForm = ({ teacher, editStatus, onSuccess }) => {
                     });
                 }
             } catch (error) {
-                console.log(error);
                 toast.error('Revise que los datos sean correctos', { 
                     duration: 2000,
                     icon: <XCircleIcon style={{color: "red"}} />,

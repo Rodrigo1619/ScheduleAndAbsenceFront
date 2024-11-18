@@ -22,11 +22,15 @@ const UserxSubjectList = ({ userxSubjects, fetchData }) => {
     const [openDelete, setOpenDelete] = useState(false);
 
     useEffect(() => {
-        setSelectedRows([]);
-    }, [currentPage, rowsPerPage, searchTerm]);
+        setCurrentPage(1);
+    }, [searchTerm]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm]);
 
     const filteredUserxSubjects = userxSubjects.filter((userxsubject) =>
-        userxsubject.user?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        userxsubject.teacher?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         userxsubject.subject?.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -107,7 +111,6 @@ const UserxSubjectList = ({ userxSubjects, fetchData }) => {
                 placement: 'top',
                 duration: 2,
             });
-            console.error(`Hubo un error al eliminar la asignación de materia a profesor: ${error}`);
         }
     };
 
@@ -118,13 +121,13 @@ const UserxSubjectList = ({ userxSubjects, fetchData }) => {
                 searchTerm={searchTerm} 
                 setSearchTerm={setSearchTerm} 
                 handleDelete={handleCloseDeleteDialog}
-                isDownload={true}
                 selectedRows={selectedRows}
-                setSelectedRows={setSelectedRows}
                 tableHeaders={TABLE_HEAD}
                 tableKeys={TABLE_KEYS}
+                isDownload={true}
                 handleSelectAllChange={handleSelectAllChange}
                 allRows={visibleUserxSubjects}
+                setSelectedRows={setSelectedRows}
                 AllData={filteredUserxSubjects}
             />
             <UserTable 
@@ -159,7 +162,7 @@ const UserxSubjectList = ({ userxSubjects, fetchData }) => {
             <Dialog open={openDelete} handler={setOpenDelete}>
                 <DialogHeader> Eliminar Asignación </DialogHeader>
                 <DialogBody> 
-                    ¿Estás seguro que deseas eliminar la asignación de {selectedUserxSubject?.user.name} a la materia {selectedUserxSubject?.subject.name}? 
+                    ¿Estás seguro que deseas eliminar la asignación de <b>{selectedUserxSubject?.teacher.name}</b> a la materia <b>{selectedUserxSubject?.subject.name}</b>? 
                 </DialogBody>
                 <DialogFooter>
                     <Button color="green" className='m-4' onClick={handleDeleteUserxSubjects}> Eliminar </Button>

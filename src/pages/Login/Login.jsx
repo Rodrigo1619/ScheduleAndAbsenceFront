@@ -30,8 +30,6 @@ const Login = () => {
 
     const handleNavigate = (role) => {
 
-        console.log("Cambiando de página...")
-
         switch (role) {
             case "Administrador":
                 navigate('/AdminPage');
@@ -97,7 +95,6 @@ const Login = () => {
             };
 
         } catch (error) {
-            console.log("Error al iniciar sesión: ", error);
             setLoginAttempt(true);
 
             if(error.message == 403){

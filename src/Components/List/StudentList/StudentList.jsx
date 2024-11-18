@@ -33,6 +33,10 @@ const StudentList = ({ students = [], classroom = false, fetchStudents }) => {
         active: student.active,
     })) : [];
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm]);
+
     // Filtra las filas según el término de búsqueda
     const filteredStudents = STUDENTS.filter((student) =>
         student.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -73,10 +77,6 @@ const StudentList = ({ students = [], classroom = false, fetchStudents }) => {
             setSelectedRows(visibleStudents);
         }
     };
-
-    useEffect(() => {
-        setSelectedRows([]);
-    }, [currentPage, rowsPerPage, searchTerm]);
 
     const handleOpenDialog = () => {
         setOpen(true);
@@ -135,13 +135,11 @@ const StudentList = ({ students = [], classroom = false, fetchStudents }) => {
             }
         }
         catch (error) {
-            console.log(`Hubo un error al eliminar el estudiante: ${error}`);
         }
     }
 
     const handleChangeStatus = async () => {
         try {
-            console.log("Cambiando estado...");
             const data = await studentService.toggleStatus(token, selectedStudent.id);
 
             if (data) {
@@ -156,7 +154,6 @@ const StudentList = ({ students = [], classroom = false, fetchStudents }) => {
                 fetchStudents();
             }
         } catch (error) {
-            console.log(`Hubo un error al cambiar el estado del alumno: ${error}`);
         }
     };
 

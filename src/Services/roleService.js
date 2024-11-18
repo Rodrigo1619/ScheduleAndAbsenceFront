@@ -15,7 +15,7 @@ export const roleService = {
             return data;
 
         } catch (error) {
-            console.log(error);
+            throw error;
         }
     },
     getAllPaginated: async (token, size, page) => {

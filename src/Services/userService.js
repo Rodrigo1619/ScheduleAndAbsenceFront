@@ -46,7 +46,6 @@ export const userService = {
             return data
 
         } catch (error) {
-            console.log("Error al verificar el token: ", error);
             throw error;
         }
     },
@@ -65,7 +64,7 @@ export const userService = {
             return data
 
         } catch (error) {
-            console.log(error);
+            throw error;
         }
     },
     getAllPaginated: async (token, size, page) => {
@@ -88,7 +87,6 @@ export const userService = {
     },
     createTeacher: async (token, teacher ) => {
         try {
-            console.log("Info a almacenar: ", teacher);
             const response = await fetch(`${BASE_URL}/auth/signup`,
                 {
                     method: 'POST',
@@ -141,7 +139,6 @@ export const userService = {
             return response.text();
 
         } catch (error) {
-            console.log(`Hubo un error al actualizar al profesor: ${error}`);
             throw error;
         }
     },
@@ -162,7 +159,6 @@ export const userService = {
             return response.text();
 
         } catch (error) {
-            console.log(`Hubo un error al eliminar al profesor: ${error}`);
             throw error;
         }
     },

@@ -81,10 +81,8 @@ const DBDashboard = () => {
         try {
             const data = await userService.getAllPaginated(token, 5, 0);
             setTeachers(data.content);
-            console.log(data);
         }
         catch (error) {
-            console.log("Hubo un error al obtener los profesores" + error);
         }
     }
 
@@ -94,7 +92,6 @@ const DBDashboard = () => {
             setStudents(data.content);
         }
         catch (error) {
-            console.log("Hubo un error al obtener los estudiantes" + error);
         }
     }
 
@@ -112,11 +109,9 @@ const DBDashboard = () => {
                 }
             });
 
-            console.log("salones: ", formattedData);
             setClassrooms(formattedData);
         }
         catch (error) {
-            console.log("Hubo un error al obtener los salones de clase" + error);
         }
     }
 
@@ -133,7 +128,6 @@ const DBDashboard = () => {
             setGrades(formattedData);
         }
         catch (error) {
-            console.log("Hubo un error al obtener los grados " + error);
         }
 
     }
@@ -144,7 +138,6 @@ const DBDashboard = () => {
             setSubjects(data.content);
         }
         catch (error) {
-            console.log("Hubo un error al obtener las materias" + error);
         }
     };
 
@@ -154,7 +147,6 @@ const DBDashboard = () => {
             setUserxSubjects(data.content);
         }
         catch (error) {
-            console.log("Hubo un error al obtener las asignaciones de profesor a materia" + error);
         }
     };
 

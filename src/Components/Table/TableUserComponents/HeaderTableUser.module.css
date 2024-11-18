@@ -1,5 +1,5 @@
 .userHeaderContainer {
-  @apply flex items-center justify-between gap-1
+  @apply flex items-center justify-between gap-1 py-1
   Mobile-390*844:flex-col Mobile-390*844:gap-1 Mobile-390*844:items-start
   Mobile-280:flex-col Mobile-280:gap-1 Mobile-280:items-start;
 }

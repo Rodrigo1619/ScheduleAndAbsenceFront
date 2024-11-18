@@ -84,7 +84,6 @@ const HeaderTableUser = ({
             saveAs(new Blob([buffer], { type: "application/octet-stream" }), `${title}.xlsx`);
             handleCloseDialog();
         } else {
-            console.error("No rows selected, headers are empty, or keys are missing.");
         }
     };
 
@@ -137,7 +136,6 @@ const HeaderTableUser = ({
             saveAs(blob, `${title}.csv`);
             handleCloseDialog();
         } else {
-            console.error("No rows selected, headers are empty, or keys are missing.");
         }
     };
 

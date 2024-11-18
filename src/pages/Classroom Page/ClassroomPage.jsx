@@ -28,10 +28,8 @@ const ClassroomPage = () => {
         try {
             const data = await classroomService.getAllClassrooms(token);
             setClassrooms(data);
-            console.log(data);
         }
         catch (error) {
-            console.log("Hubo un error al obtener los salones de clase");
         }
     }
 

@@ -39,7 +39,6 @@ const GradePage = () => {
 
             setGrades(formattedData);
         } catch (error) {
-            console.log("Hubo un error al obtener las aulas" + error);
             setGrades([]);
         }
     }

@@ -55,13 +55,11 @@ export const scheduleService = {
             return response.text();
             
         } catch (error) {
-            console.log(`Hubo un error al eliminar el horario: ${error}`);
             throw error;
         }
     },
 
     createSchedule: async (token, schedules) => {
-        console.log(schedules)
         try {
             const response = await fetch(`${BASE_URL}/schedule/`, {
                 method: 'POST',
@@ -107,7 +105,6 @@ export const scheduleService = {
             return response.text();
             
         } catch (error) {
-            console.log(`Hubo un error al actualizar el horario: ${error}`);
             throw error;
         }
     },

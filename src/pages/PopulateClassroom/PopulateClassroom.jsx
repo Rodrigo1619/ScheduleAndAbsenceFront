@@ -52,21 +52,11 @@ const PopulateClassroom = () => {
         }, 1500);
     }, []);
 
-    useEffect(() => {
-        console.log("Selected students: ", selectedStudents);
-    }, [selectedStudents]);
-
-    useEffect(() => {
-        console.log("Classroom: ", classroom);
-    }, [classroom]);
-
     const fetchStudents = async () => {
         try {
             const data = await studentService.getStudentNew(token);
             setStudents(data);
-            console.log(data);
         } catch (error) {
-            console.log("Hubo un error al obtener los estudiantes" + error);
             setStudents([]);
         }
     };

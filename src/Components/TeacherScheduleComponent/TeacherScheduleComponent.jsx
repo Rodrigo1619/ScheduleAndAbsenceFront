@@ -45,7 +45,6 @@ const TeacherScheduleComponent = ({ teacher, shift, year}) => {
                 const response = await weekdayService.getWeekdays(token);
                 setWeekdays(response);
             } catch (error) {
-                console.log("Error fetching weekdays: ", error);
             }
         };
 
@@ -54,7 +53,6 @@ const TeacherScheduleComponent = ({ teacher, shift, year}) => {
                 const response = await gradeService.getAllGrades(token);
                 setGrades(response);
             } catch (error) {
-                console.log("Error fetching grades: ", error);
             }
         };
         fetchWeekdays();
@@ -63,7 +61,6 @@ const TeacherScheduleComponent = ({ teacher, shift, year}) => {
 
     useEffect(() => {
         if (token && shift && year) {
-            console.log("Initializing schedule...", teacher);
             initializeSchedule(token, shift, year, teacher);
         }
     }, [shift, year, token, teacher]);
@@ -147,20 +144,15 @@ const TeacherScheduleComponent = ({ teacher, shift, year}) => {
         };
 
         const getTeacherSchedule = async (teacher) => {
-            console.log("token: ", token);
-            console.log("shiftselected: ", shift);
-            console.log("year: ", year);
             try {
                 if (!shift) {
                     return;
                 }
                 const response = await scheduleService.getScheduleByUserIdShiftYear(token, teacher.id, shift.id, year);
-                console.log("Response: ", response);
                 if (response && Array.isArray(response)){
                     
                     // Toma los schedules que corresponden al shift y año seleccionado, necesito mapear ya que vienen varios dentro del objeto
                     const teacherSchedule = response
-                    console.log("teacherSchedule: ", teacherSchedule);
                     updateSchedule(teacherSchedule, initialSchedule);
                     setScheduleEmpty(false);
 
@@ -170,7 +162,6 @@ const TeacherScheduleComponent = ({ teacher, shift, year}) => {
                     setScheduleEmpty(true);
                 }
             } catch (error) {
-                console.log(error)
                 notification.error({ message: "Error al obtener el horario del profesor" });
                 setScheduleEmpty(true);
             }
@@ -182,11 +173,8 @@ const TeacherScheduleComponent = ({ teacher, shift, year}) => {
                 if (entry && entry.schedules) {
                     entry.schedules.forEach(schedule => {
                         const day = schedule.weekday.day; // "Lunes", "Martes", etc.
-                        console.log("Day: ", day);
                         const timeSlot = schedule.classroomConfiguration.classPeriod.name; // "1° hora", "2° hora", etc.
-                        console.log("Time slot: ", timeSlot);
                         const slotIndex = scheduleMapping[timeSlot];
-                        console.log("Slot index: ", slotIndex);
                         if (slotIndex !== undefined) {
                             initialSchedule[slotIndex][day] = {
                                 ...initialSchedule[slotIndex][day],
@@ -202,11 +190,8 @@ const TeacherScheduleComponent = ({ teacher, shift, year}) => {
                             };
                         }
                     });
-                } else {
-                    console.error("Invalid entry structure: ", entry);
                 }
             });
-            console.log("Initial schedule: ", initialSchedule);
             setSchedule([...initialSchedule]);
         };
 

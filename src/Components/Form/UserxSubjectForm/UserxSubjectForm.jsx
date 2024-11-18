@@ -36,7 +36,6 @@ const UserxSubjectForm = ({ userxsubject, editStatus, onSuccess }) => {
                     setSelectedUser(usersData.find(u => u.id === userxsubject.id_user));
                 }
             } catch (error) {
-                console.log(error);
                 toast.error('Error fetching data', {
                     duration: 2000,
                     icon: <XCircleIcon style={{ color: "red" }} />,
@@ -77,7 +76,6 @@ const UserxSubjectForm = ({ userxsubject, editStatus, onSuccess }) => {
                 });
             }
         } catch (error) {
-            console.log(error);
             toast.error('Error al registrar materia', {
                 duration: 2000,
                 icon: <XCircleIcon style={{ color: "red" }} />,

@@ -24,7 +24,6 @@ const ShiftList = () => {
                 }
             })
             .catch((error) => {
-                console.error('Error fetching shifts:', error);
                 setError(error.message);
             });
         }
@@ -62,7 +61,6 @@ const ShiftList = () => {
     };
 
     const handleDeleteShifts = () => {
-        console.log(selectedRows);
         setSelectedRows([]);
         // Aquí puedes agregar el código para eliminar las filas seleccionadas de la lista de SHIFTS
     };

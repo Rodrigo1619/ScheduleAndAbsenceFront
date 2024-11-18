@@ -35,7 +35,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                 const response = await weekdayService.getWeekdays(token);
                 setWeekdays(response);
             } catch (error) {
-                console.log("Error fetching weekdays: ", error);
             }
         };
         fetchWeekdays();
@@ -48,7 +47,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                     const response = await classPeriodService.getClassPeriods(token);
                     setPeriodSlots(response);
                 } catch (error) {
-                    console.log("Error fetching class periods: ", error);
                 }
             };
             fetchPeriodSlots();
@@ -66,16 +64,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
         setTimeSlots(updatedTimeSlots);
     }, [schedule]);
 
-
-    useEffect(() => {
-        console.log("Initial schedule: ", initialSchedule);
-    }, [initialSchedule]);
-
-    useEffect(() => {
-        console.log("classrooms" , classroom);
-    }
-    , [classroom]);
-    
     
     const defaultSubjects = shift?.name === "Vespertino" ? [
         { id: 1, inicio: "13:00", fin: "13:45", isHidden: false },
@@ -102,7 +90,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
     const fetchClassroomConfiguration = async () => {
         try {
             const response = await classroomConfigurationService.getAllByClassroomId(token, classroom);
-            console.log("Response: ", response);
             if (response && response[0] && response[0].classroomConfigurations.length > 0) {
                 const mappedSchedule = response[0].classroomConfigurations
                     .map((config, index) => ({
@@ -126,7 +113,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                         isRecreo: config.classPeriod.name === "RECREO"
                     }))
                 );
-                console.log("Mapped schedule: ", mappedSchedule);
                 setHaveClassroomConfig(true);
                 setInitialLength(mappedSchedule.length - 1);
                 setVisibleSlots(new Array(mappedSchedule.length).fill(true));
@@ -135,7 +121,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                     fin: config.hourEnd
                 })));
             } else {
-                console.log("No classroom configuration found");
                 // Use defaultSubjects if no classroom configuration is found
                 const initialSchedule = defaultSubjects.map((subject, index) => ({
                     hourStart: subject.inicio,
@@ -163,7 +148,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                 setSchedule([]);
                 return; // Salir de la función para no continuar con la creación
             }
-            console.log("Error fetching classroom configuration: ", error);
             // Use defaultSubjects in case of error
             const initialSchedule = defaultSubjects.map((subject, index) => ({
                 hourStart: subject.inicio,
@@ -182,7 +166,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
         }
 
     };
-
 
 
     useEffect(() => {
@@ -229,18 +212,13 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
         setSchedule(updatedSchedule);
     };
     
-    
-    
-
     const handleAddBlock = (index = null) => {
         let newBlock;
-        console.log("Deleted blocks: ", deletedBlocks.map(block => block.id));
         if (deletedBlocks.length > 0) {
             newBlock = deletedBlocks.pop(); // Restore the last deleted block
         } else {
             const lastSlot = timeSlots[timeSlots.length - 1];
             if (!lastSlot) {
-                console.error("No hay slots disponibles para añadir un nuevo bloque.");
                 return;
             }
             newBlock = {
@@ -252,7 +230,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                 isHidden: false,
             };
         }
-        console.log("Restored block: ", newBlock);
         const updatedSchedule = [...schedule];
         const updatedVisibleSlots = [...visibleSlots];
 
@@ -263,24 +240,17 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
             updatedVisibleSlots.push(true);
         }
 
-        console.log("Updated schedule: ", updatedSchedule);
         setSchedule(updatedSchedule);
-        console.log("Updated visible slots: ", updatedVisibleSlots);
         setVisibleSlots(updatedVisibleSlots);
 
-        console.log(schedule);
-
         if (hourConfigTableRef.current) {
-            console.log("Updating time slots in HourConfigurationTable");
             hourConfigTableRef.current.updateTimeSlots(updatedSchedule.map(block => ({
                 inicio: block.hourStart,
                 fin: block.hourEnd,
                 isHidden: block.isHidden || false
             })));
-        } else {
-            console.error("hourConfigTableRef.current is null");
         }
-    };
+};
 
     const handleDeleteBlock = (index) => {
         const updatedSchedule = [...schedule];
@@ -293,9 +263,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
         setDeletedBlocks([...deletedBlocks, deletedBlock]);
     };
 
-    useEffect(() => {
-        console.log("Schedule changed: ", schedule);
-    }, [schedule]);
 
     const handleTimeSlotsChange = (updatedTimeSlots) => {
         setTimeSlots(updatedTimeSlots);
@@ -323,7 +290,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
         const scheduleToCreate = [];
         const scheduleToUpdate = [];
         const scheduleToDelete = [];
-        console.log("classroom: ", classroom);
          // Comprobamos si algún salón ya tiene configuraciones existentes utilizando el servicio de ClassroomConfiguration
          // se debe recorrer classroom si es una lista de salones
 
@@ -333,11 +299,9 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                     const response = await classroomConfigurationService.getAllByClassroomId(token, classroom.id);
                     return response;
                 } catch (error) {
-                    console.log("Error fetching classroom configuration: ", error);
                     return [];
                 }
             }));
-            console.log("Classrooms with config: ", classroomsWithConfig);
     
     if (classroomsWithConfig.some(config => config.length > 0)) {
         // Alerta si uno o más salones ya tienen configuración
@@ -392,16 +356,11 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
 
     
         deletedBlocks.forEach((block) => {
-            console.log("Block: ", block);
             if (block.id !== null) {
                 scheduleToDelete.push(block);
             }
         });
     
-        console.log("Schedule to create: ", scheduleToCreate);
-        console.log("Schedule to update: ", scheduleToUpdate);
-        console.log("Schedule to delete: ", scheduleToDelete);
-        console.log(schedule);
 
         let realIndex = 0; // Real index for non-"Recreo" blocks
         
@@ -418,16 +377,9 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
             };
         });
 
-
-
         const classroomsToSave = classroom.map((classroom) => 
             classroom.id
         );
-
-        console.log("Schedule to save create: ", scheduleToSaveCreate);
-        console.log("Classrooms to save: ", classroomsToSave);
-        console.log("edit: ", edit);
-        console.log("period slots: ", periodSlots);
 
         const scheduleToSave = {
             classConfigurations: [
@@ -437,8 +389,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                 ...classroomsToSave
             ]
         }
-
-        console.log("Schedule to save: ", scheduleToSave);
     
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     
@@ -448,7 +398,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
             });
             try {
                 const response = await classroomConfigurationService.saveClassroomConfiguration(token, scheduleToSave);
-                console.log("Schedule saved: ", response);
                 notification.success({
                     message: 'Éxito',
                     description: 'La configuración de horas ha sido guardada exitosamente',
@@ -457,7 +406,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                 });
                 setSuccess(true);
             } catch (error) {
-                console.log("Error saving schedule: ", error);
                 notification.error({
                     message: 'Error',
                     description: 'Hubo un error al guardar la configuración de horas',
@@ -479,14 +427,9 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
             if (block.type !== "Recreo") {
                 realIndex++; // Increment real index only for non-"Recreo" blocks
             }
-    
-            console.log(realIndex);
-            
-            const initialBlock = initialSchedule[index] || {};
-            console.log("Block: ", block);
-            
+                
+            const initialBlock = initialSchedule[index] || {};            
 
-            console.log("Initial block: ", initialBlock);
             if (initialBlock && block.id !== null &&(block.hourStart !== initialBlock.hourStart || block.hourEnd !== initialBlock.hourEnd || block.type !== initialBlock.type)) {
                 return {
                     idClassroomConfiguration: block.id,
@@ -506,15 +449,10 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
         });
 
     
-        console.log("Schedule to save update: ", sortedScheduleToSaveUpdate);
-
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 
-        
-    
         const scheduleToSaveDelete = scheduleToDelete.map(block => block.id);
-        console.log("Schedule to save delete: ", scheduleToSaveDelete);
     
         if (scheduleToDelete.length === 1 && scheduleToDelete[0].id !== null && scheduleToDelete[0].id !== undefined) {
             const loadingToast = toast('Cargando...', {
@@ -522,7 +460,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
             });
             try {
                 const response = await classroomConfigurationService.deleteClassroomConfiguration(token, scheduleToSaveDelete[0]);
-                console.log("Schedule deleted: ", response);
                /*  notification.success({
                     message: 'Éxito',
                     description: 'La configuración de horas ha sido eliminada exitosamente',
@@ -532,7 +469,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                 setDeletedBlocks([]);
                 setSuccess(true);
             } catch (error) {
-                console.log("Error deleting schedule: ", error);
                 /* notification.error({
                     message: 'Error',
                     description: 'Hubo un error al eliminar la configuración de horas',
@@ -549,7 +485,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
             });
             try {
                 const response = await classroomConfigurationService.deleteClassroomConfigurations(token, scheduleToSaveDelete);
-                console.log("Schedule deleted: ", response);
                 notification.success({
                     message: 'Éxito',
                     description: 'La configuración de horas ha sido eliminada exitosamente',
@@ -559,7 +494,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                 setDeletedBlocks([]);
                 setSuccess(true);
             } catch (error) {
-                console.log("Error deleting schedule: ", error);
                 notification.error({
                     message: 'Error',
                     description: 'Hubo un error al eliminar la configuración de horas',
@@ -579,7 +513,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
             });
             try {
                 const response = await classroomConfigurationService.updateClassroomConfiguration(token, sortedScheduleToSaveUpdate);
-                console.log("Schedule updated: ", response);
                 notification.success({
                     message: 'Éxito',
                     description: 'La configuración de horas ha sido actualizada exitosamente',
@@ -588,7 +521,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                 });
                 setSuccess(true);
             } catch (error) {
-                console.log("Error updating schedule: ", error);
                 notification.error({
                     message: 'Error',
                     description: 'Hubo un error al actualizar la configuración de horas',
@@ -602,10 +534,7 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
 
         }
 
-            console.log("Period slots: ", periodSlots);
-
-            console.log("schedule", schedule);
-           // Mandar los que tienen id null a los que se "actualizaran" pero en realidad se crearan en la api
+        // Mandar los que tienen id null a los que se "actualizaran" pero en realidad se crearan en la api
            const scheduleToSaveUpdateCreate = schedule.map((block, index) => {
             const idClassPeriod = block.type === "Recreo" ? periodSlots.find(period => period.name === "RECREO")?.id : periodSlots[realIndex]?.id;
             if (block.type !== "Recreo") {
@@ -634,15 +563,12 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
 
         }
 
-        console.log("Schedule to update create save: ", scheduleToSave);
-
         if (scheduleToSaveUpdateCreate.length > 0) {
             const loadingToast = toast('Cargando...', {
                 icon: <AiOutlineLoading className="animate-spin" />,
             });
             try {
                 const response = await classroomConfigurationService.saveClassroomConfiguration(token, scheduleToSave);
-                console.log("Schedule updated: ", response);
                 notification.success({
                     message: 'Éxito',
                     description: 'La configuración de horas ha sido actualizada exitosamente',
@@ -651,7 +577,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
                 });
                 setSuccess(true);
             } catch (error) {
-                console.log("Error updating schedule: ", error);
                 notification.error({
                     message: 'Error',
                     description: 'Hubo un error al actualizar la configuración de horas',
@@ -669,7 +594,6 @@ const AddHourConfigurationTable = ({ classroom, shift, year, edit, onSuccess }) 
     
         if (success) {
             fetchClassroomConfiguration();
-            console.log("Schedule updated successfully");
             setSuccess(false);
             notification.info({
                 message: 'Información',

@@ -69,9 +69,7 @@ const TeacherSearch = () => {
                 try {
                     const data = await shiftService.getAllShifts(token);
                     setShiftList(data || []);
-                    console.log("Turnos", data);
                 } catch (error) {
-                    console.log("Hubo un error al obtener los turnos" + error);
                 }
             }
         };
@@ -86,27 +84,22 @@ const TeacherSearch = () => {
                 const data = await userService.getAllTeachersAdmin(token);
                 if(data){
                     
-                    console.log(data);
                     const teachers = data.filter((user) => user.role.name === "Profesor");
 
                     setTeachersList(teachers);
-                    console.log(teachers);
                 }
             } catch (error) {
-                console.log("Hubo un error al obtener los profesores " + error);
             }
         };
 
         const fetchClassPeriod = async () => {
             try {
                 const data = await classPeriodService.getClassPeriods(token);
-                console.log("Horas ", data);
 
                 const formattedData = data.splice(0,8);
 
                 setClassPeriod(formattedData);
             } catch (error) {
-                console.log("Hubo un error al obtener los periodos de clases" + error);
             }
         };
 
@@ -122,7 +115,6 @@ const TeacherSearch = () => {
 
                 setDayList(formattedData);
             } catch (error) {
-                console.log("Hubo un error al obtener los dias de la semana" + error);
             };
         }
 
@@ -139,7 +131,6 @@ const TeacherSearch = () => {
 
                 setClassroomsList(data);
             } catch (error) {
-                console.log("Hubo un error al obtener los salones " + error);
             }
         };
 
@@ -161,7 +152,6 @@ const TeacherSearch = () => {
         selectedHourRef.current = selectedHour;
         setHour(selectedHour);
 
-        console.log("La hora de clase seleccionada es: ", selectedHour.id, selectedHour.name);
     };
 
     const handleSelectDayChange = (e) => {
@@ -169,7 +159,6 @@ const TeacherSearch = () => {
         selectedDayRef.current = selectedDay;
         setDay(selectedDay);
 
-        console.log("El dia de clase cambio a: ", selectedDay.value, selectedDay.label);
     };
 
     const handleSelectTeacherChange = (e) => {
@@ -185,7 +174,6 @@ const TeacherSearch = () => {
         if(selectedTeacher){
             setTeacher(e);
 
-            console.log(`El profesor seleccionado es: ${e.value}<->${e.label}`);
         }
         
     };
@@ -202,7 +190,6 @@ const TeacherSearch = () => {
         if(selectedClassroom){
             setClassroom(e);
 
-            console.log(`El salon de clases seleccionado es: ${e.value} ${e.label}` );
         }
     };
 
@@ -214,18 +201,13 @@ const TeacherSearch = () => {
 
     const handleRefresh = async () => {
 
-        console.log("Buscando horario de clase...");
 
         if(day && hour && teacher && shift){
 
-            console.log("Buscando horario de clase por profesor...")
-            console.log(`Turno: ${shift.id} <-> ${shift.name} Profesor: ${teacher.label}<->${teacher.value}, Año: ${year}, Hora: ${hour.id}<->${hour.name}`)
             try {
                 const data = await scheduleService.getScheduleBySearchParameters(token, hour.id, shift.id, day.value, year, teacher.value, "");
                 
                 if(data){
-
-                    console.log("Horario de clase encontrado", data);
 
                     notification.success({
                         message: 'Exito!',
@@ -249,7 +231,6 @@ const TeacherSearch = () => {
                     throw new Error("No se encontro horario de clase");
                 }
             } catch (error) {
-                console.log(`Hubo un error al obtener los horarios: ${error}`);
 
                 setCardTeacher(teacher.label);
                 setCardSubject("Libre");
@@ -263,7 +244,6 @@ const TeacherSearch = () => {
                 setClassroom(null);
                 setShift(null);
 
-                console.log("No se encontro horario de clase")
                 notification.info({ 
                     message: 'Oh vaya!', 
                     description: "Parece que el profesor no tiene clases asignadas en este horario", 
@@ -272,22 +252,15 @@ const TeacherSearch = () => {
             }
 
         }else if(day && hour && classroom && shift){
-            
-
-            console.log("Buscando horario de clase por salon de clases...", classroom.value);
-            console.log("turno", shift);
-        
+                    
             try {
 
                 const classroomFound = await classroomService.getByParameters(token, year, classroom.value, shift.id);
-                console.log(`Turno: ${shift.id}<->${shift.name} Salon: ${classroomFound.id} ${classroomFound.grade.name}, Año: ${year}, Hora: ${hour.id} <-> ${hour.name}, Dia: ${day.value} <-> ${day.label}`);
     
                 const data = await scheduleService.getScheduleBySearchParameters(token, hour.id, shift.id, day.value, year, "", classroomFound.id);
     
                 if(data){
     
-                    console.log("Horario de clase encontrado", data);
-
                     notification.success({
                         message: 'Exito!',
                         description: "Busqueda realizada exitosamente",
@@ -310,7 +283,6 @@ const TeacherSearch = () => {
                     throw new Error("No se encontro horario de clase");
                 }
             } catch (error) {
-                console.log(`Hubo un error al obtener los horarios: ${error}`);
 
                 setCardTeacher("Nombre Profesor");
                 setCardSubject("Libre");
@@ -324,7 +296,6 @@ const TeacherSearch = () => {
                 setClassroom(null);
                 setShift(null);
 
-                console.log("No se encontro horario de clase")
                 notification.info({ 
                     message: 'Oh vaya!', 
                     description: "Parece que no hay registrado un profesor en el salón a esa hora", 

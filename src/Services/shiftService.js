@@ -15,11 +15,9 @@ export const shiftService = {
             }
 
             const data = await response.json();
-            console.log("Dentro de la peticion: ", data);
             return data;
 
         } catch (error) {
-            console.error("Error fetching all shifts:", error);
             return { error: error.message };
         }
     },
@@ -42,7 +40,6 @@ export const shiftService = {
             return data;
 
         } catch (error) {
-            console.error(`Error fetching shift with ID ${id}:`, error);
             return { error: error.message };
         }
     }

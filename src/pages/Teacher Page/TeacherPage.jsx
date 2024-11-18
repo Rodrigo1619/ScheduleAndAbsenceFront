@@ -29,7 +29,6 @@ const TeacherPage = () => {
             const data = await userService.getAllTeachersAdmin(token);
             setTeachers(data);
         } catch (error) {
-            console.log("Hubo un error al obtener los profesores" + error);
         }
     };
 

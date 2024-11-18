@@ -30,7 +30,6 @@ const TableAttendanceComponent = ({
     const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
-        console.log("TableData", tableData);
         const filtered = tableData.filter(row => 
             Object.values(row).some(val => 
                 String(val).toLowerCase().includes(searchTerm.toLowerCase())

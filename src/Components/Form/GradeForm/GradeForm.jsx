@@ -37,7 +37,6 @@ const GradeForm = ({ grade, editStatus, onSuccess }) => {
 
                 setShifts(data);
             } catch (error) {
-                console.log("Hubo un error al obtener las aulas" + error);
                 setShifts([]);
             }
         };
@@ -54,9 +53,6 @@ const GradeForm = ({ grade, editStatus, onSuccess }) => {
     };
 
     const handleSectionChange = (e) => {
-
-        console.log("Seccion elegida: ", e.target.value);
-
         setSection(e.target.value);
     };
 
@@ -65,7 +61,6 @@ const GradeForm = ({ grade, editStatus, onSuccess }) => {
 
         setSelectedShift(shift);
 
-        console.log("Turno elegido: ", shift);
     }
 
     useEffect(() => {
@@ -97,7 +92,6 @@ const GradeForm = ({ grade, editStatus, onSuccess }) => {
                 }
             }
             catch (error) {
-                console.log(error);
 
                 toast.error('Revise que el dato sea correcto', { 
                     duration: 2000,
