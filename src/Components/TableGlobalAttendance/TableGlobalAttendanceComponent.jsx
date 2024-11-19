@@ -30,10 +30,10 @@ const TableAttendanceComponent = ({
     const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
+        setCurrentPage(1);
         const filtered = tableData.filter(row => 
-            Object.values(row).some(val => 
-                String(val).toLowerCase().includes(searchTerm.toLowerCase())
-            )
+            row.student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            row.student.nie.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredData(filtered);
     }, [searchTerm, tableData]);

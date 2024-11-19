@@ -31,11 +31,21 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
     const [open, setOpen] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
     const [openStatus, setOpenStatus] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [notificationShown, setNotificationShown] = useState(false);
 
 
     useEffect(() => {
-        setLoading(true);
+        if (!notificationShown && !populate) {
+            notification.info({
+                message: 'Información',
+                description: 'Haga una busqueda por salón de clase para obtener los estudiantes',
+                placement: 'top',
+                duration: 2,
+            });
+            setNotificationShown(true);
+        }
+
         const fetchEnrolledStudents = async () => {
             try {
                 const data = await classroomService.getEnrollmentsByClassroom(token, classroomName.id);
@@ -49,9 +59,6 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
                     enrolled: student.enrolledClassroom ? student.enrolledClassroom.grade.name + " - " + student.enrolledClassroom.grade.shift.name
                         + " " + student.enrolledClassroom.year : "No matriculado"
                 })));
-                setTimeout(() => {
-                    setLoading(false);
-                }, 2000);
 
             notification.success({
                 message: 'Éxito',
@@ -61,32 +68,28 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
             });
 
             } catch (error) {
-                if (classroomName == undefined && !populate) {
+                if (!classroomName && !populate) {
                     notification.info({
                         message: 'Información',
                         description: 'Haga una busqueda por salón de clase para obtener los estudiantes',
                         placement: 'top',
                         duration: 2,
                     });
-                } else
-
-                if (!populate && enrolledStudents.length == 0) {
-                notification.error({
-                    message: 'Error',
-                    description: 'No se encontraron estudiantes en los registros',
-                    placement: 'top',
-                    duration: 2,
-                });
-            }
+                } else if (!populate && enrolledStudents.length == 0) {
+                    notification.error({
+                        message: 'Error',
+                        description: 'No se encontraron estudiantes en los registros',
+                        placement: 'top',
+                        duration: 2,
+                    });
+                }
                 setEnrolledStudents([]);
-                setTimeout(() => {
-                    setLoading(false);
-                }, 2000);
-            }
-            
+            } 
         };
 
-        fetchEnrolledStudents();
+        if (classroomName) {
+            fetchEnrolledStudents();
+        }
         setSelectedRows([]);
     }, [classroomName, token, students]);
 
@@ -108,8 +111,11 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
         enrolled: student.enrolled || "No matriculado"
     })) : STUDENTSWC;
 
-    // Filtra las filas según el término de búsqueda
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, rowsPerPage]);
 
+    // Filtra las filas según el término de búsqueda
     const filteredStudents = STUDENTS.filter((student) =>
         student.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         student.nie.toLowerCase().includes(searchTerm.toLowerCase())
@@ -156,10 +162,6 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
             setSelectedRows(visibleStudents);
         }
     };
-
-    useEffect(() => {
-        setSelectedRows([]);
-    }, [currentPage, rowsPerPage, searchTerm]);
 
     const handleOpenDialog = () => {
         setOpen(true);
@@ -222,7 +224,6 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
     }
 
     const handleChangeStatus = async () => {
-        console.log(" ");
     };
 
     useEffect(() => {
@@ -231,79 +232,81 @@ const StudentListEnrollment = ({ students = [], classroom, fetchStudents, classr
     , [selectedRows]);
 
     return (
-        loading ?
-            <div className="fixed">
-                <Grid type="Grid" color="#170973" height={80} width={80} visible={loading} />
-                <Typography
-                className='text-center text-blueMasferrer font-bold text-2xl'
-                > Cargando... </Typography>
-            </div>
+        loading ? (
+                <div className="fixed">
+                    <Grid type="Grid" color="#170973" height={80} width={80} visible={loading} />
+                    <Typography
+                    className='text-center text-blueMasferrer font-bold text-2xl'
+                    > Cargando... </Typography>
+                </div>
 
-            :
-        <Card className="h-full w-full mx-auto">
-            <UserHeader 
-                title="Lista de Estudiantes" 
-                searchTerm={searchTerm} 
-                setSearchTerm={setSearchTerm} 
-                handleDelete={handleDeleteStudents}
-                isDownload={true}
-                selectedRows={selectedRows}
-                tableHeaders={TABLE_HEAD}
-                tableKeys={TABLE_KEYS}
-                allRows={visibleStudents}
-                setSelectedRows={setSelectedRows}
-                handleSelectAllChange={handleSelectAllChange}
-            />
-            <UserTable 
-                TABLE_HEAD={classroomName ? TABLEH2_Class : TABLEH_Class} 
-                USERS={visibleStudents} 
-                selectedRows={selectedRows}
-                handleCheckboxChange={handleCheckboxChange}
-                handleDelete={handleOpenDeleteDialog}
-                handleUpdate={handleUpdateStudents}
-                handleStatus={handleOpenStatusDialog}
-                isFromClassroom={classroom}
-                editStatus={false}
-                enroll={enroll}
-                populate={populate}
-            />
-            <PaginationFooter 
-                rowsPerPage={rowsPerPage}
-                setRowsPerPage={setRowsPerPage}
-                startIndex={startIndex}
-                endIndex={endIndex}
-                filteredTeachers={filteredStudents}
-                currentPage={currentPage}
-                totalPages={totalPages}
-                handlePageChange={handlePageChange}
-            />
-                <Dialog open={open}  handler={handleOpenDialog}>
-                    <DialogHeader> Editar Estudiante </DialogHeader>
-                    <DialogBody> <StudentForm student={selectedStudent} editStatus={true} onSuccess={handleUpdateSuccess} /> </DialogBody>
-                <DialogFooter>
-                    <Button color="red" className='m-4' onClick={handleCloseDialog}> Cancelar </Button>
-                </DialogFooter>
+            ):(
+            <Card className="h-full w-full mx-auto">
+                <UserHeader 
+                    title="Lista de Estudiantes" 
+                    searchTerm={searchTerm} 
+                    setSearchTerm={setSearchTerm} 
+                    handleDelete={handleDeleteStudents}
+                    isDownload={true}
+                    selectedRows={selectedRows}
+                    tableHeaders={TABLE_HEAD}
+                    tableKeys={TABLE_KEYS}
+                    allRows={visibleStudents}
+                    setSelectedRows={setSelectedRows}
+                    handleSelectAllChange={handleSelectAllChange}
+                    AllData={filteredStudents}
+                />
+                <UserTable 
+                    TABLE_HEAD={classroomName ? TABLEH2_Class : TABLEH_Class} 
+                    USERS={visibleStudents} 
+                    selectedRows={selectedRows}
+                    handleCheckboxChange={handleCheckboxChange}
+                    handleDelete={handleOpenDeleteDialog}
+                    handleUpdate={handleUpdateStudents}
+                    handleStatus={handleOpenStatusDialog}
+                    isFromClassroom={classroom}
+                    editStatus={false}
+                    enroll={enroll}
+                    populate={populate}
+                />
+                <PaginationFooter 
+                    rowsPerPage={rowsPerPage}
+                    setRowsPerPage={setRowsPerPage}
+                    startIndex={startIndex}
+                    endIndex={endIndex}
+                    filteredTeachers={filteredStudents}
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    handlePageChange={handlePageChange}
+                />
+                    <Dialog open={open}  handler={handleOpenDialog}>
+                        <DialogHeader> Editar Estudiante </DialogHeader>
+                        <DialogBody> <StudentForm student={selectedStudent} editStatus={true} onSuccess={handleUpdateSuccess} /> </DialogBody>
+                    <DialogFooter>
+                        <Button color="red" className='m-4' onClick={handleCloseDialog}> Cancelar </Button>
+                    </DialogFooter>
+                    </Dialog>
+                    <Dialog open={openDelete} handler={handleOpenDeleteDialog}>
+                        <DialogHeader> Eliminar Estudiante </DialogHeader>
+                        <DialogBody> 
+                            ¿Estás seguro que deseas eliminar el estudiante {selectedStudent.fullName}? <br/>
+                            <p className="font-semibold"> Puede que el dato se este utilizando en otro lugar. </p>
+                            </DialogBody>
+                    <DialogFooter>
+                        <Button color="green" className='m-4' onClick={handleDeleteStudents}> Eliminar </Button>
+                        <Button color="red" className='m-4' onClick={handleCloseDeleteDialog}> Cancelar </Button>
+                    </DialogFooter>
+                    </Dialog>
+                    <Dialog open={openStatus} handler={handleOpenStatusDialog}>
+                    <DialogHeader> Editar Estado de Actividad </DialogHeader>
+                    <DialogBody> ¿Estás seguro que deseas cambiar el estado de { selectedStudent.fullName }? </DialogBody>
+                    <DialogFooter>
+                        <Button color="green" className='m-4' onClick={handleChangeStatus}> Cambiar </Button>
+                        <Button color="red" className='m-4' onClick={handleCloseStatusDialog}> Cancelar </Button>
+                    </DialogFooter>
                 </Dialog>
-                <Dialog open={openDelete} handler={handleOpenDeleteDialog}>
-                    <DialogHeader> Eliminar Estudiante </DialogHeader>
-                    <DialogBody> 
-                        ¿Estás seguro que deseas eliminar el estudiante {selectedStudent.fullName}? <br/>
-                        <p className="font-semibold"> Puede que el dato se este utilizando en otro lugar. </p>
-                        </DialogBody>
-                <DialogFooter>
-                    <Button color="green" className='m-4' onClick={handleDeleteStudents}> Eliminar </Button>
-                    <Button color="red" className='m-4' onClick={handleCloseDeleteDialog}> Cancelar </Button>
-                </DialogFooter>
-                </Dialog>
-                <Dialog open={openStatus} handler={handleOpenStatusDialog}>
-                <DialogHeader> Editar Estado de Actividad </DialogHeader>
-                <DialogBody> ¿Estás seguro que deseas cambiar el estado de { selectedStudent.fullName }? </DialogBody>
-                <DialogFooter>
-                    <Button color="green" className='m-4' onClick={handleChangeStatus}> Cambiar </Button>
-                    <Button color="red" className='m-4' onClick={handleCloseStatusDialog}> Cancelar </Button>
-                </DialogFooter>
-            </Dialog>
-        </Card>
+            </Card>
+        )
     );
 }
 

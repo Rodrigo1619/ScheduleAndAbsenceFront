@@ -16,6 +16,8 @@ import { classroomService } from '../../../Services/classroomService';
 import { notification } from 'antd';
 import { studentService } from '../../../Services/studentService.js';
 import { Grid } from 'react-loader-spinner';
+import { toast, Toaster } from 'sonner';
+import { AiOutlineLoading } from 'react-icons/ai';
 
 
 const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, classroomInfo, buttonText }) => {
@@ -116,7 +118,6 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
     }
 
     const addStudentsToClassroom = async (studentsList) => {
-        setLoading(true);
         const idStudents = studentsList.map(student => student.id);
 
         if (!selectedClassroom) {
@@ -126,7 +127,6 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
                 placement: 'top',
                 duration: 2,
             });
-            setLoading(false);
             return;
         }
 
@@ -137,10 +137,13 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
                 placement: 'top',
                 duration: 2,
             });
-            setLoading(false);
             return;
         }
 
+        // Show loading toast
+        const loadingToast = toast('Cargando...', {
+            icon: <AiOutlineLoading className="animate-spin" />,
+        });
         try {
  
             const data = await classroomService.addStudentsToClassroom(token, idStudents, selectedClassroom.id);
@@ -154,13 +157,19 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
                 onSuccess();
             }
         } catch (error) {
+            notification.error({
+                message: 'Error',
+                description: 'Hubo un error al registrar los estudiantes',
+                placement: 'top',
+                duration: 2,
+            });
+        } finally {
+            // Dismiss loading toast
+            toast.dismiss(loadingToast);
         }
-
-        setLoading(false);
     }
 
     const enrollStudents = async (studentsList) => {
-        setLoading(true);
         const idEnrollments = studentsList.map(student => student.enrolledId);
 
         if (!selectedClassroom) {
@@ -170,7 +179,6 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
                 placement: 'top',
                 duration: 2,
             });
-            setLoading(false);
             return;
         }
 
@@ -181,10 +189,13 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
                 placement: 'top',
                 duration: 2,
             });
-            setLoading(false);
             return;
         }
         
+        // Show loading toast
+        const loadingToast = toast('Cargando...', {
+            icon: <AiOutlineLoading className="animate-spin" />,
+        });
         try {
             const data = await studentService.enrollStudents(token, idEnrollments, selectedClassroom.id);
             if (data) {
@@ -203,12 +214,13 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
                 placement: 'top',
                 duration: 4,
             });
+        } finally {
+            // Dismiss loading toast
+            toast.dismiss(loadingToast);
         }
-        setLoading(false);
     }
 
     const editClassroomList = async (studentsList) => {
-        setLoading(true);
         const idEnrollments = studentsList.map(student => student.enrolledId);
 
         if (!selectedClassroom) {
@@ -218,7 +230,6 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
                 placement: 'top',
                 duration: 2,
             });
-            setLoading(false);
             return;
         }
 
@@ -229,11 +240,13 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
                 placement: 'top',
                 duration: 2,
             });
-            setLoading(false);
             return;
         }
 
-        
+        // Show loading toast
+        const loadingToast = toast('Cargando...', {
+            icon: <AiOutlineLoading className="animate-spin" />,
+        });
         try {
             const data = await classroomService.editClassroomStudentsList(token, idEnrollments, selectedClassroom.id);
             if (data) {
@@ -253,8 +266,10 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
                 placement: 'top',
                 duration: 4,
             });
+        } finally {
+            // Dismiss loading toast
+            toast.dismiss(loadingToast);
         }
-        setLoading(false);
     }
 
     const handleSubmit = (e) => {
@@ -280,7 +295,14 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
 
                 case buttonText === "Matricular":
                     e.preventDefault();
-                    if (studentsList && selectedClassroom.year > classroomInfo.year) {
+                    if (classroomInfo === null) {
+                        notification.error({
+                            message: 'Error',
+                            description: 'No se ha buscado los alumnos de un salón de clases',
+                            placement: 'top',
+                            duration: 2,
+                        });
+                    } else if (studentsList && selectedClassroom.year > classroomInfo.year) {
                         enrollStudents(studentsList);
                     }
                     else {
@@ -314,57 +336,61 @@ const PopulateClassForm = ({ setClassroom, fromDialog, onSuccess, studentsList, 
     }
 
     return (
-        loading ?
-        <div className="fixed">
-                <Grid type="Grid" color="#170973" height={80} width={80} visible={loading} />
-                <Typography
-                className='text-center text-blueMasferrer font-bold text-2xl'
-                > Cargando... </Typography>
-            </div>
-        :
-        <form onSubmit={handleSubmit} className={[classes["form"]]}>
-            <div className={classes["input-container"]}>
-                <label className={classes["label"]}>Turno:</label>
-                <AsyncSelect
-                    value={shift ? shift.id : ''}
-                    onChange={handleSelectShiftChange}
-                    className="bg-white Mobile-280:w-full"
-                >
-                    {shiftsList?.map((shift) => (
-                        <Option key={shift.id} value={shift.id}>
-                            {shift.name}
-                        </Option>
-                    ))}
-                </AsyncSelect>
-            </div>
+        <>
+        <Toaster />
+            {loading ? (
+                <div className="fixed">
+                    <Grid type="Grid" color="#170973" height={80} width={80} visible={loading} />
+                    <Typography
+                    className='text-center text-blueMasferrer font-bold text-2xl'
+                    > Cargando... </Typography>
+                </div>
+            ):(
+                <form onSubmit={handleSubmit} className={[classes["form"]]}>
+                    <div className={classes["input-container"]}>
+                        <label className={classes["label"]}>Turno:</label>
+                        <AsyncSelect
+                            value={shift ? shift.id : ''}
+                            onChange={handleSelectShiftChange}
+                            className="bg-white Mobile-280:w-full"
+                        >
+                            {shiftsList?.map((shift) => (
+                                <Option key={shift.id} value={shift.id}>
+                                    {shift.name}
+                                </Option>
+                            ))}
+                        </AsyncSelect>
+                    </div>
 
-            <div className={classes["input-container"]}>
-                <label className={classes["label"]}>Año:</label>
-                <input type="number" minLength="4" maxLength="4" min="2024" max="2099"
-                    pattern='[0-9]{4}' value={year} onChange={handleSelectYearChange}
-                    className="Mobile-280:w-full text-black border-2 text-center mx-auto border-black border-opacity-20" placeholder="Año" />
-            </div>
-            <div className={classes["input-container"]}>
-                <label className={classes["label"]}>Salón de clases:</label>
-                <SelectSearch
-                                        value={selectedClassroom ? { value: selectedClassroom.id, label: selectedClassroom.grade.name } : ''}
-                                        options={classroomsList?.map((selectedClassroom) => ({
-                                            value: selectedClassroom.id,
-                                            label: selectedClassroom.grade.name,
-                                        }))}
-                                        onChange={handleSelectClassroomChange}
-                                        placeholder="Seleccione un salon de clases"
-                                        className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20"
-                                        menuPlacement='top'
-                                    />
-            </div>
-            <div className="button-container">
-                {
-                    <button type="submit" className={[classes["submit-button"]]}>{fromDialog ? "Buscar" : buttonText}</button>
-                }
+                    <div className={classes["input-container"]}>
+                        <label className={classes["label"]}>Año:</label>
+                        <input type="number" minLength="4" maxLength="4" min="2024" max="2099"
+                            pattern='[0-9]{4}' value={year || ''} onChange={handleSelectYearChange}
+                            className="Mobile-280:w-full text-black border-2 text-center mx-auto border-black border-opacity-20" placeholder="Año" />
+                    </div>
+                    <div className={classes["input-container"]}>
+                        <label className={classes["label"]}>Salón de clases:</label>
+                        <SelectSearch
+                                                value={selectedClassroom ? { value: selectedClassroom.id, label: selectedClassroom.grade.name } : ''}
+                                                options={classroomsList?.map((selectedClassroom) => ({
+                                                    value: selectedClassroom.id,
+                                                    label: selectedClassroom.grade.name,
+                                                }))}
+                                                onChange={handleSelectClassroomChange}
+                                                placeholder="Seleccione un salon de clases"
+                                                className=" Mobile-280:w-full text-black min-w-full border-2 border-black border-opacity-20"
+                                                menuPlacement='top'
+                                            />
+                    </div>
+                    <div className="button-container">
+                        {
+                            <button type="submit" className={[classes["submit-button"]]}>{fromDialog ? "Buscar" : buttonText}</button>
+                        }
 
-            </div>
-        </form>
+                    </div>
+                </form>
+            )}
+        </>
     );
 };
 

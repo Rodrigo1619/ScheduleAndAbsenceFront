@@ -25,17 +25,28 @@ const TableAttendanceComponent = ({
     const [isSelectAll, setIsSelectAll] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [filteredData, setFilteredData] = useState(tableData);
     const [openDialog, setOpenDialog] = useState(false);
 
+    // Filter rows based on search term
+    const filteredClassrooms = tableData.filter((classroom) =>
+        classroom.grade?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        classroom.shift?.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = Math.min(startIndex + rowsPerPage, filteredClassrooms.length);
+    const paginatedData = filteredClassrooms.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(filteredClassrooms.length / rowsPerPage);
+
+    // Update the current page
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+    };
+
+    // Reset the current page when the search term changes or the table data changes
     useEffect(() => {
-        const filtered = tableData.filter(row => 
-            Object.values(row).some(val => 
-                String(val).toLowerCase().includes(searchTerm.toLowerCase())
-            )
-        );
-        setFilteredData(filtered);
-    }, [searchTerm, tableData]);
+        setCurrentPage(1);
+    }, [searchTerm,tableData]);
 
     const handleOpenDialog = () => setOpenDialog(true);
     const handleCloseDialog = () => setOpenDialog(false);
@@ -78,7 +89,7 @@ const TableAttendanceComponent = ({
         if (isSelectAll) {
             setSelectedRows([]);
         } else {
-            setSelectedRows(filteredData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage));
+            setSelectedRows(paginatedData);
         }
         setIsSelectAll(!isSelectAll);
     };
@@ -91,16 +102,8 @@ const TableAttendanceComponent = ({
         }
     };
 
-    const handlePageChange = (newPage) => {
-        setCurrentPage(newPage);
-    };
-
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const endIndex = Math.min(startIndex + rowsPerPage, filteredData.length);
-    const paginatedData = filteredData.slice(startIndex, endIndex);
-
     return (
-        <Card className="h-full w-full mx-auto">
+        <Card className={`${styles["generalCardContainer"]} h-full mx-auto`}>
             <CardHeader floated={false} shadow={false}>
                 <div className={styles.userHeaderContainer}>
                     <div className="flex items-center">
@@ -218,13 +221,13 @@ const TableAttendanceComponent = ({
                     </select>
                 </div>
                 <Typography variant="small" color="blue-gray">
-                    {startIndex + 1}-{endIndex} de {filteredData.length}
+                    {startIndex + 1}-{Math.min(endIndex, filteredClassrooms.length)} de {filteredClassrooms.length}
                 </Typography>
                 <div className={styles.paginationButtons}>
                     <Button variant="outlined" size="sm" disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)}>
                         Anterior
                     </Button>
-                    <Button variant="outlined" size="sm" disabled={endIndex >= filteredData.length} onClick={() => handlePageChange(currentPage + 1)}>
+                    <Button variant="outlined" size="sm" disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)}>
                         Siguiente
                     </Button>
                 </div>

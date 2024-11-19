@@ -15,10 +15,9 @@ const TableRegisterComponent = ({
     const [filteredData, setFilteredData] = useState(tableData);
 
     useEffect(() => {
+        setCurrentPage(1);
         const filtered = tableData.filter(row => 
-            Object.values(row).some(val => 
-                String(val).toLowerCase().includes(searchTerm.toLowerCase())
-            )
+            row.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredData(filtered);
     }, [searchTerm, tableData]);

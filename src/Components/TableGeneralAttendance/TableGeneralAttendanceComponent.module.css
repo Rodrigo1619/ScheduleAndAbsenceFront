@@ -6,6 +6,12 @@
         Mobile-390*844:flex-col Mobile-390*844:gap-1 Mobile-390*844:items-start
         Mobile-280:flex-col Mobile-280:gap-1 Mobile-280:items-start;
     }
+
+    /* Contenedor de la tabla */
+    .generalCardContainer {
+        @apply w-full;        /*Cuando sea tamanio de celular*/
+        @apply lg:w-10/12;    /*Cuando sea tamanio de PC y laptop*/
+    }
     
     /* Input de búsqueda en el header */
     .userHeaderInput {

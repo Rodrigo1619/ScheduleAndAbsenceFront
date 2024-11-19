@@ -15,8 +15,8 @@ import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { AiOutlineLoading } from "react-icons/ai";
 import { Toaster, toast } from 'sonner';
 
-const tableHeaders = ["", "ID", "Salón", "Turno", "Inasistencia Diaria", "Inasistencia Global"];
-const tableKeys = ["id", "grade.name", "grade.shift.name"];
+const tableHeaders = ["", "Salón", "Turno", "Inasistencia Diaria", "Inasistencia Global"];
+const tableKeys = ["grade.name", "grade.shift.name"];
 
 const AttendanceGeneralViewPage = () => {
     const currentYear = new Date().getFullYear();
@@ -126,7 +126,7 @@ const AttendanceGeneralViewPage = () => {
     };
 
     const handleStatus = (row) => {
-        console.log("Change status:", row);
+
     };
 
     return (
