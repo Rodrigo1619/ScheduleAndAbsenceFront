@@ -4,11 +4,11 @@ import { Typography } from "@material-tailwind/react";
 import studentTeachersClasroomIcon from "../../assets/icons/studentTeachersClassroom-icon.svg";
 import enrollIcon from "../../assets/icons/enroll-student.svg";
 import clockIcon from "../../assets/icons/clock-solid.svg";
-import searchIcon from "../../assets/icons/search-icon.svg";
 import schoolIcon from "../../assets/icons/school-icon.svg";
 import userPlusIcon from "../../assets/icons/user-plus-icon.svg";
 import filePlusIcon from "../../assets/icons/file-plus-icon.svg";
 import teacherIcon from "../../assets/icons/teacherchalkb.svg";
+import calendarIcon from "../../assets/icons/calendar-icon.svg";
 
 import Header from "../../Components/Header/Header";
 import QuickAccessButtons from "../../Components/QuickAccessButtons/QuickAccessButtons";
@@ -58,8 +58,7 @@ const ModeratorPage = () => {
                                 title="Acciones de Consulta:"
                                 iconsvg1={clockIcon} description1="Configuración de horas para el salón de clases" link1="/HourConfiguration"
                                 iconsvg2={enrollIcon} description2="Matricular estudiantes" link2="/EnrollStudents"
-                                iconsvg3={searchIcon} description3="Búsqueda de maestro" link3="/SearchTeacher"
-                            />
+                                iconsvg3={calendarIcon} description3="Asignar horario a salon de clase" link3="/AddSchedule"/>
                         </div>   
                     </div>
                 </div>
