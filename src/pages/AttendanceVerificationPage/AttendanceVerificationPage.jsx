@@ -301,7 +301,11 @@ const AttendanceVerificationViewPage = () => {
                                     <Button 
                                         onClick={handleOpenDialog} 
                                         className={classes["yearSelect"]}
-                                        disabled={noContent}>
+                                        disabled={noContent ||
+                                            (teacherValidation == true && coordinationValidation == true) ||
+                                            (user?.role.name === "Profesor" && teacherValidation == true && coordinationValidation == false) ||
+                                            (user?.role.name === "Coordinador" && teacherValidation == false && coordinationValidation == true)
+                                        }>
                                         Verificar
                                     </Button>
                                 ) : (
