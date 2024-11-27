@@ -120,7 +120,7 @@ const TableVerificationComponent = ({
             });
 
             const buffer = await workbook.xlsx.writeBuffer();
-            saveAs(new Blob([buffer], { type: "application/octet-stream" }), `Inasistencia ${generalData.classroom.grade.name}-${currentDate}.xlsx`);
+            saveAs(new Blob([buffer], { type: "application/octet-stream" }), `Inasistencia ${generalData.classroom.grade.name}-${localDate}.xlsx`);
         }
 
         if (selectedRows.length > 0 && formatedHeaders.length > 1 && tableKeys.length > 0) {
@@ -155,7 +155,7 @@ const TableVerificationComponent = ({
             });
 
             const buffer = await workbook.xlsx.writeBuffer();
-            saveAs(new Blob([buffer], { type: "application/octet-stream" }), `Inasistencia ${generalData.classroom.grade.name}-${currentDate}.xlsx`);
+            saveAs(new Blob([buffer], { type: "application/octet-stream" }), `Inasistencia ${generalData.classroom.grade.name}-${localDate}.xlsx`);
         }
     };
 
@@ -189,7 +189,7 @@ const TableVerificationComponent = ({
 
             const csvContent = Papa.unparse(csvData, { header: true });
             const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-            saveAs(blob, `Inasistencia ${generalData.classroom.grade.name}-${currentDate}.csv`);
+            saveAs(blob, `Inasistencia ${generalData.classroom.grade.name}-${localDate}.csv`);
         }
 
         if (selectedRows.length > 0 && formatedHeaders.length > 1 && tableKeys.length > 0) {
@@ -220,7 +220,7 @@ const TableVerificationComponent = ({
 
             const csvContent = Papa.unparse(csvData, { header: true });
             const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-            saveAs(blob, `Inasistencia ${generalData.classroom.grade.name}-${currentDate}.csv`);
+            saveAs(blob, `Inasistencia ${generalData.classroom.grade.name}-${localDate}.csv`);
         }
     };
 
