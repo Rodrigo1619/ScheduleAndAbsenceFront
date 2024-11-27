@@ -5,6 +5,7 @@ import styles from "./TableVerificationAttendanceComponent.module.css";
 import { MdOutlineSearch } from "react-icons/md";
 import { RiFileDownloadFill } from "react-icons/ri";
 import { XCircleIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
+import { AiOutlineLoading } from "react-icons/ai";
 import {Card, 
     CardHeader, 
     CardBody, 
@@ -302,7 +303,10 @@ const TableVerificationComponent = ({
             absentStudents: formatedAbsentStudents ? formatedAbsentStudents : [],
             deleteAbsentStudents: deleteAbsentStudentsList ? deleteAbsentStudentsList : [],
         }
-
+        
+        const loadingToast = toast('Cargando...', {
+            icon: <AiOutlineLoading className="animate-spin" />,
+        });
         try {
             const response = await absenceRecordService.editAbsenceRecord(token, absenceRecordJSON);
 
@@ -318,6 +322,8 @@ const TableVerificationComponent = ({
                 duration: 2000,
                 icon: <XCircleIcon style={{color: "red"}} />,
             });
+        } finally {
+            toast.dismiss(loadingToast);
         }
 
     };
